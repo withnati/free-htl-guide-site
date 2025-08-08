@@ -8,28 +8,21 @@
   <meta property="og:title" content="Free HTL Guide — Structured HT/HTL Exam Prep" />
   <meta property="og:description" content="Video lessons, summaries, quizzes, and live Q&A—organized by the official content areas." />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="/assets/microtome.jpg" />
+  <meta property="og:image" content="assets/microtome.jpg" />
   <meta name="theme-color" content="#0F4C81" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root{
-      --brand:#0F4C81;
-      --accent:#2BB673;
-      --text:#1E1E1E;
-    }
-    .btn-primary{  display:inline-flex; align-items:center; justify-content:center; padding:0.75rem 1.25rem; border-radius:0.75rem; font-weight:600; background:var(--brand); color:#fff; transition:opacity .15s; }
-    .btn-primary:hover{opacity:.95}
-    .btn-primary:active{opacity:.9}
-    .btn-secondary{ display:inline-flex; align-items:center; justify-content:center; padding:0.75rem 1.25rem; border-radius:0.75rem; font-weight:600; border:1px solid #CBD5E1; transition:background .15s; }
-    .btn-secondary:hover{ background:#F8FAFC }
+    :root{ --brand:#0F4C81; --accent:#2BB673; --text:#1E1E1E; }
+    .btn-primary{ display:inline-flex; align-items:center; justify-content:center; padding:.75rem 1.25rem; border-radius:.75rem; font-weight:600; background:var(--brand); color:#fff }
+    .btn-secondary{ display:inline-flex; align-items:center; justify-content:center; padding:.75rem 1.25rem; border-radius:.75rem; font-weight:600; border:1px solid #CBD5E1 }
     .badge{ display:inline-flex; align-items:center; gap:.5rem; padding:.25rem .75rem; border-radius:999px; font-size:.9rem; font-weight:600; background:#F1F5F9; color:#334155; }
-    .container{ margin-left:auto; margin-right:auto; max-width:72rem; padding-left:1rem; padding-right:1rem; }
+    .container{ margin:0 auto; max-width:72rem; padding:0 1rem; }
   </style>
 </head>
 <body class="text-[color:var(--text)] antialiased">
   <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200">
     <div class="container flex h-16 items-center justify-between">
-      <a href="#" class="flex items-center gap-2 font-bold text-xl text-[color:var(--brand)]">
+      <a href="index.html" class="flex items-center gap-2 font-bold text-xl text-[color:var(--brand)]">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm1.5 4a.75.75 0 0 0 0 1.5H15a.75.75 0 0 0 0-1.5H8.5zm0 4a.75.75 0 0 0 0 1.5H15a.75.75 0 0 0 0-1.5H8.5zm0 4a.75.75 0 0 0 0 1.5H13a.75.75 0 0 0 0-1.5H8.5z"/></svg>
         Free HTL Guide
       </a>
@@ -42,21 +35,7 @@
         <a href="#contact" class="hover:text-[color:var(--brand)]">Contact</a>
       </nav>
       <div class="hidden md:block">
-        <a href="#start" class="btn-primary">Start Free</a>
-      </div>
-      <button id="menuBtn" class="md:hidden p-2 rounded-lg border border-slate-300" aria-label="Toggle menu">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
-    </div>
-    <div id="mobileMenu" class="md:hidden hidden border-t border-slate-200">
-      <div class="container py-3 grid gap-3">
-        <a href="#syllabus" class="py-2">Syllabus</a>
-        <a href="#pricing" class="py-2">Pricing</a>
-        <a href="#live" class="py-2">Live Sessions</a>
-        <a href="#faq" class="py-2">FAQ</a>
-        <a href="#about" class="py-2">About</a>
-        <a href="#contact" class="py-2">Contact</a>
-        <a href="#start" class="btn-primary">Start Free</a>
+        <a href="modules/staining.html" class="btn-primary">Start Free</a>
       </div>
     </div>
   </header>
@@ -68,72 +47,14 @@
         <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Pass the ASCP HT/HTL exam with a structured, expert-led study plan</h1>
         <p class="text-lg text-slate-700">Video lessons, topic summaries, quizzes, and live Q&amp;A—organized by the official content areas.</p>
         <div class="flex flex-wrap gap-3">
-          <a href="#start" class="btn-primary">Start Free</a>
+          <a href="modules/staining.html" class="btn-primary">Start Free</a>
           <a href="#syllabus" class="btn-secondary">See Syllabus</a>
         </div>
         <p class="text-sm text-slate-600">Aligned to ASCP BOC content areas: Fixation, Processing, Embedding/Microtomy, Staining, and Laboratory Operations. (Not affiliated with ASCP.)</p>
       </div>
       <div class="relative">
         <div class="aspect-[4/3] rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50">
-          <img src="/assets/microtome.jpg" alt="Microtome cutting a paraffin-embedded tissue section in a histology lab" class="w-full h-full object-cover" />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-12 md:py-16 bg-slate-50">
-    <div class="container">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl md:text-3xl font-bold">How it works</h2>
-        <p class="text-slate-700 mt-2">Three steps to exam confidence.</p>
-      </div>
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
-          <div class="w-12 h-12 rounded-xl" style="background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; margin-bottom:1rem;">
-            <span class="text-xl">1</span>
-          </div>
-          <h3 class="font-semibold text-lg">Pick a topic</h3>
-          <p class="text-slate-700">Modules mapped to the official HT/HTL exam blueprint.</p>
-        </div>
-        <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
-          <div class="w-12 h-12 rounded-xl" style="background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; margin-bottom:1rem;">
-            <span class="text-xl">2</span>
-          </div>
-          <h3 class="font-semibold text-lg">Watch &amp; practice</h3>
-          <p class="text-slate-700">Short videos, printable notes, and exam-style quizzes.</p>
-        </div>
-        <div class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm">
-          <div class="w-12 h-12 rounded-xl" style="background:var(--brand); color:#fff; display:flex; align-items:center; justify-content:center; margin-bottom:1rem;">
-            <span class="text-xl">3</span>
-          </div>
-          <h3 class="font-semibold text-lg">Track progress</h3>
-          <p class="text-slate-700">Bookmark weak areas and follow weekly study plans.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-12 md:py-16">
-    <div class="container">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl md:text-3xl font-bold">What you’ll get</h2>
-      </div>
-      <div class="grid md:grid-cols-4 gap-6">
-        <div class="p-6 rounded-2xl border border-slate-200">
-          <h3 class="font-semibold">5 core modules</h3>
-          <p class="text-slate-700 mt-1">Fixation, Processing, Embedding/Microtomy, Staining, Lab Operations.</p>
-        </div>
-        <div class="p-6 rounded-2xl border border-slate-200">
-          <h3 class="font-semibold">Downloadables</h3>
-          <p class="text-slate-700 mt-1">Stain tables, fixative cheat sheets, troubleshooting guides.</p>
-        </div>
-        <div class="p-6 rounded-2xl border border-slate-200">
-          <h3 class="font-semibold">Live reviews</h3>
-          <p class="text-slate-700 mt-1">Weekly Q&amp;A and timed practice blocks.</p>
-        </div>
-        <div class="p-6 rounded-2xl border border-slate-200">
-          <h3 class="font-semibold">Community</h3>
-          <p class="text-slate-700 mt-1">Private Q&amp;A for tricky cases.</p>
+          <img src="assets/microtome.jpg" alt="Microtome cutting a paraffin-embedded tissue section in a histology lab" class="w-full h-full object-cover" />
         </div>
       </div>
     </div>
@@ -147,195 +68,20 @@
       </div>
       <div class="grid md:grid-cols-3 gap-6">
         <article class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col">
-          <h3 class="font-semibold text-lg">Fixation</h3>
-          <p class="text-slate-700 mt-1">Fixatives, parameters, artifacts, QC.</p>
-          <a href="#start" class="mt-auto inline-flex items-center gap-2 text-[color:var(--brand)] font-semibold">Open module →</a>
+          <h3 class="font-semibold text-lg">Staining</h3>
+          <p class="text-slate-700 mt-1">H&amp;E, carbs, connective tissue, microorganisms, pigments/minerals, IHC basics.</p>
+          <a href="modules/staining.html" class="mt-auto inline-flex items-center gap-2 text-[color:var(--brand)] font-semibold">Open module →</a>
         </article>
         <article class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col">
-          <h3 class="font-semibold text-lg">Processing</h3>
-          <p class="text-slate-700 mt-1">Reagents, schedules, decalcification, QC.</p>
-          <a href="#start" class="mt-auto inline-flex items-center gap-2 text-[color:var(--brand)] font-semibold">Open module →</a>
+          <h3 class="font-semibold text-lg">Fixation</h3>
+          <p class="text-slate-700 mt-1">Fixatives, parameters, artifacts, QC.</p>
+          <span class="mt-auto text-slate-500">Coming soon</span>
         </article>
         <article class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col">
           <h3 class="font-semibold text-lg">Embedding &amp; Microtomy</h3>
           <p class="text-slate-700 mt-1">Paraffin &amp; frozen sectioning, troubleshooting.</p>
-          <a href="#start" class="mt-auto inline-flex items-center gap-2 text-[color:var(--brand)] font-semibold">Open module →</a>
+          <span class="mt-auto text-slate-500">Coming soon</span>
         </article>
-        <article class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col">
-          <h3 class="font-semibold text-lg">Staining</h3>
-          <p class="text-slate-700 mt-1">H&amp;E, carbs, connective tissue, microorganisms, pigments/minerals, IHC basics.</p>
-          <a href="#start" class="mt-auto inline-flex items-center gap-2 text-[color:var(--brand)] font-semibold">Open module →</a>
-        </article>
-        <article class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col">
-          <h3 class="font-semibold text-lg">Lab Operations</h3>
-          <p class="text-slate-700 mt-1">Safety, regs, math/dilutions, instrumentation &amp; QC.</p>
-          <a href="#start" class="mt-auto inline-flex items-center gap-2 text-[color:var(--brand)] font-semibold">Open module →</a>
-        </article>
-        <article class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col">
-          <h3 class="font-semibold text-lg">Practice Exams (coming soon)</h3>
-          <p class="text-slate-700 mt-1">Timed CAT-style blocks with detailed solutions.</p>
-          <a href="#start" class="mt-auto inline-flex items-center gap-2 text-[color:var(--brand)] font-semibold">Join the waitlist →</a>
-        </article>
-      </div>
-      <div class="text-center mt-8">
-        <a href="#pricing" class="btn-secondary">View full syllabus</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="py-12 md:py-16">
-    <div class="container grid md:grid-cols-2 gap-6">
-      <blockquote class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <p class="text-lg">“Concise and focused on what’s tested—I finally understand when to use which fixative.”</p>
-        <footer class="mt-3 text-sm text-slate-600">— HTL candidate, 2025</footer>
-      </blockquote>
-      <blockquote class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <p class="text-lg">“Microtomy troubleshooting helped at work <em>and</em> on practice exams.”</p>
-        <footer class="mt-3 text-sm text-slate-600">— HT, 2024</footer>
-      </blockquote>
-    </div>
-  </section>
-
-  <section id="pricing" class="py-12 md:py-16 bg-slate-50">
-    <div class="container">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl md:text-3xl font-bold">Pricing</h2>
-        <p class="text-slate-700 mt-2">Start free. Upgrade when you’re ready.</p>
-      </div>
-      <div class="grid md:grid-cols-3 gap-6">
-        <div class="p-6 rounded-2xl border border-slate-200 bg-white">
-          <h3 class="font-semibold text-lg">Free</h3>
-          <p class="text-slate-700 mt-1">Staining mini-module + Stain Cheat Sheet.</p>
-          <ul class="mt-3 space-y-2 text-slate-700">
-            <li>1 sample lesson (video)</li>
-            <li>Printable notes (PDF)</li>
-            <li>10-question quiz</li>
-          </ul>
-          <a href="#start" class="btn-secondary mt-4">Start Free</a>
-        </div>
-        <div class="p-6 rounded-2xl border-2" style="border-color:var(--brand); background:white; box-shadow:0 1px 2px rgba(15,76,129,0.05)">
-          <div class="mb-2 text-sm font-semibold" style="color:var(--brand)">Most Popular</div>
-          <h3 class="font-semibold text-lg">Monthly</h3>
-          <p class="text-slate-700 mt-1">Full library + live Q&amp;A + downloads.</p>
-          <ul class="mt-3 space-y-2 text-slate-700">
-            <li>All 5 modules</li>
-            <li>Quizzes &amp; progress tracking</li>
-            <li>Live weekly reviews</li>
-            <li>Community Q&amp;A</li>
-          </ul>
-          <a href="#contact" class="btn-primary mt-4">Join</a>
-        </div>
-        <div class="p-6 rounded-2xl border border-slate-200 bg-white">
-          <h3 class="font-semibold text-lg">One‑time Bootcamp</h3>
-          <p class="text-slate-700 mt-1">Lifetime access to the HTL Bootcamp.</p>
-          <ul class="mt-3 space-y-2 text-slate-700">
-            <li>All modules &amp; updates</li>
-            <li>Practice exams</li>
-            <li>Certificate of completion</li>
-          </ul>
-          <a href="#contact" class="btn-secondary mt-4">Get notified</a>
-        </div>
-      </div>
-      <p class="text-xs text-slate-600 mt-6">Payments &amp; member login will be wired later (Stripe + simple auth). For now, use the contact form to request early access.</p>
-    </div>
-  </section>
-
-  <section id="live" class="py-12 md:py-16">
-    <div class="container">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl md:text-3xl font-bold">Live Sessions</h2>
-        <p class="text-slate-700 mt-2">Weekly Q&amp;A and topic reviews—join live or watch the replay.</p>
-      </div>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div class="p-6 rounded-2xl border border-slate-200">
-          <h3 class="font-semibold">Staining Deep Dive</h3>
-          <p class="text-slate-700">Thu, 7:00–8:00 PM ET • Zoom</p>
-          <a href="#contact" class="inline-flex mt-3" style="color:var(--brand); font-weight:600">Register →</a>
-        </div>
-        <div class="p-6 rounded-2xl border border-slate-200">
-          <h3 class="font-semibold">Microtomy Troubleshooting</h3>
-          <p class="text-slate-700">Tue, 7:00–8:00 PM ET • Zoom</p>
-          <a href="#contact" class="inline-flex mt-3" style="color:var(--brand); font-weight:600">Register →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="start" class="py-12 md:py-16" style="background:#0B1220; color:white">
-    <div class="container">
-      <div class="grid md:grid-cols-2 gap-8 items-center">
-        <div>
-          <h2 class="text-2xl md:text-3xl font-bold">Get the free 10‑page Stain Cheat Sheet</h2>
-          <p class="mt-2" style="color:#cbd5e1">We’ll also send study tips and module updates. Unsubscribe anytime.</p>
-        </div>
-        <form id="newsletter" class="flex gap-3 mt-6 md:mt-0" onsubmit="return false">
-          <label class="sr-only" for="email">Email</label>
-          <input id="email" type="email" required placeholder="you@example.com" class="min-w-0 flex-1 rounded-xl border border-slate-300 px-4 py-3 text-slate-900" />
-          <button id="subscribeBtn" class="btn-primary">Get the PDF</button>
-        </form>
-      </div>
-      <p id="newsletterMsg" class="mt-3 text-sm" style="color:#86efac; display:none">Thanks! Check your inbox for the download link.</p>
-      <p class="mt-2 text-xs" style="color:#94a3b8">TODO: Wire this form to your provider (Formspree, MailerLite, ConvertKit, or a simple serverless function) to send the PDF automatically.</p>
-    </div>
-  </section>
-
-  <section id="faq" class="py-12 md:py-16">
-    <div class="container">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl md:text-3xl font-bold">FAQ</h2>
-      </div>
-      <div class="grid md:grid-cols-2 gap-6">
-        <details class="p-6 rounded-2xl border border-slate-200" open>
-          <summary class="font-semibold cursor-pointer">How is this aligned to the HT/HTL exam?</summary>
-          <p class="mt-2 text-slate-700">All modules follow the public ASCP BOC HT/HTL content categories (Fixation, Processing, Embedding/Microtomy, Staining, Lab Operations).</p>
-        </details>
-        <details class="p-6 rounded-2xl border border-slate-200">
-          <summary class="font-semibold cursor-pointer">What do I get free vs paid?</summary>
-          <p class="mt-2 text-slate-700">Free includes the Staining mini‑module, notes, and a 10‑question quiz. Paid unlocks the full library, live reviews, downloads, and community.</p>
-        </details>
-        <details class="p-6 rounded-2xl border border-slate-200">
-          <summary class="font-semibold cursor-pointer">Do you issue certificates?</summary>
-          <p class="mt-2 text-slate-700">Yes—upon completing the Bootcamp or passing the final practice exam with a qualifying score.</p>
-        </details>
-        <details class="p-6 rounded-2xl border border-slate-200">
-          <summary class="font-semibold cursor-pointer">Refund policy?</summary>
-          <p class="mt-2 text-slate-700">If you’re not satisfied in the first 7 days, contact support for a full refund—no questions asked.</p>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <section id="about" class="py-12 md:py-16 bg-slate-50">
-    <div class="container grid md:grid-cols-2 gap-8 items-start">
-      <div>
-        <h2 class="text-2xl md:text-3xl font-bold">About Free HTL Guide</h2>
-        <p class="mt-2 text-slate-700">We’re histology professionals helping HT/HTL candidates study smarter with exam‑aligned modules and practical, lab‑ready explanations.</p>
-        <ul class="mt-4 space-y-2 text-slate-700">
-          <li>Built by practicing histotechnologists &amp; pathologists</li>
-          <li>Blueprint‑aligned lesson plans</li>
-          <li>Real‑world troubleshooting tips</li>
-        </ul>
-      </div>
-      <div id="contact" class="p-6 rounded-2xl border border-slate-200 bg-white">
-        <h3 class="font-semibold text-lg">Contact</h3>
-        <p class="text-slate-700 mt-1">Questions or group access? Send us a note.</p>
-        <form id="contactForm" class="mt-4 grid gap-3" onsubmit="return false">
-          <div>
-            <label for="name" class="text-sm font-medium">Name</label>
-            <input id="name" type="text" required class="w-full mt-1 rounded-xl border border-slate-300 px-4 py-3" />
-          </div>
-          <div>
-            <label for="cemail" class="text-sm font-medium">Email</label>
-            <input id="cemail" type="email" required class="w-full mt-1 rounded-xl border border-slate-300 px-4 py-3" />
-          </div>
-          <div>
-            <label for="message" class="text-sm font-medium">Message</label>
-            <textarea id="message" rows="4" required class="w-full mt-1 rounded-xl border border-slate-300 px-4 py-3"></textarea>
-          </div>
-          <button id="sendBtn" class="btn-primary">Send</button>
-          <p id="contactMsg" class="text-sm" style="color:#059669; display:none">Message sent! We’ll get back to you within 24–48 hours.</p>
-          <p class="text-xs" style="color:#64748b">TODO: Point this form to your email service or Formspree endpoint.</p>
-        </form>
       </div>
     </div>
   </section>
@@ -344,40 +90,9 @@
     <div class="container flex flex-col md:flex-row gap-6 md:items-center md:justify-between">
       <p class="text-slate-600">© <span id="y"></span> Free HTL Guide</p>
       <p class="text-slate-600 text-sm">Not affiliated with ASCP BOC. Content aligned to public exam guidelines.</p>
-      <div class="flex items-center gap-4 text-sm">
-        <a href="#" class="hover:text-[color:var(--brand)]">Privacy</a>
-        <a href="#" class="hover:text-[color:var(--brand)]">Terms</a>
-      </div>
     </div>
   </footer>
 
-  <script>
-    const menuBtn = document.getElementById('menuBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    menuBtn && menuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
-    document.getElementById('y').textContent = new Date().getFullYear();
-
-    const newsletter = document.getElementById('newsletter');
-    const newsletterMsg = document.getElementById('newsletterMsg');
-    document.getElementById('subscribeBtn')?.addEventListener('click', async () => {
-      const email = document.getElementById('email').value.trim();
-      if (!email) return;
-      console.log('Captured email:', email);
-      newsletter.reset();
-      newsletterMsg.style.display = 'block';
-    });
-
-    const contactForm = document.getElementById('contactForm');
-    const contactMsg = document.getElementById('contactMsg');
-    document.getElementById('sendBtn')?.addEventListener('click', async () => {
-      const name = document.getElementById('name').value.trim();
-      const email = document.getElementById('cemail').value.trim();
-      const message = document.getElementById('message').value.trim();
-      if (!name || !email || !message) return;
-      console.log('Contact message:', { name, email, message });
-      contactForm.reset();
-      contactMsg.style.display = 'block';
-    });
-  </script>
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
 </body>
 </html>
