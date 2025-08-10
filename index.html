@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Free HTL Guide — Structured HT/HTL Exam Prep (Histology)</title>
+  <meta name="description" content="Pass the ASCP HT/HTL exam with video lessons, summaries, quizzes, and live Q&A. Modules aligned to Fixation, Processing, Embedding/Microtomy, Staining, and Laboratory Operations." />
+
+  <!-- Canonical & social -->
+  <link rel="canonical" href="https://withnati.github.io/free-htl-guide-site/">
+  <meta property="og:url" content="https://withnati.github.io/free-htl-guide-site/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Free HTL Guide — Structured HT/HTL Exam Prep">
+  <meta property="og:description" content="Video lessons, summaries, quizzes, and live Q&A—organized by the HT/HTL blueprint.">
+  <meta property="og:image" content="assets/microtome.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0F4C81" />
+
+  <!-- Preload hero for faster LCP -->
+  <link rel="preload" as="image" href="assets/microtome.jpg">
+
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root{ --brand:#0F4C81; --accent:#2BB673; --text:#1E1E1E; }
+    body{ font-feature-settings: 'liga' 1; }
+    .btn-primary{ display:inline-flex; align-items:center; justify-content:center; padding:.75rem 1.25rem; border-radius:.75rem; font-weight:600; background:var(--brand); color:#fff }
+    .btn-secondary{ display:inline-flex; align-items:center; justify-content:center; padding:.75rem 1.25rem; border-radius:.75rem; font-weight:600; border:1px solid #CBD5E1 }
+    .badge{ display:inline-flex; align-items:center; gap:.5rem; padding:.25rem .75rem; border-radius:999px; font-size:.9rem; font-weight:600; background:#F1F5F9; color:#334155; }
+    .container{ margin:0 auto; max-width:72rem; padding:0 1rem; }
+    .sr-only{ position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
+  </style>
+
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Free HTL Guide",
+    "url": "https://withnati.github.io/free-htl-guide-site/"
+  }
+  </script>
+</head>
+<body class="text-[color:var(--text)] antialiased">
+  <a href="#syllabus" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-white border px-3 py-2 rounded shadow">Skip to content</a>
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200">
+    <div class="container flex h-16 items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 font-bold text-xl text-[color:var(--brand)]">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm1.5 4a.75.75 0 0 0 0 1.5H15a.75.75 0 0 0 0-1.5H8.5zm0 4a.75.75 0 0 0 0 1.5H15a.75.75 0 0 0 0-1.5H8.5zm0 4a.75.75 0 0 0 0 1.5H13a.75.75 0 0 0 0-1.5H8.5z"/></svg>
+        Free HTL Guide
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="#syllabus" class="hover:text-[color:var(--brand)]">Syllabus</a>
+        <a href="#how" class="hover:text-[color:var(--brand)]">How it works</a>
+        <a href="#start" class="hover:text-[color:var(--brand)]">Get the PDF</a>
+      </nav>
+      <div class="hidden md:block">
+        <a href="modules/staining.html" class="btn-primary">Start Free</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden">
+    <div class="container grid md:grid-cols-2 gap-8 py-16 md:py-20 items-center">
+      <div class="space-y-6">
+        <span class="badge">HT/HTL Exam Prep</span>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Pass the ASCP HT/HTL exam with a structured, expert-led study plan</h1>
+        <p class="text-lg text-slate-700">Video lessons, topic summaries, quizzes, and live Q&amp;A—organized by the official content areas.</p>
+        <div class="flex flex-wrap gap-3">
+          <a href="modules/staining.html" class="btn-primary" aria-describedby="trust">Start Free</a>
+          <a href="#syllabus" class="btn-secondary">See Syllabus</a>
+        </div>
+        <p id="trust" class="text-sm text-slate-600">Aligned to ASCP BOC content areas: Fixation, Processing, Embedding/Microtomy, Staining, and Laboratory Operations. (Not affiliated with ASCP.)</p>
+      </div>
+      <div class="relative max-w-2xl mx-auto md:ml-auto">
+        <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-slate-50">
+          <img src="assets/microtome.jpg" alt="Rotary microtome cutting paraffin sections in a histology lab" class="block w-full h-auto" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust band -->
+  <section class="py-10 border-y border-slate-200 bg-white" aria-label="Trust features">
+    <div class="container grid md:grid-cols-3 gap-6 text-sm">
+      <div class="flex items-start gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8 10L4 12"/></svg>
+        <p><strong>Blueprint‑aligned</strong><br>Mapped to the ASCP HT/HTL content areas.</p>
+      </div>
+      <div class="flex items-start gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <p><strong>Efficient lessons</strong><br>Short videos + printable summaries + quizzes.</p>
+      </div>
+      <div class="flex items-start gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h18"/></svg>
+        <p><strong>Study plans</strong><br>Track weak areas and follow weekly plans.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section id="how" class="py-12 md:py-16 bg-slate-50">
+    <div class="container">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl md:text-3xl font-bold">How it works</h2>
+        <p class="text-slate-700 mt-2">Three steps to exam confidence.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="p-6 bg-white rounded-2xl border border-slate-200">
+          <h3 class="font-semibold">Pick a topic</h3>
+          <p class="text-slate-700 mt-1">Modules mapped to the HT/HTL blueprint.</p>
+        </div>
+        <div class="p-6 bg-white rounded-2xl border border-slate-200">
+          <h3 class="font-semibold">Watch &amp; practice</h3>
+          <p class="text-slate-700 mt-1">Short videos, notes, and quizzes.</p>
+        </div>
+        <div class="p-6 bg-white rounded-2xl border border-slate-200">
+          <h3 class="font-semibold">Track progress</h3>
+          <p class="text-slate-700 mt-1">Bookmark weak areas and review weekly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What you get -->
+  <section class="py-12 md:py-16">
+    <div class="container">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl md:text-3xl font-bold">What you’ll get</h2>
+      </div>
+      <div class="grid md:grid-cols-4 gap-6">
+        <div class="p-6 rounded-2xl border border-slate-200"><h3 class="font-semibold">5 core modules</h3><p class="text-slate-700 mt-1">Fixation, Processing, Embedding/Microtomy, Staining, Lab Operations.</p></div>
+        <div class="p-6 rounded-2xl border border-slate-200"><h3 class="font-semibold">Downloadables</h3><p class="text-slate-700 mt-1">Stain tables, fixative cheat sheets, troubleshooting guides.</p></div>
+        <div class="p-6 rounded-2xl border border-slate-200"><h3 class="font-semibold">Live reviews</h3><p class="text-slate-700 mt-1">Weekly Q&amp;A and timed practice blocks.</p></div>
+        <div class="p-6 rounded-2xl border border-slate-200"><h3 class="font-semibold">Community</h3><p class="text-slate-700 mt-1">Private Q&amp;A for tricky cases.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Syllabus -->
+  <section id="syllabus" class="py-12 md:py-16 bg-slate-50">
+    <div class="container">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl md:text-3xl font-bold">Modules (Syllabus)</h2>
+        <p class="text-slate-700 mt-2">Open a module to view lessons, notes, and quizzes.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <article class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+          <h3 class="font-semibold text-lg">Staining</h3>
+          <p class="text-slate-700 mt-1">H&amp;E, carbs, connective tissue, microorganisms, pigments/minerals, IHC basics.</p>
+          <a href="modules/staining.html" class="mt-auto inline-flex items-center gap-2 text-[color:var(--brand)] font-semibold">Open module →</a>
+        </article>
+        <article class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+          <h3 class="font-semibold text-lg">Fixation</h3>
+          <p class="text-slate-700 mt-1">Fixatives, parameters, artifacts, QC.</p>
+          <a href="modules/fixation.html" class="mt-auto inline-flex items-center gap-2 text-[color:var(--brand)] font-semibold">Open module →</a>
+        </article>
+        <article class="p-6 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col">
+          <h3 class="font-semibold text-lg">Embedding &amp; Microtomy</h3>
+          <p class="text-slate-700 mt-1">Paraffin &amp; frozen sectioning, troubleshooting.</p>
+          <span class="mt-auto text-slate-500">Coming soon</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social proof -->
+  <section class="py-12 md:py-16">
+    <div class="container grid md:grid-cols-2 gap-6">
+      <blockquote class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <p class="text-lg">“Concise and focused on what’s tested—I finally understand when to use which fixative.”</p>
+        <footer class="mt-3 text-sm text-slate-600">— HTL candidate, 2025</footer>
+      </blockquote>
+      <blockquote class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <p class="text-lg">“Microtomy troubleshooting helped at work <em>and</em> on practice exams.”</p>
+        <footer class="mt-3 text-sm text-slate-600">— HT, 2024</footer>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- Lead magnet -->
+  <section id="start" class="py-12 md:py-16 bg-slate-900 text-white">
+    <div class="container grid md:grid-cols-2 gap-8 items-center">
+      <div>
+        <h2 class="text-2xl md:text-3xl font-bold">Get the free 10‑page Stain Cheat Sheet</h2>
+        <p class="mt-2 text-slate-300">We’ll send study tips and module updates. Unsubscribe anytime.</p>
+      </div>
+      <!-- Replace YOUR_FORM_ID with your Formspree ID (see README) -->
+      <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="flex gap-3">
+        <label class="sr-only" for="email">Email</label>
+        <input id="email" name="email" type="email" required placeholder="you@example.com" class="min-w-0 flex-1 rounded-xl border border-slate-300 px-4 py-3 text-slate-900" />
+        <button class="inline-flex px-5 py-3 rounded-xl font-semibold bg-[color:var(--brand)]">Get the PDF</button>
+      </form>
+      <p class="col-span-2 text-xs text-slate-400">Tip: In Formspree, set an auto‑reply email with the PDF link to <code>assets/Stain_Cheat_Sheet.pdf</code>.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-10 border-t border-slate-200">
+    <div class="container flex flex-col md:flex-row gap-6 md:items-center md:justify-between">
+      <p class="text-slate-600">© <span id="y"></span> Free HTL Guide</p>
+      <p class="text-slate-600 text-sm">Not affiliated with ASCP BOC. Content aligned to public exam guidelines.</p>
+      <div class="flex items-center gap-4 text-sm">
+        <a href="#" class="hover:text-[color:var(--brand)]">Privacy</a>
+        <a href="#" class="hover:text-[color:var(--brand)]">Terms</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+</body>
+</html>
