@@ -183,27 +183,86 @@
     </div>
   </section>
 
-  <!-- About -->
-  <section id="about" class="py-12 md:py-16 bg-slate-50">
-    <div class="container grid md:grid-cols-3 gap-8 items-start">
-      <div class="md:col-span-2">
-        <h2 class="text-2xl md:text-3xl font-bold">About Free HTL Guide</h2>
-        <p class="mt-3 text-slate-700">Our mission is to make histology certification prep clear, structured, and affordable. The program focuses on what’s tested, with concise lessons and practical troubleshooting you can use at the bench.</p>
-        <div class="mt-6 grid md:grid-cols-2 gap-6">
-          <div class="p-5 rounded-2xl border border-slate-200 bg-white"><h3 class="font-semibold">Who it’s for</h3><p class="text-slate-700 mt-1">Students, new techs, and experienced HTs aiming for HTL. No prior prep course required.</p></div>
-          <div class="p-5 rounded-2xl border border-slate-200 bg-white"><h3 class="font-semibold">How we teach</h3><p class="text-slate-700 mt-1">Short videos, printable notes, step-by-step checklists, and quizzes. Weekly live reviews coming soon.</p></div>
+ <!-- About -->
+<section id="about" class="py-12 md:py-16 bg-slate-50">
+  <div class="container grid md:grid-cols-3 gap-8 items-start">
+    <div class="md:col-span-2">
+      <h2 class="text-2xl md:text-3xl font-bold">Meet your instructor</h2>
+      <div class="mt-5 flex items-start gap-5">
+        <!-- Avatar with initials (no image upload required) -->
+        <div class="h-20 w-20 rounded-full bg-[color:var(--brand)]/10 flex items-center justify-center text-[color:var(--brand)] font-extrabold text-2xl select-none">NM</div>
+        <div>
+          <p class="text-xl font-semibold">Natnale Mengesha, HTL(ASCP)CM</p>
+          <p class="text-slate-700">M.S., Pathology — Boston University</p>
+          <div class="mt-2 flex flex-wrap gap-2 text-sm">
+            <span class="px-2 py-1 rounded-full bg-white border border-slate-200">Histology &amp; Molecular pathology</span>
+            <span class="px-2 py-1 rounded-full bg-white border border-slate-200">Bench-tested troubleshooting</span>
+            <span class="px-2 py-1 rounded-full bg-white border border-slate-200">Exam-focused teaching</span>
+          </div>
         </div>
-        <p class="mt-6 text-slate-700 text-sm">Created by <strong>Natnale Mengesha, HTL(ASCP)CM</strong> — Master of Science in Pathology (Boston University). Bench experience across histology and molecular pathology, including fixation, microtomy, special stains, and quality control.</p>
       </div>
-      <aside class="md:col-span-1">
+
+      <p class="mt-5 text-slate-700">
+        I built Free HTL Guide to make certification prep clear, structured, and practical. My background spans routine histology
+        and molecular pathology at the bench—fixation and processing through embedding, microtomy, special stains, and quality control.
+        Lessons focus on what the HT/HTL exam actually tests, with checklists and troubleshooting tips you can apply at work.
+      </p>
+
+      <div class="mt-6 grid md:grid-cols-2 gap-6">
         <div class="p-5 rounded-2xl border border-slate-200 bg-white">
-          <h3 class="font-semibold">Contact</h3>
-          <p class="text-slate-700 mt-1">Questions or collaboration ideas? Reach out.</p>
-          <a href="#contact" class="mt-3 inline-flex px-4 py-2 rounded-lg bg-[color:var(--brand)] text-white font-semibold">Contact us</a>
+          <h3 class="font-semibold">Focus areas</h3>
+          <ul class="list-disc list-inside text-slate-700 mt-1">
+            <li>Fixation parameters &amp; tissue preservation</li>
+            <li>Embedding &amp; microtomy technique</li>
+            <li>Special stains &amp; QC (H&amp;E, PAS, GMS, AFB, trichrome, iron, retic)</li>
+            <li>Artifact recognition &amp; corrective actions</li>
+            <li>Exam strategy &amp; time management</li>
+          </ul>
         </div>
-      </aside>
+        <div class="p-5 rounded-2xl border border-slate-200 bg-white">
+          <h3 class="font-semibold">Teaching style</h3>
+          <p class="text-slate-700 mt-1">Short videos, printable one-pagers, and targeted quizzes. Weekly live reviews are coming—so you get feedback and structure.</p>
+          <div class="mt-3 flex gap-3">
+            <a href="modules/staining.html" class="btn-secondary">Preview a lesson</a>
+            <a href="#start" class="btn-primary">Get the PDF</a>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-6 text-slate-600 text-sm">Note: Workplaces are not named for privacy. Free HTL Guide is not affiliated with ASCP.</p>
     </div>
-  </section>
+
+    <aside class="md:col-span-1">
+      <div class="p-5 rounded-2xl border border-slate-200 bg-white">
+        <h3 class="font-semibold">Credentials</h3>
+        <ul class="mt-2 text-slate-700 text-sm space-y-1">
+          <li><strong>HTL(ASCP)CM</strong> — Histotechnologist</li>
+          <li><strong>M.S. Pathology</strong>, Boston University</li>
+          <li>Histology &amp; molecular pathology bench experience</li>
+        </ul>
+        <hr class="my-4 border-slate-200">
+        <h3 class="font-semibold">Contact</h3>
+        <p class="text-slate-700 text-sm mt-1">Questions or collaboration ideas?</p>
+        <a href="#contact" class="mt-3 inline-flex px-4 py-2 rounded-lg bg-[color:var(--brand)] text-white font-semibold">Send a message</a>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Person schema for SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Natnale Mengesha",
+    "jobTitle": "Histotechnologist / Educator",
+    "honorificSuffix": "HTL(ASCP)CM",
+    "alumniOf": { "@type": "CollegeOrUniversity", "name": "Boston University" },
+    "description": "Histology and molecular pathology background; creator of Free HTL Guide. Focus on fixation, microtomy, special stains, QC, and exam prep.",
+    "knowsAbout": ["Histology", "Microtomy", "Special stains", "Fixation", "Quality control", "Exam preparation"]
+  }
+  </script>
+</section>
+
 
   <!-- Social proof -->
   <section class="py-12 md:py-16">
