@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fixation — Core Module | Free HTL Guide</title>
+  <meta name="description" content="Fixation module: mechanisms, pre-analytic controls, core fixatives, protocols, troubleshooting, and a 15-question quiz." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{ --brand:#0F4C81; --accent:#2BB673; --text:#1E1E1E; }
+    .btn{ display:inline-flex; align-items:center; gap:.5rem; padding:.6rem 1rem; border-radius:.75rem; font-weight:600; }
+    .btn-brand{ background:var(--brand); color:#fff; }
+    .btn-ghost{ border:1px solid #CBD5E1; }
+    .pill{ padding:.15rem .5rem; border-radius:999px; background:#EEF2FF; color:#1E3A8A; font-size:.8rem; }
+    .toc a{ color:#334155; } .toc a:hover{ color:var(--brand); }
+    .callout{ border-left:4px solid var(--brand); background:#F8FAFC; }
+    table{ width:100%; border-collapse:collapse; } th, td{ border:1px solid #E2E8F0; padding:.5rem; vertical-align:top; }
+    th{ background:#F1F5F9; text-align:left; }
+    .correct{ background:#DEF7EC; } .incorrect{ background:#FEE2E2; }
+    code{ background:#F1F5F9; padding:.1rem .35rem; border-radius:.35rem; }
+  </style>
+</head>
+<body class="antialiased text-[color:var(--text)]">
+  <header class="border-b border-slate-200">
+    <div class="mx-auto max-w-6xl px-4 h-16 flex items-center justify-between">
+      <a href="../index.html" class="font-bold text-lg text-[color:var(--brand)]">Free HTL Guide</a>
+      <nav class="hidden md:flex gap-6 text-sm">
+        <a href="../index.html#syllabus" class="hover:text-[color:var(--brand)]">Syllabus</a>
+        <a href="../index.html#start" class="hover:text-[color:var(--brand)]">Get the PDF</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-6xl px-4 py-8 md:py-10 grid md:grid-cols-[220px,1fr] gap-8">
+    <aside class="toc hidden md:block sticky top-20 self-start">
+      <div class="p-4 rounded-xl border border-slate-200 bg-white">
+        <p class="text-xs font-semibold tracking-wide text-slate-500">ON THIS PAGE</p>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="#objectives">Learning objectives</a></li>
+          <li><a href="#primer">Why fixation matters</a></li>
+          <li><a href="#control">Pre-analytic controls</a></li>
+          <li><a href="#fixatives">Core fixatives</a></li>
+          <li><a href="#protocols">Bench protocols</a></li>
+          <li><a href="#tree">Troubleshooting tree</a></li>
+          <li><a href="#math">Math reference</a></li>
+          <li><a href="#recall">Rapid recall</a></li>
+          <li><a href="#quiz">Quiz (15)</a></li>
+          <li><a href="#downloads">Downloads</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <article id="content">
+      <nav class="text-sm text-slate-500 mb-4">
+        <a class="underline hover:text-[color:var(--brand)]" href="fixation.html">← Back to Fixation module</a>
+      </nav>
+
+      <h1 class="text-3xl md:text-4xl font-extrabold">Fixation — Core Module</h1>
+      <div class="mt-2 flex flex-wrap gap-2 text-sm">
+        <span class="pill">Fixation</span> <span class="pill">Core</span> <span class="pill">~35–45 min</span>
+      </div>
+
+      <section id="objectives" class="mt-6">
+        <h2 class="text-2xl font-bold">Learning objectives</h2>
+        <ol class="list-decimal list-inside text-slate-700 mt-2">
+          <li>Explain purpose of fixation; compare crosslinking vs coagulative mechanisms.</li>
+          <li>Select fixatives/conditions for tissues and downstream assays.</li>
+          <li>Control pre-analytic variables to minimize artifacts.</li>
+          <li>Recognize/correct fixation artifacts (formalin & mercury pigment, over/under-fixation, shrinkage/swelling).</li>
+          <li>Build/troubleshoot protocols and documentation aligned to lab standards.</li>
+        </ol>
+      </section>
+
+      <section id="primer" class="mt-8">
+        <h2 class="text-2xl font-bold">Why fixation matters</h2>
+        <p class="mt-2 text-slate-700"><strong>Goals:</strong> arrest autolysis/putrefaction; stabilize morphology; preserve targets for downstream methods; maintain structural relationships.</p>
+        <p class="mt-2 text-slate-700"><strong>Mechanisms:</strong> Crosslinking (formalin, glutaraldehyde) vs Coagulative (alcohols, acetone).</p>
+      </section>
+
+      <section id="control" class="mt-8">
+        <h2 class="text-2xl font-bold">Pre-analytic control points</h2>
+        <ul class="list-disc list-inside text-slate-700">
+          <li>Time to fixation: ideally <= 1 hour.</li>
+          <li>Specimen thickness: 3-5 mm in cassette.</li>
+          <li>Fixative volume: ~10:1 fixative:tissue.</li>
+          <li>Temperature: RT for formalin; cold alcohol/acetone for enzyme activity.</li>
+          <li>pH: NBF ~7.0-7.2.</li>
+          <li>Osmolality/tonicity: hypertonic -> shrinkage; hypotonic -> swelling.</li>
+          <li>Agitation/time: adequate dwell; schedules vary by tissue type.</li>
+        </ul>
+      </section>
+
+      <section id="fixatives" class="mt-8">
+        <h2 class="text-2xl font-bold">Core fixatives & when to use them</h2>
+        <div class="overflow-x-auto mt-3">
+          <table>
+            <thead>
+              <tr>
+                <th>Fixative</th><th>Type</th><th>Key components</th><th>Best use cases</th><th>Strengths</th><th>Caveats/Artifacts</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>10% NBF</strong></td><td>Crosslinking</td><td>~4% formaldehyde in phosphate buffer</td><td>Universal H&E, specials, many IHC</td><td>Gold standard morphology</td><td>Formalin pigment if acidic; epitope masking; slower than alcohols</td></tr>
+              <tr><td><strong>Glyoxal-based</strong></td><td>Crosslinking</td><td>Glyoxal +/- buffers</td><td>Routine histology, some IHC</td><td>Faster action, lower odor</td><td>Retrieval may differ for some epitopes</td></tr>
+              <tr><td><strong>Glutaraldehyde</strong></td><td>Crosslinking</td><td>2-3% in buffer</td><td>EM; enzyme histochemistry</td><td>Excellent ultrastructure</td><td>Over-hardening; autofluorescence; not for paraffin routine</td></tr>
+              <tr><td><strong>Alcohols/Acetone</strong></td><td>Coagulant</td><td>Ethanol/methanol; acetone</td><td>Cytology, frozen, enzyme histochemistry</td><td>Rapid, crisp nuclei</td><td>Shrinkage/brittle; poor trichrome</td></tr>
+              <tr><td><strong>Bouin's</strong></td><td>Compound</td><td>Picric acid + formaldehyde + acetic acid</td><td>Testis, GI mucosa; trichromes</td><td>Great connective tissue contrast</td><td>Yellow picrate; long wash; safety concerns</td></tr>
+              <tr><td><strong>Zinc-formalin</strong></td><td>Additive</td><td>Formalin + zinc salts</td><td>IHC retention in some markers</td><td>Improved nuclear detail</td><td>Zinc waste; precipitates if poorly mixed</td></tr>
+              <tr><td><strong>Mercury (legacy)</strong></td><td>Additive</td><td>Mercuric chloride +/- dichromate</td><td>Bone marrow/hematopoietic (historical)</td><td>Superb nuclear detail</td><td>Toxic; mercury pigment; phased out</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout p-4 rounded-xl mt-4">
+          <p class="text-slate-700"><strong>Pigments:</strong> Formalin pigment (acid hematin) - remove with alcoholic picric acid or 10% ammonium hydroxide in 70% ethanol. Mercury pigment - iodine then sodium thiosulfate.</p>
+          <p class="text-slate-700 mt-2"><strong>Decalcification:</strong> For IHC/ISH, EDTA preserves targets better than strong acids.</p>
+        </div>
+      </section>
+
+      <section id="protocols" class="mt-8">
+        <h2 class="text-2xl font-bold">Bench protocols (templates)</h2>
+        <div class="grid md:grid-cols-2 gap-4 mt-3">
+          <div class="p-4 rounded-xl border border-slate-200 bg-white">
+            <h3 class="font-semibold">Routine biopsies (paraffin)</h3>
+            <ol class="list-decimal list-inside text-slate-700 mt-1">
+              <li>Gross to 3-5 mm promptly.</li>
+              <li>Immerse in 10:1 NBF at RT; avoid overcrowding.</li>
+              <li>Min dwell: small biopsies ~6-8 h; larger tissue per SOP (often overnight).</li>
+              <li>Rinse per processor schedule -> dehydration.</li>
+            </ol>
+          </div>
+          <div class="p-4 rounded-2xl border border-slate-200 bg-white">
+            <h3 class="font-semibold">Cytology smears</h3>
+            <ul class="list-disc list-inside text-slate-700 mt-1">
+              <li>Immediate 95% ethanol immersion or spray fixative.</li>
+              <li>Maintain full coverage to prevent air-dry artifact.</li>
+            </ul>
+          </div>
+          <div class="p-4 rounded-2xl border border-slate-200 bg-white">
+            <h3 class="font-semibold">Frozen (enzyme histochemistry)</h3>
+            <ul class="list-disc list-inside text-slate-700 mt-1">
+              <li>Cold acetone (~-20 deg C) 30-60 s or alcohol as required.</li>
+              <li>Brief rinse; proceed to substrate incubation.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="tree" class="mt-8">
+        <h2 class="text-2xl font-bold">Troubleshooting decision tree</h2>
+        <div class="grid md:grid-cols-2 gap-4 mt-3">
+          <div class="p-4 rounded-xl border border-slate-200 bg-white">
+            <h3 class="font-semibold">A) Poor nuclear detail (H&E)</h3>
+            <p class="text-slate-700 mt-1">Check fixation time, NBF pH, processing schedule; consider over-fixation.</p>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-white">
+            <h3 class="font-semibold">B) Brown-black pigment</h3>
+            <p class="text-slate-700 mt-1">Suspect formalin pigment -> alcoholic picric acid or ammonium hydroxide in 70% alcohol; restain.</p>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-white">
+            <h3 class="font-semibold">C) Brittle tissue/microchatter</h3>
+            <p class="text-slate-700 mt-1">Over-fixation/heat; soften block (ice/glycerol), trim thinner, adjust angle.</p>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-white">
+            <h3 class="font-semibold">D) IHC high background / false negatives</h3>
+            <p class="text-slate-700 mt-1">Verify retrieval, blocks, Ab concentration; review fixation duration; controls.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="math" class="mt-8">
+        <h2 class="text-2xl font-bold">Math you must know</h2>
+        <p class="text-slate-700 mt-2"><code>C1V1 = C2V2</code>. Example: 1 L of ~4% formaldehyde from 37% stock -> V1 = (4/37)*1000 ~ 108 mL.</p>
+      </section>
+
+      <section id="recall" class="mt-8">
+        <h2 class="text-2xl font-bold">Rapid recall</h2>
+        <ul class="list-disc list-inside text-slate-700">
+          <li>~10:1 fixative:tissue; 3-5 mm thickness.</li>
+          <li>NBF pH ~7.0-7.2.</li>
+          <li>Crosslinking (formalin) vs coagulative (alcohol).</li>
+          <li>Formalin pigment removal: alcoholic picric acid or ammonium hydroxide in 70% ethanol.</li>
+          <li>Mercury pigment removal: iodine -> sodium thiosulfate.</li>
+          <li>For IHC/ISH with bone: prefer EDTA decalc.</li>
+        </ul>
+      </section>
+
+      <section id="quiz" class="mt-10">
+        <h2 class="text-2xl font-bold">Practice quiz (15)</h2>
+        <form class="mt-3 grid gap-5 max-w-3xl" id="quizForm"></form>
+        <div id="quizResult" class="hidden mt-4 p-4 rounded-xl border border-slate-200"></div>
+      </section>
+
+      <section id="downloads" class="mt-10">
+        <h2 class="text-2xl font-bold">Assignments & downloads</h2>
+        <ul class="list-disc list-inside mt-2 text-slate-700">
+          <li><a class="underline text-[color:var(--brand)]" href="../assets/Fixation_Quick_Card.pdf">Fixation quick-card (PDF)</a></li>
+          <li><a class="underline text-[color:var(--brand)]" href="../assets/Pigment_Removal_OnePager.pdf">Pigment removal one-pager (PDF)</a></li>
+          <li><a class="underline text-[color:var(--brand)]" href="../assets/NBF_Prep_Worksheet.pdf">NBF prep worksheet (PDF)</a></li>
+          <li><a class="underline text-[color:var(--brand)]" href="../assets/IHC_Validation_Checklist.pdf">IHC/ISH validation checklist (PDF)</a></li>
+        </ul>
+      </section>
+
+      <nav class="mt-12 flex items-center justify-between">
+        <a href="fixation.html" class="btn btn-ghost">← Back to module</a>
+        <span class="text-sm text-slate-500">Lesson ID: fixation-core</span>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="py-10 border-t border-slate-200">
+    <div class="mx-auto max-w-6xl px-4 text-slate-600">© <span id="y"></span> Free HTL Guide</div>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    const QUESTIONS = [
+      ["The primary chemical action of formaldehyde is:", ["Coagulation of proteins","Oxidation of lipids","Crosslinking of proteins via methylene bridges","Hydrolysis of nucleic acids"], "C"],
+      ["Most critical pre-analytic control for small GI biopsies:", ["High paraffin temperature","Minimized time to fixation","Prolonged water bath float time","Use of zinc salts"], "B"],
+      ["Brown-black granular pigment after long acidic formalin storage is:", ["Melanin","Formalin pigment (acid hematin)","Hemosiderin","Carbon"], "B"],
+      ["Best removal for mercury pigment:", ["Saturated alcoholic lithium carbonate","Potassium permanganate","Iodine followed by sodium thiosulfate","Hydrogen peroxide"], "C"],
+      ["Fixative class causing shrinkage but rapid nuclear preservation:", ["Dialdehydes","Alcohols","Aldehydes","Osmium tetroxide"], "B"],
+      ["Best decalcification for IHC-heavy bone marrow:", ["Strong HCl","Formic acid with heat","EDTA at room temperature","Trichloroacetic acid"], "C"],
+      ["Switching from NBF to glyoxal-based: first step for IHC quality:", ["Increase antibody concentration twofold","Run parallel validation with known controls","Shorten retrieval by half","Skip on-slide controls"], "B"],
+      ["Bouin's solution improves:", ["Myelin sheaths in CNS","Collagen/CT architecture for trichromes","Bacterial walls in Gram","Elastin fibers in VVG"], "B"],
+      ["Recommended fixative:tissue volume ratio:", ["2:1","5:1","10:1","20:1"], "C"],
+      ["Over-retrieval in IHC after long fixation causes:", ["Enhanced specific signal only","Loss of morphology/high background","No change","Stronger nuclear counterstain"], "B"],
+      ["To minimize brittle sections from over-fixed tissue:", ["Raise water bath to 55-60 C","Soften block (ice/glycerol), trim thinner, adjust angle","Prolong xylene clearing","Use a coarser blade"], "B"],
+      ["Typical pH of standard NBF:", ["5.0-5.5","7.0-7.2","8.5-9.0","10.5-11.0"], "B"],
+      ["Pre-analytic factor that most affects ISH integrity:", ["Float time at 45 C","Cold ischemia and fixation duration","Type of coverslip mountant","Block thickness only"], "B"],
+      ["Pap smear with air-dry artifact reflects failure in:", ["Buffer pH control","Alcohol concentration","Immediate fixation","Proper dehydration"], "C"],
+      ["Preparing 1 L of 10% NBF (~4% formaldehyde) from 37% stock requires:", ["27 mL","54 mL","108 mL","250 mL"], "C"]
+    ];
+
+    const EXPL = [
+      "Formaldehyde forms methylene bridges (crosslinks).",
+      "Cold ischemia time is critical; minimize time to fixation.",
+      "Classic acid hematin from acidic formalin/long fixation.",
+      "Iodine -> sodium thiosulfate removes mercury pigment.",
+      "Coagulants (alcohols) cause shrinkage but act fast.",
+      "EDTA best preserves antigen/nucleic acids for IHC/ISH.",
+      "Parallel validation maintains quality when changing pre-analytics.",
+      "Bouin's enhances connective tissue contrast for trichromes.",
+      "Rule of thumb is ~10:1.",
+      "Too much retrieval damages morphology and increases background.",
+      "Softening and mechanical adjustments reduce chatter.",
+      "NBF is ~neutral pH.",
+      "ISH is sensitive to cold ischemia and fixation duration.",
+      "Pap smears require immediate fixation to prevent air-drying.",
+      "C1V1=C2V2 -> (4/37)*1000 ~ 108 mL."
+    ];
+
+    const form = document.getElementById('quizForm');
+    QUESTIONS.forEach((q, idx) => {
+      const [stem, options, correct] = q;
+      const num = idx + 1;
+      const block = document.createElement('div');
+      block.innerHTML = "<p class='font-medium'>"+num+") "+stem+"</p>" +
+        options.map((opt, i) => {
+          const letter = String.fromCharCode(65+i);
+          return "<label class='block mt-1'><input type='radio' name='q"+num+"' value='"+letter+"'> "+opt+"</label>";
+        }).join("");
+      form.appendChild(block);
+    });
+
+    function grade(){
+      let score=0, total=QUESTIONS.length;
+      const blocks = form.querySelectorAll('div');
+      blocks.forEach((block, i) => {
+        const correct = QUESTIONS[i][2];
+        const chosen = block.querySelector("input:checked");
+        block.classList.remove('correct','incorrect');
+        if(chosen && chosen.value===correct){ score++; block.classList.add('correct'); }
+        else { block.classList.add('incorrect'); }
+      });
+      const res = document.getElementById('quizResult');
+      res.classList.remove('hidden');
+      res.innerHTML = "<strong>Score: "+score+"/"+total+"</strong><div class='mt-2 text-sm text-slate-700'>"+
+        EXPL.map((e, i) => "Q"+(i+1)+": "+e).join("<br>")+"</div>";
+      try { localStorage.setItem('htl_completed_fixation_core', 'true'); } catch(e){}
+      window.scrollTo({ top: res.offsetTop - 80, behavior: 'smooth' });
+    }
+
+    const btn = document.createElement('button');
+    btn.type = "button";
+    btn.className = "btn btn-brand w-fit";
+    btn.textContent = "Submit";
+    btn.onclick = grade;
+    form.appendChild(btn);
+  </script>
+</body>
+</html>
