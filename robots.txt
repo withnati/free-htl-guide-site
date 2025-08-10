@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://withnati.github.io/free-htl-guide-site/sitemap.xml

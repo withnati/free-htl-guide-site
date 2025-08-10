@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Staining Module — Free HTL Guide</title>
+  <meta name="description" content="Staining module preview: overview, notes PDF, and a short practice quiz." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>:root{--brand:#0F4C81;--text:#1E1E1E}</style>
+</head>
+<body class="antialiased text-[color:var(--text)]">
+  <header class="border-b border-slate-200">
+    <div class="mx-auto max-w-5xl px-4 h-16 flex items-center justify-between">
+      <a href="../index.html" class="font-bold text-lg text-[color:var(--brand)]">Free HTL Guide</a>
+      <nav class="text-sm hidden md:flex gap-6">
+        <a href="../index.html#syllabus" class="hover:text-[color:var(--brand)]">Syllabus</a>
+        <a href="../index.html#start" class="hover:text-[color:var(--brand)]">Get the PDF</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-5xl px-4 py-10">
+    <h1 class="text-3xl md:text-4xl font-extrabold">Staining — Free Preview</h1>
+    <p class="mt-2 text-slate-700">H&E overview, special stain families, and QC basics.</p>
+
+    <section class="mt-8 grid md:grid-cols-3 gap-8">
+      <div class="md:col-span-2">
+        <div class="rounded-2xl border border-slate-200 p-5 bg-slate-50">
+          <h2 class="font-semibold text-lg">Overview</h2>
+          <ul class="list-disc list-inside text-slate-700 mt-2">
+            <li>Hematoxylin (basophilic nuclei) and eosin (acidophilic cytoplasm/extracellular matrix).</li>
+            <li>Special stains: carbohydrates (PAS), microorganisms (GMS), connective tissue (Masson's), pigments/minerals (Prussian blue), AFB.</li>
+            <li>QC: control tissues, over/understain detection, corrective actions.</li>
+          </ul>
+        </div>
+        <div class="mt-6">
+          <a href="../assets/Stain_Cheat_Sheet.pdf" class="inline-flex items-center gap-2 font-semibold text-[color:var(--brand)]">Download notes (PDF) →</a>
+        </div>
+      </div>
+      <aside class="md:col-span-1">
+        <div class="p-5 rounded-2xl border border-slate-200">
+          <h3 class="font-semibold text-lg">Want the full module?</h3>
+          <p class="text-slate-700 mt-1">All lessons, quizzes, and live reviews.</p>
+          <a href="../index.html#start" class="mt-3 inline-flex px-4 py-2 rounded-lg bg-[color:var(--brand)] text-white font-semibold">Join the list</a>
+        </div>
+      </aside>
+    </section>
+
+    <section class="mt-10">
+      <h2 class="text-2xl font-bold">Quick practice quiz (5 questions)</h2>
+      <form id="quiz" class="mt-4 grid gap-5 max-w-3xl">
+        <div><p class="font-medium">1) Hematoxylin primarily stains which structures?</p>
+          <label class="block mt-1"><input type="radio" name="q1" value="A"> Cytoplasm</label>
+          <label class="block"><input type="radio" name="q1" value="B"> Nuclei</label>
+          <label class="block"><input type="radio" name="q1" value="C"> Collagen</label>
+        </div>
+        <div><p class="font-medium">2) The counterstain in H&E is:</p>
+          <label class="block mt-1"><input type="radio" name="q2" value="A"> Eosin</label>
+          <label class="block"><input type="radio" name="q2" value="B"> PAS</label>
+          <label class="block"><input type="radio" name="q2" value="C"> GMS</label>
+        </div>
+        <div><p class="font-medium">3) Which stain best demonstrates fungi in tissue sections?</p>
+          <label class="block mt-1"><input type="radio" name="q3" value="A"> GMS</label>
+          <label class="block"><input type="radio" name="q3" value="B"> Gram</label>
+          <label class="block"><input type="radio" name="q3" value="C"> Trichrome</label>
+        </div>
+        <div><p class="font-medium">4) A blue reaction product for iron deposits is seen with:</p>
+          <label class="block mt-1"><input type="radio" name="q4" value="A"> Masson's trichrome</label>
+          <label class="block"><input type="radio" name="q4" value="B"> Prussian blue</label>
+          <label class="block"><input type="radio" name="q4" value="C"> Ziehl–Neelsen</label>
+        </div>
+        <div><p class="font-medium">5) Over-differentiation in H&E most likely results in:</p>
+          <label class="block mt-1"><input type="radio" name="q5" value="A"> Pale nuclei</label>
+          <label class="block"><input type="radio" name="q5" value="B"> Over-blueing</label>
+          <label class="block"><input type="radio" name="q5" value="C"> Cytoplasm too red</label>
+        </div>
+        <button class="mt-2 inline-flex px-4 py-2 rounded-lg bg-[color:var(--brand)] text-white font-semibold" type="button" onclick="grade()">Submit</button>
+      </form>
+      <div id="result" class="mt-4 hidden p-4 rounded-xl border border-slate-200"></div>
+    </section>
+  </main>
+
+  <footer class="py-10 border-t border-slate-200"><div class="mx-auto max-w-5xl px-4 text-slate-600">© <span id="y"></span> Free HTL Guide</div></footer>
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+    function grade(){{const key={{q1:'B',q2:'A',q3:'A',q4:'B',q5:'A'}};let s=0,t=5;for(const k in key){{const el=document.querySelector(`input[name="${{k}}"]:checked`);if(el&&el.value===key[k])s++;}}const r=document.getElementById('result');r.classList.remove('hidden');r.innerHTML=`<strong>Score: ${{s}}/${{t}}</strong><div class='mt-2 text-sm text-slate-700'>Answers: 1) Nuclei  2) Eosin  3) GMS  4) Prussian blue  5) Pale nuclei</div>`;window.scrollTo({{top:r.offsetTop-80,behavior:'smooth'}});}}
+  </script>
+</body>
+</html>
