@@ -3,43 +3,413 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Embedding & Microtomy — Free HTL Guide</title>
-  <meta name="description" content="Preview for Embedding & Microtomy: paraffin and frozen sectioning basics, troubleshooting, and QC." />
+  <title>Processing - Core Module | Free HTL Guide</title>
+  <meta name="description" content="Dehydration, clearing, paraffin infiltration: schedules, reagent management, troubleshooting, micro-checks, and exam quiz." />
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>:root{--brand:#0F4C81;--text:#1E1E1E}</style>
+  <style>
+    :root{ --brand:#0F4C81; --accent:#2BB673; --text:#1E1E1E; }
+    .btn{ display:inline-flex; align-items:center; gap:.5rem; padding:.6rem 1rem; border-radius:.75rem; font-weight:600; }
+    .btn-brand{ background:var(--brand); color:#fff; } .btn-ghost{ border:1px solid #CBD5E1; }
+    .pill{ padding:.15rem .5rem; border-radius:999px; background:#EEF2FF; color:#1E3A8A; font-size:.8rem; }
+    .toc a{ color:#334155; } .toc a.active{ color:var(--brand); font-weight:600; }
+    .correct{ background:#DEF7EC; } .incorrect{ background:#FEE2E2; }
+    code{ background:#F1F5F9; padding:.1rem .35rem; border-radius:.35rem; }
+    @media print{ header,.toc,nav,footer,.btn,#progress{ display:none !important; } main{ max-width: 100% !important; } section{ break-inside: avoid; page-break-inside: avoid; } }
+    #progress{ position:sticky; top:0; left:0; height:4px; z-index:40; background:linear-gradient(to right,var(--brand) var(--pct,0%),#E5E7EB 0); }
+  </style>
 </head>
 <body class="antialiased text-[color:var(--text)]">
-  <header class="border-b border-slate-200"><div class="mx-auto max-w-5xl px-4 h-16 flex items-center justify-between">
-    <a href="../index.html" class="font-bold text-lg text-[color:var(--brand)]">Free HTL Guide</a>
-    <nav class="text-sm hidden md:flex gap-6">
-      <a href="../index.html#syllabus" class="hover:text-[color:var(--brand)]">Syllabus</a>
-      <a href="../index.html#start" class="hover:text-[color:var(--brand)]">Get the PDF</a>
-    </nav></div></header>
+  <div id="progress" aria-hidden="true"></div>
+  <header class="border-b border-slate-200 bg-white/90 backdrop-blur">
+    <div class="mx-auto max-w-6xl px-4 h-16 flex items-center justify-between">
+      <a href="../index.html" class="font-bold text-lg text-[color:var(--brand)]">Free HTL Guide</a>
+      <nav class="hidden md:flex gap-6 text-sm">
+        <a href="../index.html#syllabus" class="hover:text-[color:var(--brand)]">Syllabus</a>
+        <a href="../index.html#start" class="hover:text-[color:var(--brand)]">Get the PDF</a>
+      </nav>
+    </div>
+  </header>
 
-  <main class="mx-auto max-w-5xl px-4 py-10">
-    <h1 class="text-3xl md:text-4xl font-extrabold">Embedding &amp; Microtomy — Free Preview</h1>
-    <p class="mt-2 text-slate-700">Paraffin embedding, microtome setup, ribboning, common artifacts, and troubleshooting.</p>
-
-    <section class="mt-8 grid md:grid-cols-3 gap-8">
-      <div class="md:col-span-2">
-        <div class="rounded-2xl border border-slate-200 p-5 bg-slate-50">
-          <h2 class="font-semibold text-lg">Overview</h2>
-          <ul class="list-disc list-inside text-slate-700 mt-2">
-            <li>Optimal orientation and support of tissues for cutting.</li>
-            <li>Knife angle, clearance, temperature, and humidity for smooth ribbons.</li>
-            <li>Artifacts: chatter, compression, knife marks; prevention and fixes.</li>
-          </ul>
-        </div>
+  <main class="mx-auto max-w-6xl px-4 py-6 md:py-8 grid md:grid-cols-[220px,1fr] gap-8">
+    <aside class="toc hidden md:block sticky top-24 self-start">
+      <div class="p-4 rounded-xl border border-slate-200 bg-white">
+        <p class="text-xs font-semibold tracking-wide text-slate-500">ON THIS PAGE</p>
+        <ul class="mt-3 space-y-2 text-sm">
+          <li><a href="#top">Top</a></li>
+          <li><a href="#objectives">Learning objectives</a></li>
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#reagents">Reagents</a></li>
+          <li><a href="#schedules">Processing schedules</a></li>
+          <li><a href="#troubleshooting">Troubleshooting</a></li>
+          <li><a href="#quiz">Quiz</a></li>
+          <li><a href="#downloads">Downloads</a></li>
+        </ul>
       </div>
-      <aside class="md:col-span-1">
-        <div class="p-5 rounded-2xl border border-slate-200"><h3 class="font-semibold text-lg">Next steps</h3>
-          <p class="text-slate-700 mt-1">Unlock full lessons, quizzes, and live practice sessions.</p>
-          <a href="../index.html#start" class="mt-3 inline-flex px-4 py-2 rounded-lg bg-[color:var(--brand)] text-white font-semibold">Join the list</a></div>
-      </aside>
-    </section>
+    </aside>
+
+    <article id="content">
+      <section id="top" class="flex items-center justify-between gap-3">
+        <div>
+          <h1 class="text-3xl md:text-4xl font-extrabold">Processing - Core Module</h1>
+          <div class="mt-2 flex flex-wrap items-center gap-2 text-sm">
+            <span class="pill">Processing</span> <span class="pill">Core</span> <span class="pill">~35-45 min</span>
+            <span id="bestChip" class="hidden pill bg-green-100 text-green-700">Completed - <span id="bestScore">0%</span></span>
+          </div>
+        </div>
+        <button id="done" class="btn btn-ghost">Mark complete</button>
+      </section>
+
+      <nav class="mt-3 text-sm text-slate-500 flex items-center justify-between">
+        <a class="underline hover:text-[color:var(--brand)]" href="fixation-core-v2.html">← Prev: Fixation</a>
+        <span class="text-slate-400">Next: Decalcification (coming)</span>
+      </nav>
+
+      <section id="objectives" class="mt-6">
+        <h2 class="text-2xl font-bold">Learning objectives</h2>
+        <ol class="list-decimal list-inside text-slate-700 mt-2">
+          <li>Explain the purpose of dehydration, clearing, and paraffin infiltration.</li>
+          <li>Choose appropriate schedules for biopsy vs routine vs fatty/dense tissues.</li>
+          <li>Manage reagents and rotation to prevent carryover and exhaustion.</li>
+          <li>Recognize and fix common artifacts (brittle, spongy, opaque paraffin, floaters).</li>
+          <li>Document changes with a basic rotation log and QC checks.</li>
+        </ol>
+      </section>
+
+      <section id="overview" class="mt-8">
+        <h2 class="text-2xl font-bold">Overview</h2>
+        <p class="mt-2 text-slate-700">Processing prepares fixed tissue for microtomy by removing free water, replacing it with an intermediate solvent, and then infiltrating with molten paraffin. Successful outcomes depend on adequate fixation, appropriate tissue thickness (3-5 mm), balanced schedules, and clean reagents.</p>
+        <div class="p-4 rounded-xl mt-4" style="border-left:4px solid var(--brand); background:#F8FAFC;">
+          <p class="text-slate-700"><strong>Order:</strong> 1) Dehydrate -> 2) Clear -> 3) Infiltrate. <strong>Do not skip grades</strong> when water content is high; prevent water carryover into clearant and paraffin.</p>
+        </div>
+
+        <!-- Micro-check 1 -->
+        <div class="mt-5 p-4 rounded-xl border border-slate-200 bg-white" id="mc1">
+          <h3 class="font-semibold">Micro-check: Basics</h3>
+          <fieldset class="mt-2">
+            <legend class="font-medium">1) Correct order is:</legend>
+            <label class="block mt-1"><input type="radio" name="mc1_q1" value="A"> Clear -> Dehydrate -> Infiltrate</label>
+            <label class="block"><input type="radio" name="mc1_q1" value="B"> Dehydrate -> Clear -> Infiltrate</label>
+            <label class="block"><input type="radio" name="mc1_q1" value="C"> Infiltrate -> Dehydrate -> Clear</label>
+          </fieldset>
+          <fieldset class="mt-3">
+            <legend class="font-medium">2) Over-dehydration most often causes:</legend>
+            <label class="block mt-1"><input type="radio" name="mc1_q2" value="A"> Soft/spongy blocks</label>
+            <label class="block"><input type="radio" name="mc1_q2" value="B"> Brittle/shrunken tissues</label>
+            <label class="block"><input type="radio" name="mc1_q2" value="C"> Water carryover into paraffin</label>
+          </fieldset>
+          <button type="button" class="btn btn-ghost mt-3" onclick="gradeMC('mc1', {mc1_q1:'B', mc1_q2:'B'})">Check answers</button>
+          <div class="text-sm text-slate-700 mt-2 hidden" id="mc1_res" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section id="reagents" class="mt-8">
+        <h2 class="text-2xl font-bold">Reagents</h2>
+        <h3 class="mt-3 font-semibold">Dehydration</h3>
+        <ul class="list-disc list-inside text-slate-700">
+          <li>Graded alcohols (70 -> 80 -> 95 -> 100) remove free water gradually.</li>
+          <li>Use two 100% alcohol stations to reduce water carryover.</li>
+          <li>Isopropanol is an acceptable substitute; methanol less common in surgical histology.</li>
+        </ul>
+        <h3 class="mt-4 font-semibold">Clearing</h3>
+        <ul class="list-disc list-inside text-slate-700">
+          <li>Xylene: rapid and effective; monitor exposure and disposal.</li>
+          <li>Substitutes (aliphatic/limonene): lower odor; may require longer times; check paraffin compatibility.</li>
+          <li>At least two clearant baths recommended for routine loads.</li>
+        </ul>
+        <h3 class="mt-4 font-semibold">Paraffin infiltration</h3>
+        <ul class="list-disc list-inside text-slate-700">
+          <li>Typical melting point 56-60 deg C; avoid overheating to prevent hard/brittle tissue and antigen loss.</li>
+          <li>Use vacuum/pressure to enhance infiltration for dense/fatty tissues; avoid cassette overcrowding.</li>
+          <li>Refresh paraffin regularly; look for cloudiness (water) or contamination (floaters).</li>
+        </ul>
+      </section>
+
+      <section id="schedules" class="mt-8">
+        <h2 class="text-2xl font-bold">Processing schedules (examples)</h2>
+        <div class="grid md:grid-cols-2 gap-4 mt-3">
+          <div class="p-4 rounded-xl border border-slate-200 bg-white">
+            <h3 class="font-semibold">Biopsy - fast</h3>
+            <ol class="list-decimal list-inside text-slate-700 mt-1">
+              <li>70%: 10 min -> 95%: 10 min -> 100%: 10 min x2</li>
+              <li>Xylene (or substitute): 10 min x2</li>
+              <li>Paraffin: 15 min x2 (vacuum last)</li>
+            </ol>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-white">
+            <h3 class="font-semibold">Routine surgical</h3>
+            <ol class="list-decimal list-inside text-slate-700 mt-1">
+              <li>70%: 30-60 min -> 80%: 30-60 min -> 95%: 60 min</li>
+              <li>100%: 60 min x2</li>
+              <li>Xylene: 45 min x2</li>
+              <li>Paraffin: 60 min x2</li>
+            </ol>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-white">
+            <h3 class="font-semibold">Fatty tissue</h3>
+            <ul class="list-disc list-inside text-slate-700 mt-1">
+              <li>Add an extra clearant step; extend clearant/paraffin times by 25-50%.</li>
+              <li>Ensure thin grossing; consider stronger clearant; use vacuum.</li>
+            </ul>
+          </div>
+          <div class="p-4 rounded-xl border border-slate-200 bg-white">
+            <h3 class="font-semibold">Dense/calcified*</h3>
+            <ul class="list-disc list-inside text-slate-700 mt-1">
+              <li>Longer dehydration and clearing; ensure adequate fixation.</li>
+              <li>*If decalcified: prefer EDTA when IHC/ISH downstream is planned.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Micro-check 2 -->
+        <div class="mt-5 p-4 rounded-xl border border-slate-200 bg-white" id="mc2">
+          <h3 class="font-semibold">Micro-check: Schedules</h3>
+          <fieldset class="mt-2">
+            <legend class="font-medium">1) A second 100% alcohol station mainly prevents:</legend>
+            <label class="block mt-1"><input type="radio" name="mc2_q1" value="A"> Over-dehydration</label>
+            <label class="block"><input type="radio" name="mc2_q1" value="B"> Water carryover into clearant</label>
+            <label class="block"><input type="radio" name="mc2_q1" value="C"> Brittleness in paraffin</label>
+          </fieldset>
+          <fieldset class="mt-3">
+            <legend class="font-medium">2) For fatty tissue, you should:</legend>
+            <label class="block mt-1"><input type="radio" name="mc2_q2" value="A"> Shorten xylene steps</label>
+            <label class="block"><input type="radio" name="mc2_q2" value="B"> Add/extend clearant and paraffin steps</label>
+            <label class="block"><input type="radio" name="mc2_q2" value="C"> Switch to methanol only</label>
+          </fieldset>
+          <button type="button" class="btn btn-ghost mt-3" onclick="gradeMC('mc2', {mc2_q1:'B', mc2_q2:'B'})">Check answers</button>
+          <div class="text-sm text-slate-700 mt-2 hidden" id="mc2_res" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section id="troubleshooting" class="mt-8">
+        <h2 class="text-2xl font-bold">Troubleshooting</h2>
+        <div class="grid md:grid-cols-2 gap-4 mt-3">
+          <details class="p-4 rounded-xl border border-slate-200 bg-white">
+            <summary class="font-semibold cursor-pointer">Soft/spongy blocks</summary>
+            <p class="text-slate-700 mt-2">Likely under-dehydration or clearing. Repeat from 95% alcohol; extend clearant; reinfiltrate paraffin with vacuum.</p>
+          </details>
+          <details class="p-4 rounded-xl border border-slate-200 bg-white">
+            <summary class="font-semibold cursor-pointer">Brittle/shrunken tissue</summary>
+            <p class="text-slate-700 mt-2">Over-dehydration or high temp. Shorten times; verify processor temperature; consider isopropanol in place of long 100% ethanol steps.</p>
+          </details>
+          <details class="p-4 rounded-xl border border-slate-200 bg-white">
+            <summary class="font-semibold cursor-pointer">Opaque paraffin around tissue</summary>
+            <p class="text-slate-700 mt-2">Water carryover. Check 100% stations and reagent quality; refresh; ensure adequate times in clearant.</p>
+          </details>
+          <details class="p-4 rounded-xl border border-slate-200 bg-white">
+            <summary class="font-semibold cursor-pointer">Floaters/contamination</summary>
+            <p class="text-slate-700 mt-2">Dirty reagents or baskets. Clean hardware, filter/replace reagents, document rotation in log.</p>
+          </details>
+        </div>
+      </section>
+
+      <section id="quiz" class="mt-10">
+        <h2 class="text-2xl font-bold">Practice quiz (15)</h2>
+        <form class="mt-3 grid gap-5 max-w-3xl" id="quizForm" aria-describedby="quizDesc">
+          <p id="quizDesc" class="sr-only">Select the best option for each question. You can submit and retry.</p>
+        </form>
+        <div class="mt-3 flex gap-3">
+          <button type="button" class="btn btn-brand" onclick="grade()">Submit</button>
+          <button type="button" class="btn btn-ghost" onclick="retry()">Retry</button>
+        </div>
+        <div id="quizResult" class="hidden mt-4 p-4 rounded-xl border border-slate-200" aria-live="polite"></div>
+      </section>
+
+      <section id="downloads" class="mt-10">
+        <h2 class="text-2xl font-bold">Downloads</h2>
+        <div class="mt-3 flex flex-wrap gap-3">
+          <a class="btn btn-ghost" href="../assets/Processing_Quick_Card.pdf">Quick-card (PDF)</a>
+          <a class="btn btn-ghost" href="../assets/Processing_Schedules.pdf">Schedules (PDF)</a>
+          <a class="btn btn-ghost" href="../assets/Processing_Troubleshooting.pdf">Troubleshooting (PDF)</a>
+          <a class="btn btn-ghost" href="../assets/Reagent_Rotation_Log.pdf">Rotation log (PDF)</a>
+          <a class="btn btn-brand" href="../assets/all-processing-downloads.zip">All downloads (ZIP)</a>
+        </div>
+      </section>
+
+      <nav class="mt-12 flex items-center justify-between">
+        <a href="fixation-core-v2.html" class="btn btn-ghost">← Prev: Fixation</a>
+        <span class="btn btn-ghost opacity-60 pointer-events-none">Next: Decalcification (coming)</span>
+      </nav>
+    </article>
   </main>
 
-  <footer class="py-10 border-t border-slate-200"><div class="mx-auto max-w-5xl px-4 text-slate-600">© <span id="y"></span> Free HTL Guide</div></footer>
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+  <footer class="py-10 border-t border-slate-200">
+    <div class="mx-auto max-w-6xl px-4 text-slate-600">© <span id="y"></span> Free HTL Guide</div>
+  </footer>
+
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Course",
+    "name":"Processing - Core Module (HT/HTL)",
+    "description":"Dehydration, clearing, paraffin infiltration: schedules, reagent management, troubleshooting, micro-checks, and exam quiz.",
+    "provider":{"@type":"Organization","name":"Free HTL Guide","sameAs":"https://withnati.github.io/free-htl-guide-site/"},
+    "timeRequired":"PT40M"
+  }
+  </script>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+
+    // Progress bar
+    const prog = document.getElementById('progress');
+    document.addEventListener('scroll', () => {
+      const h = document.documentElement;
+      const p = (h.scrollTop)/(h.scrollHeight - h.clientHeight) * 100;
+      prog.style.setProperty('--pct', p + '%');
+    });
+
+    // TOC active
+    const tocLinks = [...document.querySelectorAll('.toc a')];
+    const sections = [...document.querySelectorAll('section[id]')];
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if(e.isIntersecting){
+          tocLinks.forEach(a=>a.classList.remove('active'));
+          const hit = tocLinks.find(a => a.getAttribute('href') === '#' + e.target.id);
+          if(hit) hit.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+    sections.forEach(s => obs.observe(s));
+
+    // Mark complete
+    const DONE_KEY='htl_done_processing_core';
+    const doneBtn=document.getElementById('done');
+    function setDone(v){ localStorage.setItem(DONE_KEY, v?'1':'0'); doneBtn.textContent = v?'Completed ✓':'Mark complete'; }
+    setDone(localStorage.getItem(DONE_KEY)==='1');
+    doneBtn.onclick=()=>setDone(!(localStorage.getItem(DONE_KEY)==='1'));
+
+    // Micro-check grader
+    function gradeMC(id, key){
+      let correct = 0, total = 0;
+      Object.keys(key).forEach(name => {
+        total++;
+        const chosen = document.querySelector('input[name="'+name+'"]:checked');
+        const block = document.querySelector('input[name="'+name+'"]').closest('fieldset');
+        block.classList.remove('correct','incorrect');
+        if(chosen && chosen.value===key[name]){ correct++; block.classList.add('correct'); }
+        else{ block.classList.add('incorrect'); }
+      });
+      const res = document.getElementById(id+'_res');
+      res.classList.remove('hidden');
+      res.textContent = 'Score: '+correct+'/'+total;
+    }
+    window.gradeMC = gradeMC;
+
+    // Quiz bank (15)
+    let QUESTIONS = [
+      ["Primary purpose of dehydration:", ["Remove free water","Replace fat with solvent","Infuse paraffin","Fix nucleic acids"], "A"],
+      ["Two 100% alcohol stations primarily reduce:", ["Over-dehydration","Water carryover","Brittleness","Heat damage"], "B"],
+      ["Xylene substitutes often require:", ["No clearing steps","Longer times vs xylene","Lower paraffin temps","Skipping 100% alcohol"], "B"],
+      ["Typical paraffin melting point range:", ["40-45 deg C","50-55 deg C","56-60 deg C","65-70 deg C"], "C"],
+      ["Opaque paraffin around tissue suggests:", ["Overheating paraffin","Water carryover","Too much vacuum","Dirty molds"], "B"],
+      ["Soft/spongy block likely due to:", ["Under-dehydration/clearing","Over-dehydration","Excess xylene","Low paraffin MP"], "A"],
+      ["Brittle/shrunken tissue likely due to:", ["Under-dehydration","Over-clearing and long 100% alcohol","Low bath temperature","Too little vacuum"], "B"],
+      ["For fatty tissue you should usually:", ["Shorten clearant steps","Use only one paraffin station","Extend clearant/paraffin, consider vacuum","Skip 70% alcohol"], "C"],
+      ["Carryover control best practice:", ["Single 100% alcohol then xylene","Two 100% alcohols and two clearants","Skip 95% alcohol for speed","Reduce agitation"], "B"],
+      ["Best immediate fix for soft block:", ["Re-embed without changes","Repeat from 95% alcohol, extend clearant, reinfiltrate","Cool block longer","Change microtome angle"], "B"],
+      ["Evidence of reagent exhaustion:", ["Clear, colorless xylene","Alcohol stations reading 0% water","Cloudy clearant or paraffin","Stable processing times"], "C"],
+      ["To protect antigens for IHC:", ["Use very hot paraffin >65 deg C","Limit over-dehydration and overheating","Switch to methanol for all steps","Always skip vacuum"], "B"],
+      ["Dense/calcified tissue needs:", ["Shorter alcohol steps","Longer dehydration/clearing and thin grossing","Fewer paraffin steps","Higher water content"], "B"],
+      ["Best practice for logs:", ["No documentation needed","Note only reagent lot numbers","Track rotation dates, lots, temps, actions","Track only xylene"], "C"],
+      ["When using substitutes:", ["Assume times equal to xylene","Verify compatibility with paraffin and extend times as needed","Reduce number of stations","Use colder paraffin"], "B"]
+    ];
+
+    const EXPL = [
+      "Dehydration removes water so clearant and paraffin can replace it.",
+      "Reduces water carryover into clearant and wax.",
+      "Substitutes often clear more slowly; check manufacturer guidance.",
+      "Most paraffin histology waxes melt around 56-60 deg C.",
+      "Water in the workflow clouds paraffin around tissue.",
+      "Insufficient dehydration/clearing leaves tissue soft/spongy.",
+      "Excess dehydration/clearing and heat cause brittleness/shrinkage.",
+      "Fat benefits from longer clearant/paraffin and vacuum.",
+      "Two absolutes and two clearants are standard to limit carryover.",
+      "Reprocess: 95% -> absolutes -> clearant -> paraffin with extra time.",
+      "Cloudiness suggests contamination or water; refresh/rotate.",
+      "Avoid overheating and excessive dehydration for IHC integrity.",
+      "Dense tissue needs longer steps and thin grossing.",
+      "Logs should record rotation/refresh, lots, temperature, actions.",
+      "Times can differ; ensure paraffin compatibility."
+    ];
+
+    function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j]]; } }
+    function shuffledOptions(opts){
+      const arr = opts.map((opt,i)=>({opt,letter:String.fromCharCode(65+i)}));
+      shuffle(arr);
+      return arr;
+    }
+
+    const form = document.getElementById('quizForm');
+
+    function renderQuiz(){
+      form.innerHTML = "";
+      shuffle(QUESTIONS);
+      QUESTIONS.forEach((q, idx) => {
+        const [stem, options, correct] = q;
+        const num = idx + 1;
+        const fs = document.createElement('fieldset');
+        fs.className = "mt-2";
+        const lg = document.createElement('legend');
+        lg.className = "font-medium";
+        lg.textContent = num+") "+stem;
+        fs.appendChild(lg);
+        const opts = shuffledOptions(options);
+        opts.forEach((o, i) => {
+          const label = document.createElement('label');
+          label.className = "block mt-1";
+          const input = document.createElement('input');
+          input.type = "radio";
+          input.name = "q"+num;
+          input.value = String.fromCharCode(65 + options.indexOf(o.opt));
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(" "+o.opt));
+          fs.appendChild(label);
+        });
+        form.appendChild(fs);
+      });
+    }
+    renderQuiz();
+
+    const KEY = {}; QUESTIONS.forEach((q, idx)=>{ KEY["q"+(idx+1)] = q[2]; });
+    const BEST_KEY='htl_best_processing_score';
+    function updateBestChip(){
+      const best = parseInt(localStorage.getItem(BEST_KEY)||"0",10);
+      if(best>0){
+        document.getElementById('bestScore').textContent = best + "%";
+        document.getElementById('bestChip').classList.remove('hidden');
+      }
+    }
+    updateBestChip();
+
+    function grade(){
+      let score=0, total=QUESTIONS.length;
+      const blocks = form.querySelectorAll('fieldset');
+      blocks.forEach((fs, i) => {
+        const correct = KEY["q"+(i+1)];
+        const chosen = fs.querySelector("input:checked");
+        fs.classList.remove('correct','incorrect');
+        if(chosen && chosen.value===correct){ score++; fs.classList.add('correct'); }
+        else { fs.classList.add('incorrect'); }
+      });
+      const pct = Math.round((score/total)*100);
+      const res = document.getElementById('quizResult');
+      res.classList.remove('hidden');
+      res.innerHTML = "<strong>Score: "+score+"/"+total+" ("+pct+"%)</strong><div class='mt-2 text-sm text-slate-700'>"+
+        EXPL.map((e, i) => "Q"+(i+1)+": "+e).join("<br>")+"</div>";
+      try {
+        const best = Math.max(pct, parseInt(localStorage.getItem(BEST_KEY)||"0",10));
+        localStorage.setItem(BEST_KEY, best);
+      } catch(e){}
+      updateBestChip();
+      window.scrollTo({ top: res.offsetTop - 80, behavior: 'smooth' });
+    }
+    function retry(){
+      renderQuiz();
+      document.getElementById('quizResult').classList.add('hidden');
+      window.scrollTo({ top: document.getElementById('quiz').offsetTop - 80, behavior: 'smooth' });
+    }
+    window.grade = grade; window.retry = retry;
+  </script>
 </body>
 </html>
