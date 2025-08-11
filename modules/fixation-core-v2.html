@@ -1,125 +1,229 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <title>Fixation — Core Module (v2) | Free HTL Guide</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Fixation module with interactive quiz." />
+  <title>Fixation — Core Module | Free HTL Guide</title>
+  <meta name="description" content="Fixation module for ASCP HT/HTL exam prep with quick notes, tables, and a working quiz." />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    :root{ --brand:#0F4C81; --text:#1E293B; }
-    .btn{ display:inline-flex; align-items:center; gap:.5rem; padding:.6rem 1rem; border-radius:.75rem; font-weight:600; }
-    .btn-brand{ background:var(--brand); color:#fff; } .btn-ghost{ border:1px solid #CBD5E1; }
-    .pill{ padding:.15rem .5rem; border-radius:999px; background:#EEF2FF; color:#1E3A8A; font-size:.8rem; }
-    .toc a{ color:#334155; } .toc a.active{ color:var(--brand); font-weight:600; }
-    .correct{ background:#DEF7EC; } .incorrect{ background:#FEE2E2; }
-    @media print{ header,.toc,nav,footer,.btn,#progress{ display:none !important; } main{ max-width:100% !important; } }
-    #progress{ position:sticky; top:0; left:0; height:4px; z-index:40; background:linear-gradient(to right,var(--brand) var(--pct,0%),#E5E7EB 0); }
+    :root{ --brand:#0F4C81; }
+    .prose ul{ list-style: disc; padding-left: 1.25rem; }
+    .prose ol{ list-style: decimal; padding-left: 1.25rem; }
+    .k{ background:#F1F5F9; padding:.15rem .4rem; border-radius:.375rem; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .table { border-collapse: collapse; width: 100%; }
+    .table th,.table td{ border:1px solid #E5E7EB; padding:.6rem; vertical-align:top; }
+    .table th{ background:#F8FAFC; font-weight:700; }
+    .correct{ background:#ECFDF5; } .incorrect{ background:#FEF2F2; }
   </style>
 </head>
-<body class="antialiased text-[color:var(--text)]">
-  <div id="progress" aria-hidden="true"></div>
-  <header class="border-b border-slate-200 bg-white/90 backdrop-blur">
-    <div class="mx-auto max-w-6xl px-4 h-16 flex items-center justify-between">
+<body class="antialiased text-slate-800">
+  <!-- Header -->
+  <header class="border-b bg-white/90 backdrop-blur">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
       <a href="../index.html" class="font-bold text-lg text-[color:var(--brand)]">Free HTL Guide</a>
       <nav class="hidden md:flex gap-6 text-sm">
-        <a href="../index.html#syllabus" class="hover:text-[color:var(--brand)]">Syllabus</a>
+        <a class="hover:text-[color:var(--brand)]" href="../index.html#syllabus">Syllabus</a>
+        <a class="hover:text-[color:var(--brand)]" href="../index.html#waitlist">Waitlist</a>
       </nav>
     </div>
   </header>
 
-  <main class="mx-auto max-w-6xl px-4 py-6 md:py-8 grid md:grid-cols-[220px,1fr] gap-8">
-    <aside class="toc hidden md:block sticky top-24 self-start">
-      <div class="p-4 rounded-xl border border-slate-200 bg-white">
+  <!-- Hero -->
+  <section class="bg-slate-50 border-b">
+    <div class="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-2 gap-8">
+      <div>
+        <p class="uppercase tracking-wide text-xs text-slate-500">Module • Core</p>
+        <h1 class="text-3xl md:text-4xl font-extrabold mt-1">Fixation</h1>
+        <p class="mt-3 text-slate-700">Exam weight ~15–25%. Master the chemistry, pre-analytics, artifact control, and protocols that power high-quality H&amp;E, specials, IHC/IF, and ISH.</p>
+        <div class="mt-4 flex flex-wrap gap-2 text-xs">
+          <span class="px-2 py-1 rounded-full bg-slate-100">HT skills</span>
+          <span class="px-2 py-1 rounded-full bg-slate-100">HTL depth</span>
+          <span class="px-2 py-1 rounded-full bg-slate-100">Quiz: 15 Q</span>
+        </div>
+      </div>
+      <div class="hidden md:block">
+        <!-- Use your repo root Microtome.jpg (you already uploaded). -->
+        <img src="../Microtome.jpg" alt="Microtome ribbons" class="rounded-xl border shadow-sm w-full object-cover h-56 md:h-64">
+      </div>
+    </div>
+  </section>
+
+  <!-- Main content -->
+  <main class="max-w-6xl mx-auto px-4 py-10 grid lg:grid-cols-[1fr,320px] gap-10">
+    <!-- Article -->
+    <article class="prose max-w-none">
+      <h2 id="objectives" class="text-2xl font-bold">Learning objectives</h2>
+      <ul class="mt-2">
+        <li>Explain fixation purpose and compare <span class="k">crosslinking</span> vs <span class="k">coagulative</span> mechanisms.</li>
+        <li>Select fixatives/conditions for H&amp;E, specials, IHC/IF, ISH, enzyme histochemistry.</li>
+        <li>Control pre-analytics (time, thickness, ratio, pH, temp, osmolality) to prevent autolysis/artifacts.</li>
+        <li>Recognize and correct artifacts (formalin pigment, mercury pigment, under/over-fixation).</li>
+        <li>Build and document protocols/QC to lab standards (HTL-level depth).</li>
+      </ul>
+
+      <h2 id="primer" class="text-2xl font-bold mt-10">Why fixation matters (quick primer)</h2>
+      <p><strong>Goals:</strong> stop autolysis/putrefaction, stabilize morphology, and preserve targets (proteins, nucleic acids, enzymes) required by your downstream method.</p>
+      <ul>
+        <li><strong>Crosslinking</strong> (formaldehyde, glutaraldehyde): methylene bridges → excellent morphology; may mask epitopes (retrieval).</li>
+        <li><strong>Coagulative</strong> (alcohols, acetone): protein precipitation → fast; good for cytology/frozen/enzyme; more shrinkage.</li>
+      </ul>
+
+      <h2 id="preanalytics" class="text-2xl font-bold mt-10">Pre-analytic control points</h2>
+      <ul>
+        <li><strong>Time to fixation:</strong> keep cold ischemia minimal (ideally ≤1 h; immediate for biopsies).</li>
+        <li><strong>Thickness:</strong> 3–5&nbsp;mm in cassette for even penetration.</li>
+        <li><strong>Volume:</strong> ~10:1 fixative:tissue.</li>
+        <li><strong>pH:</strong> 10% NBF ~7.0–7.2. Unstable pH affects basophilia/silver methods.</li>
+        <li><strong>Temperature:</strong> RT for formalin; chilled alcohol/acetone for enzymes.</li>
+        <li><strong>Tonicity:</strong> hypertonic → shrinkage; hypotonic → swelling (acetic acid intentionally swells nuclei).</li>
+      </ul>
+
+      <h2 id="fixatives" class="text-2xl font-bold mt-10">Core fixatives &amp; use</h2>
+      <div class="overflow-x-auto">
+        <table class="table text-sm">
+          <thead><tr>
+            <th>Fixative</th><th>Type</th><th>Key</th><th>Best use</th><th>Strengths</th><th>Caveats/Artifacts</th>
+          </tr></thead>
+          <tbody>
+            <tr><td>10% Neutral Buffered Formalin</td><td>Crosslinking</td><td>~4% formaldehyde, phosphate buffer</td><td>Universal H&amp;E, many specials, IHC</td><td>Gold standard morphology</td><td>Formalin pigment if acidic; epitope masking</td></tr>
+            <tr><td>Glyoxal-based</td><td>Crosslinking</td><td>Glyoxal ± buffer</td><td>Routine histology</td><td>Faster, less odor</td><td>Retrieval profiles may differ vs NBF</td></tr>
+            <tr><td>Glutaraldehyde</td><td>Crosslinking (dialdehyde)</td><td>2–3% + buffer</td><td>EM, enzyme detail</td><td>Superb ultrastructure</td><td>Over-hardening; autofluorescence</td></tr>
+            <tr><td>Alcohols / Acetone</td><td>Coagulant</td><td>EtOH/MeOH; acetone</td><td>Cytology, frozen, enzymes</td><td>Rapid, crisp nuclei</td><td>Shrinkage; brittle; poor for trichromes</td></tr>
+            <tr><td>Bouin’s</td><td>Compound</td><td>Picric acid + formalin + acetic</td><td>Testis, GI mucosa, trichromes</td><td>Great CT contrast</td><td>Yellow picrate; wash long</td></tr>
+            <tr><td>Zinc-formalin</td><td>Additive</td><td>Formalin + zinc salts</td><td>IHC nuclear detail</td><td>Improved nuclei</td><td>Zinc waste; crystals if mixed poorly</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 class="text-xl font-semibold mt-8">Artifact handling</h3>
+      <ul>
+        <li><strong>Formalin pigment (acid hematin):</strong> remove with alcoholic picric acid or <span class="k">10% NH<sub>4</sub>OH in 70% alcohol</span>.</li>
+        <li><strong>Mercury pigment:</strong> iodine → sodium thiosulfate.</li>
+        <li><strong>Decalc:</strong> prefer <strong>EDTA</strong> for IHC/ISH over strong acids.</li>
+      </ul>
+
+      <h2 id="tissues" class="text-2xl font-bold mt-10">Tissue-specific tips</h2>
+      <ul>
+        <li><strong>Fatty tissues (breast/skin):</strong> thinner grossing, longer time/agitation.</li>
+        <li><strong>GI mucosa:</strong> short Bouin’s post-fix can sharpen trichromes; wash thoroughly.</li>
+        <li><strong>CNS:</strong> avoid over-hardening; prolonged NBF for large brains (research).</li>
+        <li><strong>Bone/BM:</strong> thin grossing; EDTA if IHC/ISH planned.</li>
+        <li><strong>Cytology:</strong> immediate 95% ethanol immersion/spray.</li>
+      </ul>
+
+      <h2 id="ihc" class="text-2xl font-bold mt-10">Fixation ↔ IHC/IF/ISH (HTL emphasis)</h2>
+      <ul>
+        <li><strong>Antigen retrieval:</strong> compensates for crosslinking (HIER pH-dependent; enzymatic selective). Over-retrieval → high background/loss of morphology.</li>
+        <li><strong>Controls/validation:</strong> document pre-analytics; run parallel validation when changing fixative/retrieval.</li>
+      </ul>
+
+      <h2 id="qc" class="text-2xl font-bold mt-10">QC, safety, and documentation</h2>
+      <ul>
+        <li>Fixative prep &amp; change logs; pH checks; temps if controlled.</li>
+        <li>Record time in/out of fixative for large/critical specimens.</li>
+        <li>Formaldehyde safety; hazardous waste for metal-containing fixatives; picric acid always wet.</li>
+      </ul>
+
+      <h2 id="protocols" class="text-2xl font-bold mt-10">Bench protocols (templates)</h2>
+      <h3 class="text-lg font-semibold">Routine surgical biopsies (paraffin)</h3>
+      <ol>
+        <li>Gross to 3–5&nbsp;mm immediately.</li>
+        <li>Immerse in 10:1 NBF at RT; don’t overcrowd cassettes.</li>
+        <li>Min dwell: small biopsies ~6–8 h; larger per SOP (often overnight).</li>
+        <li>Rinse per processor schedule → dehydrate.</li>
+      </ol>
+      <h3 class="text-lg font-semibold mt-4">Cytology smears</h3>
+      <p>Immediate 95% ethanol (or spray) to avoid air-drying artifact.</p>
+      <h3 class="text-lg font-semibold mt-4">Frozen (enzyme histochemistry)</h3>
+      <p>Cold acetone (−20 °C) 30–60 s → brief rinse → substrate incubation.</p>
+
+      <h2 id="troubleshoot" class="text-2xl font-bold mt-10">Troubleshooting quick tree</h2>
+      <ul>
+        <li><strong>Poor nuclear detail:</strong> under-fixation? pH off? excessive dehydration? Over-fixation → adjust Hx differentiation / retrieval.</li>
+        <li><strong>Brown-black granules:</strong> formalin pigment → treat then restain.</li>
+        <li><strong>Brittle/over-hard tissue:</strong> over-fixation/heat → soften block (ice/glycerol), trim thinner, adjust angle.</li>
+        <li><strong>High IHC background:</strong> over-retrieval, endogenous peroxidase/biotin, antibody too strong; review fixation duration.</li>
+        <li><strong>False-negative IHC:</strong> cold ischemia prolonged; under-retrieval; over-fixation; wrong control.</li>
+      </ul>
+
+      <h2 id="math" class="text-2xl font-bold mt-10">Math you must know</h2>
+      <p><span class="k">C1V1 = C2V2</span> for dilutions. 10% NBF (≈4% formaldehyde) from 37% stock to make 1 L → <span class="k">V1 ≈ (4/37)×1000 mL ≈ 108 mL</span> stock + buffer/water to 1 L (final pH ~7.0–7.2).</p>
+
+      <h2 id="quiz" class="text-2xl font-bold mt-10">Practice quiz (15)</h2>
+      <form id="quizForm" class="mt-4 grid gap-5 max-w-3xl" aria-describedby="quizDesc">
+        <p id="quizDesc" class="sr-only">Select the best option for each question. You can submit and retry.</p>
+      </form>
+      <div class="mt-3 flex gap-3">
+        <button type="button" class="px-4 py-2 rounded-lg bg-[color:var(--brand)] text-white font-semibold" onclick="grade()">Submit</button>
+        <button type="button" class="px-4 py-2 rounded-lg border font-semibold" onclick="retry()">Retry</button>
+      </div>
+      <div id="quizResult" class="hidden mt-4 p-4 rounded-xl border" aria-live="polite"></div>
+
+      <h2 id="downloads" class="text-2xl font-bold mt-12">Downloads</h2>
+      <p class="text-sm text-slate-600">These links will work as soon as you upload the PDFs to <span class="k">/assets/</span>:</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a class="px-4 py-2 rounded-lg border" href="../assets/Fixation_Quick_Card.pdf">Quick-card (PDF)</a>
+        <a class="px-4 py-2 rounded-lg border" href="../assets/Pigment_Removal_OnePager.pdf">Pigment removal (PDF)</a>
+        <a class="px-4 py-2 rounded-lg border" href="../assets/NBF_Prep_Worksheet.pdf">NBF worksheet (PDF)</a>
+        <a class="px-4 py-2 rounded-lg border" href="../assets/IHC_Validation_Checklist.pdf">IHC/ISH checklist (PDF)</a>
+        <a class="px-4 py-2 rounded-lg bg-[color:var(--brand)] text-white" href="../assets/all-fixation-downloads.zip">All downloads (ZIP)</a>
+      </div>
+
+      <div class="mt-10 flex justify-between">
+        <a href="./fixation.html" class="px-4 py-2 rounded-lg border">← Back to module</a>
+        <a href="./processing.html" class="px-4 py-2 rounded-lg border">Next: Processing →</a>
+      </div>
+    </article>
+
+    <!-- Sidebar -->
+    <aside class="space-y-4">
+      <div class="p-4 rounded-xl border">
         <p class="text-xs font-semibold tracking-wide text-slate-500">ON THIS PAGE</p>
         <ul class="mt-3 space-y-2 text-sm">
-          <li><a href="#top">Top</a></li>
-          <li><a href="#quiz">Quiz</a></li>
-          <li><a href="#downloads">Downloads</a></li>
+          <li><a class="hover:text-[color:var(--brand)]" href="#objectives">Learning objectives</a></li>
+          <li><a class="hover:text-[color:var(--brand)]" href="#preanalytics">Pre-analytics</a></li>
+          <li><a class="hover:text-[color:var(--brand)]" href="#fixatives">Fixatives</a></li>
+          <li><a class="hover:text-[color:var(--brand)]" href="#tissues">Tissue tips</a></li>
+          <li><a class="hover:text-[color:var(--brand)]" href="#ihc">Fixation ↔ IHC</a></li>
+          <li><a class="hover:text-[color:var(--brand)]" href="#protocols">Protocols</a></li>
+          <li><a class="hover:text-[color:var(--brand)]" href="#troubleshoot">Troubleshooting</a></li>
+          <li><a class="hover:text-[color:var(--brand)]" href="#math">Math</a></li>
+          <li><a class="hover:text-[color:var(--brand)]" href="#quiz">Quiz</a></li>
+          <li><a class="hover:text-[color:var(--brand)]" href="#downloads">Downloads</a></li>
         </ul>
       </div>
+
+      <div class="p-4 rounded-xl border">
+        <p class="text-sm text-slate-700">Mark this lesson complete to track progress on this device.</p>
+        <button id="doneBtn" class="mt-2 px-4 py-2 rounded-lg border w-full">Mark complete</button>
+        <p id="doneNote" class="mt-2 text-xs text-slate-500"></p>
+      </div>
     </aside>
-
-    <article id="content">
-      <section id="top" class="flex items-center justify-between gap-3">
-        <div>
-          <h1 class="text-3xl md:text-4xl font-extrabold">Fixation — Core Module</h1>
-          <div class="mt-2 flex flex-wrap items-center gap-2 text-sm">
-            <span class="pill">Fixation</span> <span class="pill">Core</span>
-            <span id="bestChip" class="hidden pill bg-green-100 text-green-700">Completed • <span id="bestScore">0%</span></span>
-          </div>
-        </div>
-        <button id="done" class="btn btn-ghost">Mark complete</button>
-      </section>
-
-      <section id="quiz" class="mt-10">
-        <h2 class="text-2xl font-bold">Practice quiz (15)</h2>
-        <form class="mt-3 grid gap-5 max-w-3xl" id="quizForm" aria-describedby="quizDesc">
-          <p id="quizDesc" class="sr-only">Select the best option for each question. You can submit and retry.</p>
-        </form>
-        <div class="mt-3 flex gap-3">
-          <button type="button" class="btn btn-brand" onclick="grade()">Submit</button>
-          <button type="button" class="btn btn-ghost" onclick="retry()">Retry</button>
-        </div>
-        <div id="quizResult" class="hidden mt-4 p-4 rounded-xl border border-slate-200" aria-live="polite"></div>
-      </section>
-
-      <section id="downloads" class="mt-10">
-        <h2 class="text-2xl font-bold">Downloads</h2>
-        <div class="mt-3 flex flex-wrap gap-3">
-          <a class="btn btn-ghost" href="../assets/Fixation_Quick_Card.pdf">Quick-card (PDF)</a>
-          <a class="btn btn-ghost" href="../assets/Pigment_Removal_OnePager.pdf">Pigment removal (PDF)</a>
-          <a class="btn btn-ghost" href="../assets/NBF_Prep_Worksheet.pdf">NBF worksheet (PDF)</a>
-          <a class="btn btn-ghost" href="../assets/IHC_Validation_Checklist.pdf">IHC/ISH checklist (PDF)</a>
-          <a class="btn btn-brand" href="../assets/all-fixation-downloads.zip">All downloads (ZIP)</a>
-        </div>
-      </section>
-    </article>
   </main>
 
-  <footer class="py-10 border-t border-slate-200">
-    <div class="mx-auto max-w-6xl px-4 text-slate-600">© <span id="y"></span> Free HTL Guide</div>
+  <footer class="py-10 border-t">
+    <div class="max-w-6xl mx-auto px-4 text-slate-600">© <span id="y"></span> Free HTL Guide</div>
   </footer>
 
+  <!-- Minimal, robust JS -->
   <script>
     document.getElementById('y').textContent = new Date().getFullYear();
-    const prog = document.getElementById('progress');
-    document.addEventListener('scroll', () => {
-      const h = document.documentElement;
-      const p = (h.scrollTop)/(h.scrollHeight - h.clientHeight) * 100;
-      prog.style.setProperty('--pct', p + '%');
-    });
 
-    // TOC active (guarded so a failure here doesn't break the quiz)
-    try {
-      if ('IntersectionObserver' in window) {
-        const tocLinks = Array.from(document.querySelectorAll('.toc a'));
-        const sections = Array.from(document.querySelectorAll('section[id]'));
-        const obs = new IntersectionObserver((entries) => {
-          entries.forEach((e) => {
-            if (e.isIntersecting) {
-              tocLinks.forEach((a) => a.classList.remove('active'));
-              const hit = tocLinks.find(
-                (a) => a.getAttribute('href') === '#' + e.target.id
-              );
-              if (hit) hit.classList.add('active');
-            }
-          });
-        }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
-        sections.forEach((s) => obs.observe(s));
-      }
-    } catch (err) {
-      console.warn('TOC observer disabled:', err);
+    // Simple "done" toggle (local storage)
+    const DONE_KEY='fixation_core_done';
+    const doneBtn=document.getElementById('doneBtn');
+    const doneNote=document.getElementById('doneNote');
+    function renderDone(){
+      const v = localStorage.getItem(DONE_KEY)==='1';
+      doneBtn.textContent = v ? 'Completed ✓' : 'Mark complete';
+      doneNote.textContent = v ? 'Saved locally.' : '';
     }
+    renderDone();
+    doneBtn.addEventListener('click', ()=>{ localStorage.setItem(DONE_KEY, localStorage.getItem(DONE_KEY)==='1' ? '0':'1'); renderDone(); });
 
-    const DONE_KEY='htl_done_fixation_core';
-    const doneBtn=document.getElementById('done');
-    function setDone(v){ localStorage.setItem(DONE_KEY, v?'1':'0'); doneBtn.textContent = v?'Completed ✓':'Mark complete'; }
-    setDone(localStorage.getItem(DONE_KEY)==='1');
-    doneBtn.onclick=()=>setDone(!(localStorage.getItem(DONE_KEY)==='1'));
-
-    // Quiz
-    let QUESTIONS = [
+    // QUIZ (plain, reliable)
+    const QUESTIONS = [
       ["The primary chemical action of formaldehyde is:", ["Coagulation of proteins","Oxidation of lipids","Crosslinking of proteins via methylene bridges","Hydrolysis of nucleic acids"], "C"],
       ["Most critical pre-analytic control for small GI biopsies:", ["High paraffin temperature","Minimized time to fixation","Prolonged water bath float time","Use of zinc salts"], "B"],
       ["Brown-black granular pigment after long acidic formalin storage is:", ["Melanin","Formalin pigment (acid hematin)","Hemosiderin","Carbon"], "B"],
@@ -127,82 +231,84 @@
       ["Fixative class causing shrinkage but rapid nuclear preservation:", ["Dialdehydes","Alcohols","Aldehydes","Osmium tetroxide"], "B"],
       ["Best decalcification for IHC-heavy bone marrow:", ["Strong HCl","Formic acid with heat","EDTA at room temperature","Trichloroacetic acid"], "C"],
       ["Switching from NBF to glyoxal-based: first step for IHC quality:", ["Increase antibody concentration twofold","Run parallel validation with known controls","Shorten retrieval by half","Skip on-slide controls"], "B"],
-      ["Bouin's solution improves:", ["Myelin sheaths in CNS","Collagen/CT architecture for trichromes","Bacterial walls in Gram","Elastin fibers in VVG"], "B"],
+      ["Bouin’s solution improves:", ["Myelin sheaths in CNS","Collagen/CT architecture for trichromes","Bacterial walls in Gram","Elastin fibers in VVG"], "B"],
       ["Recommended fixative:tissue volume ratio:", ["2:1","5:1","10:1","20:1"], "C"],
       ["Over-retrieval in IHC after long fixation causes:", ["Enhanced specific signal only","Loss of morphology/high background","No change","Stronger nuclear counterstain"], "B"],
-      ["To minimize brittle sections from over-fixed tissue:", ["Raise water bath to 55-60 C","Soften block (ice/glycerol), trim thinner, adjust angle","Prolong xylene clearing","Use a coarser blade"], "B"],
-      ["Typical pH of standard NBF:", ["5.0-5.5","7.0-7.2","8.5-9.0","10.5-11.0"], "B"],
-      ["Pre-analytic factor that most affects ISH integrity:", ["Float time at 45 C","Cold ischemia and fixation duration","Type of coverslip mountant","Block thickness only"], "B"],
-      ["Pap smear with air-dry artifact reflects failure in:", ["Buffer pH control","Alcohol concentration","Immediate fixation","Proper dehydration"], "C"],
-      ["Preparing 1 L of 10% NBF (~4% formaldehyde) from 37% stock requires:", ["27 mL","54 mL","108 mL","250 mL"], "C"]
+      ["To minimize brittle sections from over-fixed tissue:", ["Raise water bath to 55–60 °C","Soften block (ice/glycerol), trim thinner, adjust angle","Prolong xylene clearing","Use a coarser blade"], "B"],
+      ["Typical pH of standard NBF:", ["5.0–5.5","7.0–7.2","8.5–9.0","10.5–11.0"], "B"],
+      ["Pre-analytic factor that most affects ISH integrity:", ["Float time at 45 °C","Cold ischemia and fixation duration","Type of coverslip mountant","Block thickness only"], "B"],
+      ["A Pap smear with air-drying artifact reflects failure of:", ["Buffer pH control","Alcohol concentration","Immediate fixation","Proper dehydration"], "C"],
+      ["To prepare 1 L of 10% NBF (~4% formaldehyde) from 37% stock, use:", ["27 mL","54 mL","108 mL","250 mL"], "C"]
     ];
 
     const EXPL = [
       "Formaldehyde forms methylene bridges (crosslinks).",
-      "Cold ischemia time is critical; minimize time to fixation.",
+      "Minimize cold ischemia; speed to fix is critical.",
       "Classic acid hematin from acidic formalin/long fixation.",
-      "Iodine -> sodium thiosulfate removes mercury pigment.",
-      "Coagulants (alcohols) cause shrinkage but act fast.",
-      "EDTA best preserves antigen/nucleic acids for IHC/ISH.",
-      "Parallel validation maintains quality when changing pre-analytics.",
-      "Bouin's enhances connective tissue contrast for trichromes.",
-      "Rule of thumb is ~10:1.",
-      "Too much retrieval damages morphology and increases background.",
-      "Softening and mechanical adjustments reduce chatter.",
-      "NBF is ~neutral pH.",
-      "ISH is sensitive to cold ischemia and fixation duration.",
-      "Pap smears require immediate fixation to prevent air-drying.",
-      "C1V1=C2V2 -> (4/37)*1000 ~ 108 mL."
+      "Iodine → sodium thiosulfate removes mercury pigment.",
+      "Coagulants (alcohols) act fast but shrink.",
+      "EDTA best preserves antigen/nucleic acids.",
+      "Validate changes with parallel testing.",
+      "Bouin’s sharpens CT for trichromes.",
+      "Rule-of-thumb ~10:1 fixative:tissue.",
+      "Too much retrieval → background/morphology loss.",
+      "Soften & adjust technique to reduce chatter.",
+      "NBF ~neutral pH.",
+      "ISH is sensitive to cold ischemia and duration.",
+      "Pap smears require immediate fixation.",
+      "C1V1=C2V2 → (4/37)×1000 ≈ 108 mL."
     ];
 
     function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j]]; } }
-    function shuffledOptions(opts){ const arr = opts.map((opt,i)=>({opt,letter:String.fromCharCode(65+i)})); shuffle(arr); return arr; }
+    function shuffledOptions(opts){ const arr = opts.map((opt,i)=>({opt,idx:i})); shuffle(arr); return arr; }
 
     const form = document.getElementById('quizForm');
     function renderQuiz(){
-      form.innerHTML = "";
-      shuffle(QUESTIONS);
-      QUESTIONS.forEach((q, idx) => {
+      form.innerHTML = '';
+      const qs = QUESTIONS.slice(); shuffle(qs);
+      qs.forEach((q, i) => {
         const [stem, options] = q;
-        const num = idx + 1;
-        const fs = document.createElement('fieldset'); fs.className = "mt-2";
-        const lg = document.createElement('legend'); lg.className = "font-medium"; lg.textContent = num+") "+stem; fs.appendChild(lg);
+        const n = i+1;
+        const fs = document.createElement('fieldset'); fs.className = "mt-1";
+        const lg = document.createElement('legend'); lg.className = "font-medium"; lg.textContent = n + ") " + stem; fs.appendChild(lg);
         const opts = shuffledOptions(options);
-        opts.forEach((o) => {
-          const label = document.createElement('label'); label.className = "block mt-1";
-          const input = document.createElement('input'); input.type = "radio"; input.name = "q"+num; input.value = String.fromCharCode(65 + options.indexOf(o.opt));
-          label.appendChild(input); label.appendChild(document.createTextNode(" "+o.opt)); fs.appendChild(label);
+        opts.forEach(o => {
+          const id = "q"+n+"_"+o.idx;
+          const lbl = document.createElement('label'); lbl.setAttribute('for', id); lbl.className = "block mt-1";
+          const input = document.createElement('input'); input.type="radio"; input.id=id; input.name="q"+n; input.value=String.fromCharCode(65 + o.idx);
+          lbl.appendChild(input); lbl.appendChild(document.createTextNode(" " + o.opt)); fs.appendChild(lbl);
         });
         form.appendChild(fs);
       });
     }
+    function buildKey(){ const k={}; QUESTIONS.forEach((q,i)=>k["q"+(i+1)]=q[2]); return k; }
+    const KEY = buildKey();
     renderQuiz();
 
-    const KEY = {}; function buildKey(){ QUESTIONS.forEach((q, idx)=>{ KEY["q"+(idx+1)] = q[2]; }); }; buildKey();
-
-    const BEST_KEY='htl_best_fixation_score';
-    function updateBestChip(){ const best = parseInt(localStorage.getItem(BEST_KEY)||"0",10); if(best>0){ document.getElementById('bestScore').textContent = best + "%"; document.getElementById('bestChip').classList.remove('hidden'); } } updateBestChip();
-
-    function grade(){
+    window.grade = function(){
       let score=0, total=QUESTIONS.length;
       const blocks = form.querySelectorAll('fieldset');
-      blocks.forEach((fs, i) => { const correct = KEY["q"+(i+1)]; const chosen = fs.querySelector("input:checked"); fs.classList.remove('correct','incorrect'); if(chosen && chosen.value===correct){ score++; fs.classList.add('correct'); } else { fs.classList.add('incorrect'); } });
-      const pct = Math.round((score/total)*100);
+      blocks.forEach((fs,i)=>{
+        const correct = KEY["q"+(i+1)];
+        const chosen = fs.querySelector('input:checked');
+        fs.classList.remove('correct','incorrect');
+        if(chosen && chosen.value===correct){ score++; fs.classList.add('correct'); }
+        else { fs.classList.add('incorrect'); }
+      });
+      const pct = Math.round(score/total*100);
       const res = document.getElementById('quizResult');
       res.classList.remove('hidden');
-      res.innerHTML = "<strong>Score: "+score+"/"+total+" ("+pct+"%)</strong><div class='mt-2 text-sm text-slate-700'>"+ EXPL.map((e, i) => "Q"+(i+1)+": "+e).join("<br>")+"</div>";
-      try { const best = Math.max(pct, parseInt(localStorage.getItem(BEST_KEY)||"0",10)); localStorage.setItem(BEST_KEY, best); } catch(e){}
-      updateBestChip();
-      window.scrollTo({ top: res.offsetTop - 80, behavior: 'smooth' });
+      res.innerHTML = "<strong>Score: "+score+"/"+total+" ("+pct+"%)</strong><div class='mt-2 text-sm text-slate-700'>"+EXPL.map((e,i)=>"Q"+(i+1)+": "+e).join("<br>")+"</div>";
+      window.scrollTo({ top: res.offsetTop-80, behavior: 'smooth' });
     }
-    function retry(){ renderQuiz(); buildKey(); document.getElementById('quizResult').classList.add('hidden'); window.scrollTo({ top: document.getElementById('quiz').offsetTop - 80, behavior: 'smooth' }); }
-    window.grade = grade; window.retry = retry;
+    window.retry = function(){
+      renderQuiz();
+      document.getElementById('quizResult').classList.add('hidden');
+      window.scrollTo({ top: document.getElementById('quiz').offsetTop-80, behavior:'smooth' });
+    }
 
-    // Safety net: render quiz after DOM is ready even if earlier code hiccups
-    window.addEventListener('DOMContentLoaded', function () {
-      if (typeof renderQuiz === 'function') { try { renderQuiz(); } catch (e) { console.error(e); } }
-      if (typeof buildKey === 'function') { try { buildKey(); } catch (e) { console.error(e); } }
-    });
+    // Hard safety: ensure quiz renders even if something delayed
+    document.addEventListener('DOMContentLoaded', ()=>{ try{ renderQuiz(); }catch(e){} });
   </script>
 </body>
 </html>
