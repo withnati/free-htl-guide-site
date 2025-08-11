@@ -281,19 +281,27 @@
       prog.style.setProperty('--pct', p + '%');
     });
 
-    // TOC active
-    const tocLinks = [...document.querySelectorAll('.toc a')];
-    const sections = [...document.querySelectorAll('section[id]')];
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if(e.isIntersecting){
-          tocLinks.forEach(a=>a.classList.remove('active'));
-          const hit = tocLinks.find(a => a.getAttribute('href') === '#' + e.target.id);
-          if(hit) hit.classList.add('active');
+   // TOC active (guarded so a failure here doesn't break the quiz)
+try {
+  if ('IntersectionObserver' in window) {
+    const tocLinks = Array.from(document.querySelectorAll('.toc a'));
+    const sections = Array.from(document.querySelectorAll('section[id]'));
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          tocLinks.forEach((a) => a.classList.remove('active'));
+          const hit = tocLinks.find(
+            (a) => a.getAttribute('href') === '#' + e.target.id
+          );
+          if (hit) hit.classList.add('active');
         }
       });
     }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
-    sections.forEach(s => obs.observe(s));
+    sections.forEach((s) => obs.observe(s));
+  }
+} catch (err) {
+  console.warn('TOC observer disabled:', err);
+}
 
     // Mark complete
     const DONE_KEY='htl_done_fixation_core';
