@@ -103,18 +103,14 @@
       </div>
 
       <div class="hidden md:block relative">
-        <picture>
-          <source type="image/webp"
-            srcset="../assets/formaldehyde-800.webp 800w, ../assets/formaldehyde-1200.webp 1200w, ../assets/formaldehyde-1600.webp 1600w"
-            sizes="(min-width:1024px) 480px, (min-width:768px) 420px, 100vw" />
-          <source type="image/jpeg"
-            srcset="../assets/formaldehyde.jpg 800w, ../assets/formaldehyde.jpg 1200w, ../assets/formaldehyde.jpg 1600w"
-            sizes="(min-width:1024px) 480px, (min-width:768px) 420px, 100vw" />
-          <img src="../assets/formaldehyde.jpg" alt="Brown glass formaldehyde bottle used for tissue fixation."
-               class="w-full h-auto max-h-[360px] object-contain rounded-none border-0 shadow-none"
-               loading="eager" decoding="async"
-               onerror="this.onerror=null;this.src='../assets/formaldehyde.jpg'">
-        </picture>
+        <img
+  src="../assets/formaldehyde.jpg?v=1"
+  alt="Brown glass formaldehyde bottle used for tissue fixation."
+  class="w-full h-auto max-h-[360px] object-contain rounded-none border-0 shadow-none"
+  loading="eager"
+  decoding="async"
+  fetchpriority="high"
+/>
         <!-- animated hotspot -->
         <button class="absolute top-[26%] left-[58%] w-[18px] h-[18px] rounded-full animate-pulse"
                 style="background:var(--brand)" title="Why methanol?"></button>
