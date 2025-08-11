@@ -4,636 +4,575 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Fixation — Pro Module | Free HTL Guide</title>
-  <meta name="description" content="Master fixation for HT/HTL: mechanisms, pre-analytics, fixatives, artifacts, QC, worked scenarios, and a targeted auto-graded quiz." />
-  <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+  <meta name="description" content="Master fixation for HT/HTL: mechanisms, pre-analytics, fixatives, artifacts, QC, worked scenarios, and a targeted auto-graded quiz."/>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="prefetch" href="./processing.html" as="document">
   <style>
-    :root{ --brand:#0F4C81; --ink:#1E293B; --muted:#475569; }
+    :root{ --brand:#0F4C81; --ink:#0f172a; }
     html{ scroll-behavior:smooth }
     body{ color:var(--ink) }
-    .btn{ @apply inline-flex items-center gap-2 px-3.5 py-2 rounded-xl font-semibold; }
-    .btn-brand{ background:var(--brand); color:#fff; }
-    .btn-ghost{ @apply border border-slate-300; }
-    .pill{ @apply px-2 py-1 rounded-full text-xs bg-slate-100; }
-    .k{ background:#F1F5F9; padding:.15rem .4rem; border-radius:.375rem; }
+    #progressBar{ position:sticky; top:0; height:4px; z-index:50; background:linear-gradient(to right, var(--brand) var(--pct,0%), #e5e7eb 0) }
     .table{ border-collapse:collapse; width:100% }
-    .table th,.table td{ border:1px solid #E5E7EB; padding:.6rem; vertical-align:top }
-    .table th{ background:#F8FAFC; font-weight:700; cursor:pointer }
-    .toc a[aria-current="true"]{ color:var(--brand); font-weight:700 }
-    fieldset.correct{ background:#ECFDF5 }
-    fieldset.incorrect{ background:#FEF2F2 }
-    .hotspot{ position:absolute; width:18px; height:18px; border-radius:999px; background:var(--brand); opacity:.9; }
-    .hotspot:focus{ outline:3px solid #0003 }
-    .card{ @apply rounded-2xl border border-slate-200 bg-white }
-    #progressBar{ position:sticky; top:0; left:0; height:4px; z-index:50; background:linear-gradient(to right,var(--brand) var(--pct,0%),#E5E7EB 0); }
-    /* Print */
+    .table th,.table td{ border:1px solid #e5e7eb; padding:.6rem; vertical-align:top }
+    .table th{ background:#f8fafc; font-weight:700; cursor:pointer }
+    fieldset.correct{ background:#ecfdf5 }
+    fieldset.incorrect{ background:#fef2f2 }
+    .pill{ padding:.15rem .5rem; border-radius:999px; background:#eef2ff; color:#1e3a8a; font-size:.8rem }
     @media print{
-      header, nav, .toc, #helpBtn, #helpDrawer, .actions, .mark, .notes, .quiz-actions, .cta-row { display:none !important }
-      main{ max-width:100% !important }
-      a[href]:after{ content:" (" attr(href) ")"; font-weight:normal; font-size:90% }
-      article{ break-inside:auto }
+      header, .toc, .actions, .notes, .quiz-actions, #helpBtn, #helpDrawer { display:none!important }
+      main{ max-width:100%!important }
+      a[href]:after{ content:" (" attr(href) ")"; font-size:90% }
     }
   </style>
 </head>
-<body class="antialiased">
+<body class="antialiased bg-white">
+  <!-- Sticky progress -->
+  <div id="progressBar" aria-hidden="true"></div>
 
-<!-- Progress bar -->
-<div id="progressBar" aria-hidden="true"></div>
-
-<!-- Header / breadcrumb -->
-<header class="border-b bg-white/90 backdrop-blur">
-  <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-    <nav class="text-sm text-slate-600">
-      <a href="../index.html" class="hover:text-[color:var(--brand)]">Home</a>
-      <span class="mx-1">›</span>
-      <a href="./fixation.html" class="hover:text-[color:var(--brand)]">Fixation</a>
-      <span class="mx-1">›</span>
-      <span class="font-semibold text-slate-900">Pro Module</span>
-    </nav>
-    <div class="flex items-center gap-2">
-      <button id="markBtn" class="btn btn-ghost mark" aria-pressed="false">Mark complete</button>
-      <button id="helpBtn" class="btn btn-ghost">Ask a question</button>
-    </div>
-  </div>
-</header>
-
-<!-- Hero -->
-<section class="bg-slate-50 border-b">
-  <div class="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-[1.1fr,0.9fr] md:items-center gap-8">
-    <div>
-      <p class="uppercase tracking-wide text-xs text-slate-500">Module • Core</p>
-      <h1 class="text-3xl md:text-4xl font-extrabold mt-1">Fixation</h1>
-      <p class="mt-3 text-slate-700">
-        35–45 min. Learn mechanisms, control pre-analytics, choose the right fixative, and eliminate artifacts for high-quality H&amp;E, specials, IHC/IF, and ISH.
-      </p>
-      <div class="mt-4 flex flex-wrap items-center gap-2 text-xs">
-        <span class="pill">HT skills</span><span class="pill">HTL depth</span><span class="pill">Quiz: 10 Q</span>
+  <!-- Header -->
+  <header class="border-b bg-white/90 backdrop-blur">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <nav class="text-sm text-slate-600">
+        <a class="hover:text-[color:var(--brand)]" href="../index.html">Home</a>
+        <span class="mx-1">›</span>
+        <a class="hover:text-[color:var(--brand)]" href="./fixation.html">Fixation</a>
+        <span class="mx-1">›</span>
+        <strong>Pro Module</strong>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button id="markBtn" class="rounded-xl border px-3 py-2 text-sm">Mark complete</button>
+        <button id="helpBtn" class="rounded-xl border px-3 py-2 text-sm">Ask a question</button>
       </div>
-      <div class="cta-row mt-5 flex gap-3">
-        <a class="btn btn-brand" href="#start" id="startBtn">Start / Resume</a>
-        <button class="btn btn-ghost" id="scrollTopBtn" title="Back to top">Back to top</button>
-      </div>
-      <div class="mt-3 text-xs text-slate-500">Estimated: video 12m • reading 10m • practice 15m</div>
     </div>
+  </header>
 
-    <div class="relative hidden md:block">
-      <!-- Responsive hero image -->
-      <picture>
-        <source type="image/webp"
-          srcset="../assets/formaldehyde-800.webp 800w,
-                  ../assets/formaldehyde-1200.webp 1200w,
-                  ../assets/formaldehyde-1600.webp 1600w"
-          sizes="(min-width:1024px) 520px, (min-width:768px) 480px, 100vw" />
-        <source type="image/jpeg"
-          srcset="../assets/formaldehyde-800.jpg 800w,
-                  ../assets/formaldehyde-1200.jpg 1200w,
-                  ../assets/formaldehyde-1600.jpg 1600w"
-          sizes="(min-width:1024px) 520px, (min-width:768px) 480px, 100vw" />
-        <img src="../assets/formaldehyde.jpg" alt="Brown glass reagent bottle labeled Formaldehyde (37%) used for tissue fixation."
-             class="w-full h-auto max-h-[380px] object-contain border-0 shadow-none rounded-none" loading="eager" decoding="async"
-             onerror="this.onerror=null;this.src='../assets/formaldehyde-800.jpg'">
-      </picture>
-
-      <!-- Image hotspot (fun fact) -->
-      <button class="hotspot" style="top:26%;left:58%" aria-label="Hotspot: Methanol stabilizer"
-              title="Why methanol?"> </button>
-      <div class="absolute left-2 top-2 text-xs bg-white/90 rounded-lg px-2 py-1 border">Hover dot →</div>
-    </div>
-  </div>
-</section>
-
-<!-- Layout -->
-<main class="max-w-6xl mx-auto px-4 py-8 grid lg:grid-cols-[260px,1fr,320px] gap-8">
-  <!-- Left: outline -->
-  <aside class="toc sticky top-24 h-max hidden lg:block">
-    <div class="card p-4">
-      <p class="text-xs font-semibold tracking-wide text-slate-500">MODULE MAP</p>
-      <ol class="mt-3 space-y-2 text-sm" id="outline">
-        <li><a href="#start">Start</a></li>
-        <li><a href="#objectives">Objectives</a></li>
-        <li><a href="#prereqs">Prereqs & materials</a></li>
-        <li><a href="#lesson-1">Lesson 1: Mechanisms</a></li>
-        <li><a href="#lesson-2">Lesson 2: Pre-analytics</a></li>
-        <li><a href="#lesson-3">Lesson 3: Fixatives table</a></li>
-        <li><a href="#lesson-4">Lesson 4: Artifacts</a></li>
-        <li><a href="#worked">Worked scenarios</a></li>
-        <li><a href="#practice">Practice quiz</a></li>
-        <li><a href="#downloads">Downloads</a></li>
-        <li><a href="#summary">Summary & pitfalls</a></li>
-        <li><a href="#version">Version & sources</a></li>
-      </ol>
-    </div>
-  </aside>
-
-  <!-- Center: content -->
-  <article id="content" class="space-y-10">
-
-    <!-- Start -->
-    <section id="start" tabindex="-1" class="card p-5">
-      <h2 class="text-xl font-bold">Start / Resume</h2>
-      <p class="text-slate-600 mt-1">We’ll remember your spot, quiz attempts, and notes on this device.</p>
-      <div class="mt-3 flex flex-wrap gap-2 text-sm">
-        <div id="progressText" class="px-2 py-1 rounded bg-slate-100">Progress: 0%</div>
-        <div id="statusChip" class="px-2 py-1 rounded bg-slate-100">Not completed</div>
+  <!-- Hero -->
+  <section class="bg-slate-50 border-b">
+    <div class="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-[1.15fr,0.85fr] md:items-center gap-8">
+      <div>
+        <p class="uppercase tracking-wide text-xs text-slate-500">Module • Core</p>
+        <h1 class="text-3xl md:text-4xl font-extrabold mt-1">Fixation</h1>
+        <p class="mt-3 text-slate-700">35–45 min. Mechanisms, pre-analytics & QC to power high-quality H&amp;E, specials, IHC/IF, and ISH.</p>
+        <div class="mt-4 flex flex-wrap gap-2 text-xs">
+          <span class="pill">HT skills</span><span class="pill">HTL depth</span><span class="pill">Quiz: 10 Q</span>
+        </div>
+        <div class="mt-5 flex gap-3">
+          <a id="startBtn" href="#start" class="rounded-xl px-4 py-2 text-white font-semibold" style="background:var(--brand)">Start / Resume</a>
+          <button id="topBtn" class="rounded-xl border px-4 py-2">Back to top</button>
+        </div>
+        <p class="mt-2 text-xs text-slate-500">Video 12 m • reading 10 m • practice 15 m</p>
       </div>
-    </section>
 
-    <!-- Objectives -->
-    <section id="objectives" class="card p-6">
-      <h2 class="text-xl font-bold">Learning objectives</h2>
-      <ul class="list-disc ml-5 mt-2 text-slate-700">
-        <li>Differentiate <button class="gloss" data-term="crosslinking">crosslinking</button> vs <button class="gloss" data-term="coagulative">coagulative</button> fixation.</li>
-        <li>Select fixatives/conditions for H&amp;E, specials, IHC/IF, ISH, enzyme histochemistry.</li>
-        <li>Control pre-analytics (time, thickness, ratio, pH, temperature, tonicity) to prevent artifacts.</li>
-        <li>Recognize and correct formalin/mercury pigments and over/under-fixation issues.</li>
-        <li>Document protocols and QC to lab standards.</li>
-      </ul>
-      <div class="mt-3 text-sm text-slate-500">Estimated time: 35–45 minutes (video 12m • reading 10m • practice 15m)</div>
-    </section>
+      <div class="hidden md:block relative">
+        <picture>
+          <source type="image/webp"
+          <img src="../assets/formaldehyde-1200.jpg" alt="Brown glass formaldehyde bottle used for tissue fixation."
+               class="w-full h-auto max-h-[360px] object-contain rounded-none border-0 shadow-none"
+               loading="eager" decoding="async"
+               onerror="this.onerror=null;this.src='../assets/formaldehyde.jpg'">
+        </picture>
 
-    <!-- Prereqs -->
-    <section id="prereqs" class="card p-6">
-      <h2 class="text-xl font-bold">Prereqs & what you’ll need</h2>
-      <ul class="list-disc ml-5 text-slate-700">
-        <li>Basic tissue handling + H&amp;E workflow.</li>
-        <li>Materials for bench practice: NBF, 95% ethanol, acetone (cold), Bouin’s (optional), ammonium hydroxide, alcoholic picric acid, iodine + sodium thiosulfate.</li>
-        <li>For IHC/ISH emphasis: buffer pH strips, EDTA decalc solution (if relevant).</li>
-      </ul>
-    </section>
-
-    <!-- Lesson 1 -->
-    <section id="lesson-1" class="card p-6">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-bold">Lesson 1 — Mechanisms</h2>
-        <span class="pill">5–7 min</span>
+        <!-- fun hotspot -->
+        <button class="absolute top-[26%] left-[58%] w-[18px] h-[18px] rounded-full" style="background:var(--brand)" title="Why methanol?"></button>
+        <div class="absolute left-2 top-2 bg-white/90 text-xs rounded px-2 py-1 border">Hover dot →</div>
       </div>
-      <p class="mt-2">Fixatives preserve tissue by two dominant mechanisms:</p>
-      <ul class="list-disc ml-5">
-        <li><strong>Crosslinking</strong> (formaldehyde, glutaraldehyde): methylene bridges → sturdy morphology; may mask epitopes (retrieval helps).</li>
-        <li><strong>Coagulative</strong> (ethanol/methanol, acetone): precipitate proteins → rapid penetration; more shrinkage/brittleness.</li>
-      </ul>
-      <details class="mt-3">
-        <summary class="font-semibold cursor-pointer">Key takeaways</summary>
-        <ul class="list-disc ml-5 mt-2 text-slate-700">
-          <li>Crosslinking = great architecture, sometimes retrieval.</li>
-          <li>Coagulative = speed and cytology/frozen work.</li>
-          <li>Choose mechanism by downstream method needs.</li>
+    </div>
+  </section>
+
+  <!-- Main layout -->
+  <main class="max-w-6xl mx-auto px-4 py-8 grid lg:grid-cols-[260px,1fr,320px] gap-8">
+    <!-- TOC -->
+    <aside class="toc hidden lg:block sticky top-24 h-max">
+      <div class="rounded-2xl border p-4">
+        <p class="text-xs font-semibold tracking-wide text-slate-500">MODULE MAP</p>
+        <ol id="outline" class="mt-3 space-y-2 text-sm">
+          <li><a href="#start">Start</a></li>
+          <li><a href="#objectives">Objectives</a></li>
+          <li><a href="#prereqs">Prereqs</a></li>
+          <li><a href="#lesson-1">Lesson 1: Mechanisms</a></li>
+          <li><a href="#lesson-2">Lesson 2: Pre-analytics</a></li>
+          <li><a href="#lesson-3">Lesson 3: Fixatives table</a></li>
+          <li><a href="#lesson-4">Lesson 4: Artifacts</a></li>
+          <li><a href="#worked">Worked scenarios</a></li>
+          <li><a href="#practice">Practice quiz</a></li>
+          <li><a href="#downloads">Downloads</a></li>
+          <li><a href="#summary">Summary & pitfalls</a></li>
+          <li><a href="#version">Version & sources</a></li>
+        </ol>
+      </div>
+    </aside>
+
+    <!-- Content -->
+    <article id="content" class="space-y-10">
+      <section id="start" class="rounded-2xl border p-6">
+        <h2 class="text-xl font-bold">Start / Resume</h2>
+        <p class="text-slate-600 mt-1">We’ll remember your spot, quiz attempts, and notes on this device.</p>
+        <div class="mt-3 flex gap-2 text-sm">
+          <span id="progressText" class="px-2 py-1 rounded bg-slate-100">Progress: 0%</span>
+          <span id="statusChip" class="px-2 py-1 rounded bg-slate-100">Not completed</span>
+        </div>
+      </section>
+
+      <section id="objectives" class="rounded-2xl border p-6">
+        <h2 class="text-xl font-bold">Learning objectives</h2>
+        <ul class="list-disc ml-5 mt-2">
+          <li>Differentiate <button class="underline decoration-dotted text-[color:var(--brand)] gloss" data-term="crosslinking">crosslinking</button> vs <button class="underline decoration-dotted text-[color:var(--brand)] gloss" data-term="coagulative">coagulative</button> fixation.</li>
+          <li>Select fixatives/conditions for H&amp;E, specials, IHC/IF, ISH, enzyme histochemistry.</li>
+          <li>Control pre-analytics (time, thickness, ratio, pH, temperature, tonicity) to prevent artifacts.</li>
+          <li>Recognise and correct formalin/mercury pigments and over/under-fixation issues.</li>
+          <li>Document protocols and QC to lab standards.</li>
         </ul>
-      </details>
-    </section>
+        <p class="mt-2 text-xs text-slate-500">Estimated time: 35–45 minutes</p>
+      </section>
 
-    <!-- Lesson 2 -->
-    <section id="lesson-2" class="card p-6">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-bold">Lesson 2 — Pre-analytics</h2>
-        <span class="pill">7–8 min</span>
-      </div>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <p class="mb-2"><strong>Control points to memorize</strong></p>
-          <ul class="list-disc ml-5">
-            <li>Time to fixation ≤ 1 h (immediate for biopsies).</li>
-            <li>Thickness 3–5 mm; ratio ~10:1 fixative:tissue.</li>
-            <li>pH for NBF ~7.0–7.2; temp RT; tonicity matters.</li>
-          </ul>
-          <details class="mt-3">
-            <summary class="font-semibold cursor-pointer">Why they matter</summary>
-            <p class="mt-2 text-slate-700">Cold ischemia drives autolysis; uneven penetration creates false negatives; pH/tonicity shifts change staining and morphology.</p>
-          </details>
-        </div>
-        <div class="p-3 rounded-xl bg-slate-50 border">
-          <p class="font-semibold">Mini tool — Checklist</p>
-          <label class="block mt-2 text-sm"><input type="checkbox" class="mr-2"> Time in fixative recorded</label>
-          <label class="block mt-1 text-sm"><input type="checkbox" class="mr-2"> Cassette not overcrowded</label>
-          <label class="block mt-1 text-sm"><input type="checkbox" class="mr-2"> Fixative pH verified</label>
-          <label class="block mt-1 text-sm"><input type="checkbox" class="mr-2"> Tissue ≤ 5 mm thick</label>
-        </div>
-      </div>
-    </section>
+      <section id="prereqs" class="rounded-2xl border p-6">
+        <h2 class="text-xl font-bold">Prereqs & what you’ll need</h2>
+        <ul class="list-disc ml-5">
+          <li>Basic tissue handling + H&amp;E workflow.</li>
+          <li>Materials: NBF, 95% ethanol, cold acetone, Bouin’s (optional), 10% ammonium hydroxide in 70% ethanol, alcoholic picric acid, iodine + sodium thiosulfate.</li>
+          <li>For IHC/ISH emphasis: buffer pH strips; EDTA decalc solution when applicable.</li>
+        </ul>
+      </section>
 
-    <!-- Lesson 3 -->
-    <section id="lesson-3" class="card p-6">
-      <div class="flex items-center justify-between">
-        <h2 class="text-xl font-bold">Lesson 3 — Fixatives table</h2>
-        <span class="pill">5–6 min</span>
-      </div>
-      <p class="text-slate-700 mb-3">Click headers to sort.</p>
-      <div class="overflow-x-auto">
-        <table id="fixTable" class="table text-sm">
-          <thead>
-            <tr>
-              <th data-key="name">Fixative</th>
-              <th data-key="type">Type</th>
-              <th data-key="best">Best use</th>
-              <th data-key="strength">Strengths</th>
-              <th data-key="caveat">Caveats</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td data-name="10% Neutral Buffered Formalin">10% NBF</td><td>Crosslinking</td><td>Universal H&amp;E; many IHC</td><td>Gold standard morphology</td><td>Formalin pigment if acidic; retrieval often needed</td></tr>
-            <tr><td data-name="Glyoxal-based">Glyoxal-based</td><td>Crosslinking</td><td>Routine histology</td><td>Faster; less odor</td><td>Retrieval profiles differ vs NBF</td></tr>
-            <tr><td data-name="Glutaraldehyde">Glutaraldehyde</td><td>Dialdehyde</td><td>EM; enzyme histochemistry</td><td>Ultrastructure preserved</td><td>Over-hardening; autofluorescence</td></tr>
-            <tr><td data-name="Alcohols / Acetone">Alcohols/Acetone</td><td>Coagulant</td><td>Cytology; frozen; enzymes</td><td>Rapid; crisp nuclei</td><td>Shrinkage; brittle; poor trichromes</td></tr>
-            <tr><td data-name="Bouin’s">Bouin’s</td><td>Compound</td><td>Testis; GI mucosa; trichromes</td><td>Great CT contrast</td><td>Yellow picrate; long wash</td></tr>
-            <tr><td data-name="Zinc-formalin">Zinc-formalin</td><td>Additive</td><td>IHC nuclear detail</td><td>Improved nuclei</td><td>Zinc crystals/waste handling</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- Lesson 4 -->
-    <section id="lesson-4" class="card p-6">
-      <div class="flex items-center justify-between"><h2 class="text-xl font-bold">Lesson 4 — Artifacts</h2><span class="pill">4–5 min</span></div>
-      <div class="grid md:grid-cols-2 gap-6">
-        <div>
-          <p class="font-semibold">Formalin pigment (acid hematin)</p>
-          <ul class="list-disc ml-5">
-            <li>Brown-black birefringent granules after acidic/long fixation.</li>
-            <li><strong>Removal:</strong> alcoholic picric acid <em>or</em> 10% ammonium hydroxide in 70% ethanol.</li>
-          </ul>
-          <p class="font-semibold mt-4">Mercury pigment</p>
-          <ul class="list-disc ml-5">
-            <li>Legacy fixatives (B-5/Zenker). <strong>Remove:</strong> iodine → sodium thiosulfate.</li>
-          </ul>
+      <section id="lesson-1" class="rounded-2xl border p-6">
+        <div class="flex justify-between items-center">
+          <h2 class="text-xl font-bold">Lesson 1 — Mechanisms</h2>
+          <span class="pill">5–7 min</span>
         </div>
-        <div>
-          <details open class="mb-3">
-            <summary class="font-semibold cursor-pointer">Easy to get wrong</summary>
-            <ul class="list-disc ml-5 mt-2 text-slate-700">
-              <li>Assuming “overnight” is always sufficient—thickness/fat content matters.</li>
-              <li>Skipping retrieval tuning after changing fixative.</li>
-              <li>Ignoring pH drift in “homemade” formalin buffers.</li>
+        <ul class="list-disc ml-5 mt-2">
+          <li><b>Crosslinking</b> (formaldehyde, glutaraldehyde): methylene bridges → sturdy morphology; may mask epitopes (retrieval helps).</li>
+          <li><b>Coagulative</b> (ethanol/methanol, acetone): precipitate proteins → rapid penetration; more shrinkage/brittleness.</li>
+        </ul>
+        <details class="mt-3">
+          <summary class="font-semibold cursor-pointer">Key takeaways</summary>
+          <ul class="list-disc ml-5 mt-2 text-slate-700">
+            <li>Crosslinking = great architecture, sometimes retrieval.</li>
+            <li>Coagulative = speed; used in cytology & frozen/enzyme work.</li>
+            <li>Choose by downstream method needs.</li>
+          </ul>
+        </details>
+      </section>
+
+      <section id="lesson-2" class="rounded-2xl border p-6">
+        <div class="flex justify-between items-center"><h2 class="text-xl font-bold">Lesson 2 — Pre-analytics</h2><span class="pill">7–8 min</span></div>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <p class="mb-2 font-semibold">Control points to memorise</p>
+            <ul class="list-disc ml-5">
+              <li>Time to fixation ≤ 1 h (immediate for biopsies).</li>
+              <li>Thickness 3–5 mm; ratio ~10:1 fixative:tissue.</li>
+              <li>pH for NBF ~7.0–7.2; temp RT; tonicity matters.</li>
             </ul>
-          </details>
-          <p class="text-sm text-slate-600">For bone/ISH: prefer EDTA decalc to preserve antigen/nucleic acids.</p>
+            <details class="mt-3"><summary class="font-semibold cursor-pointer">Why they matter</summary>
+              <p class="mt-2 text-slate-700">Cold ischemia drives autolysis; uneven penetration creates false negatives; pH/tonicity shifts change staining and morphology.</p>
+            </details>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 border">
+            <p class="font-semibold">Bench mini-checklist</p>
+            <label class="block mt-2 text-sm"><input type="checkbox" class="mr-2"> Time in fixative recorded</label>
+            <label class="block mt-1 text-sm"><input type="checkbox" class="mr-2"> Cassette not overcrowded</label>
+            <label class="block mt-1 text-sm"><input type="checkbox" class="mr-2"> Fixative pH verified</label>
+            <label class="block mt-1 text-sm"><input type="checkbox" class="mr-2"> Tissue ≤ 5 mm thick</label>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Worked scenarios -->
-    <section id="worked" class="card p-6">
-      <h2 class="text-xl font-bold">Worked scenarios</h2>
-      <div class="space-y-4 mt-2">
-        <details>
-          <summary class="font-semibold cursor-pointer">S1. Small GI biopsy for H&amp;E and IHC</summary>
-          <div class="mt-2 text-slate-700">
-            <p><strong>Plan:</strong> Immediate NBF, thin grossing ≤3 mm, 10:1 ratio, record times. Retrieval tuned per marker.</p>
-            <button class="btn btn-ghost mt-2" onclick="this.nextElementSibling.classList.toggle('hidden');return false;">Show solution</button>
-            <div class="hidden mt-2 p-3 rounded-xl bg-slate-50 border text-sm">Because cold ischemia drives epitope loss, speed to fix is key; NBF morphology supports H&amp;E and most IHC with HIER.</div>
+      <section id="lesson-3" class="rounded-2xl border p-6">
+        <div class="flex justify-between items-center"><h2 class="text-xl font-bold">Lesson 3 — Fixatives table</h2><span class="pill">5–6 min</span></div>
+        <p class="text-slate-700 mb-3">Click headers to sort.</p>
+        <div class="overflow-x-auto">
+          <table id="fixTable" class="table text-sm">
+            <thead>
+              <tr><th data-key="name">Fixative</th><th data-key="type">Type</th><th data-key="best">Best use</th><th data-key="strength">Strengths</th><th data-key="caveat">Caveats</th></tr>
+            </thead>
+            <tbody>
+              <tr><td data-name="10% Neutral Buffered Formalin">10% NBF</td><td>Crosslinking</td><td>Universal H&amp;E; many IHC</td><td>Gold standard morphology</td><td>Formalin pigment if acidic; retrieval often needed</td></tr>
+              <tr><td data-name="Glyoxal-based">Glyoxal-based</td><td>Crosslinking</td><td>Routine histology</td><td>Faster; less odour</td><td>Retrieval profiles differ vs NBF</td></tr>
+              <tr><td data-name="Glutaraldehyde">Glutaraldehyde</td><td>Dialdehyde</td><td>EM; enzyme histochemistry</td><td>Ultrastructure preserved</td><td>Over-hardening; autofluorescence</td></tr>
+              <tr><td data-name="Alcohols / Acetone">Alcohols/Acetone</td><td>Coagulant</td><td>Cytology; frozen; enzymes</td><td>Rapid; crisp nuclei</td><td>Shrinkage; brittle; poor trichromes</td></tr>
+              <tr><td data-name="Bouin’s">Bouin’s</td><td>Compound</td><td>Testis; GI mucosa; trichromes</td><td>Great CT contrast</td><td>Yellow picrate; long wash</td></tr>
+              <tr><td data-name="Zinc-formalin">Zinc-formalin</td><td>Additive</td><td>IHC nuclear detail</td><td>Improved nuclei</td><td>Zinc crystals/waste handling</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="lesson-4" class="rounded-2xl border p-6">
+        <div class="flex justify-between items-center"><h2 class="text-xl font-bold">Lesson 4 — Artifacts</h2><span class="pill">4–5 min</span></div>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <p class="font-semibold">Formalin pigment (acid hematin)</p>
+            <ul class="list-disc ml-5">
+              <li>Brown-black birefringent granules after acidic/long fixation.</li>
+              <li><b>Removal:</b> alcoholic picric acid or 10% ammonium hydroxide in 70% ethanol.</li>
+            </ul>
+            <p class="font-semibold mt-4">Mercury pigment</p>
+            <ul class="list-disc ml-5">
+              <li>Legacy fixatives (B-5/Zenker). <b>Remove:</b> iodine → sodium thiosulfate.</li>
+            </ul>
           </div>
-        </details>
-        <details>
-          <summary class="font-semibold cursor-pointer">S2. Enzyme histochemistry on frozen skeletal muscle</summary>
-          <div class="mt-2 text-slate-700">
-            <p><strong>Plan:</strong> Brief cold acetone (−20 °C) 30–60 s; keep temps low to preserve enzyme activity.</p>
+          <div>
+            <details open class="mb-3"><summary class="font-semibold cursor-pointer">Easy to get wrong</summary>
+              <ul class="list-disc ml-5 mt-2 text-slate-700">
+                <li>Assuming “overnight” timing fits all tissues.</li>
+                <li>Skipping retrieval tuning after a fixative change.</li>
+                <li>Ignoring pH drift in home-made buffers.</li>
+              </ul>
+            </details>
+            <p class="text-sm text-slate-600">For bone/ISH: prefer <b>EDTA</b> decalc to preserve antigens/nucleic acids.</p>
           </div>
-        </details>
-        <details>
-          <summary class="font-semibold cursor-pointer">S3. Bone marrow core with planned ISH</summary>
-          <div class="mt-2 text-slate-700">
-            <p><strong>Plan:</strong> NBF then <strong>EDTA</strong> decalc; avoid strong acids; document pre-analytics; validate probe with control tissue.</p>
-          </div>
-        </details>
-      </div>
-    </section>
+        </div>
+      </section>
 
-    <!-- Practice -->
-    <section id="practice" class="card p-6">
-      <div class="flex items-center justify-between"><h2 class="text-xl font-bold">Practice quiz (10)</h2><span class="pill">Target ≥ 80%</span></div>
-      <p class="text-sm text-slate-600">Immediate feedback; explanations appear under each item.</p>
-      <form id="quizForm" class="mt-4 grid gap-5 max-w-3xl" aria-describedby="quizDesc">
-        <p id="quizDesc" class="sr-only">Answer the questions below.</p>
+      <section id="worked" class="rounded-2xl border p-6">
+        <h2 class="text-xl font-bold">Worked scenarios</h2>
+        <div class="space-y-4 mt-2">
+          <details><summary class="font-semibold cursor-pointer">S1. Small GI biopsy for H&amp;E and IHC</summary>
+            <div class="mt-2 text-slate-700">
+              <p><b>Plan:</b> Immediate NBF, thin grossing ≤3 mm, 10:1 ratio, record times. Retrieval tuned per marker.</p>
+              <button class="mt-2 rounded-xl border px-3 py-2 text-sm" onclick="this.nextElementSibling.classList.toggle('hidden');return false;">Show solution</button>
+              <div class="hidden mt-2 p-3 rounded-xl bg-slate-50 border text-sm">Cold ischemia drives epitope loss; speed to fix is key. NBF supports H&amp;E and most IHC with HIER.</div>
+            </div>
+          </details>
+          <details><summary class="font-semibold cursor-pointer">S2. Enzyme histochemistry on frozen skeletal muscle</summary>
+            <div class="mt-2 text-slate-700"><b>Plan:</b> Brief cold acetone (−20 °C) 30–60 s; keep temps low to preserve enzyme activity.</div>
+          </details>
+          <details><summary class="font-semibold cursor-pointer">S3. Bone marrow core with planned ISH</summary>
+            <div class="mt-2 text-slate-700"><b>Plan:</b> NBF then <b>EDTA</b> decalc; avoid strong acids; document pre-analytics; validate probe with control tissue.</div>
+          </details>
+        </div>
+      </section>
 
-        <!-- Each fieldset has data-correct and data-expl -->
-        <fieldset data-correct="C" data-expl="Formaldehyde forms methylene bridges (crosslinking).">
-          <legend class="font-medium">1) The primary chemical action of formaldehyde is:</legend>
-          <label class="block mt-1"><input type="radio" name="q1" value="A"> Coagulation of proteins</label>
-          <label class="block mt-1"><input type="radio" name="q1" value="B"> Oxidation of lipids</label>
-          <label class="block mt-1"><input type="radio" name="q1" value="C"> Crosslinking of proteins via methylene bridges</label>
-          <label class="block mt-1"><input type="radio" name="q1" value="D"> Hydrolysis of nucleic acids</label>
-          <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
-        </fieldset>
+      <section id="practice" class="rounded-2xl border p-6">
+        <div class="flex justify-between items-center"><h2 class="text-xl font-bold">Practice quiz (10)</h2><span class="pill">Target ≥ 80%</span></div>
+        <p class="text-sm text-slate-600">Immediate feedback appears under each item.</p>
 
-        <fieldset data-correct="B" data-expl="Minimize cold ischemia; speed to fix is critical.">
-          <legend class="font-medium">2) Most critical pre-analytic control for small GI biopsies:</legend>
-          <label class="block mt-1"><input type="radio" name="q2" value="A"> High paraffin temperature</label>
-          <label class="block mt-1"><input type="radio" name="q2" value="B"> Minimized time to fixation</label>
-          <label class="block mt-1"><input type="radio" name="q2" value="C"> Prolonged water bath float time</label>
-          <label class="block mt-1"><input type="radio" name="q2" value="D"> Use of zinc salts</label>
-          <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
-        </fieldset>
+        <!-- Static, dependable quiz -->
+        <form id="quizForm" class="mt-4 grid gap-5 max-w-3xl">
+          <!-- 1 -->
+          <fieldset data-correct="C" data-expl="Formaldehyde forms methylene bridges (crosslinking).">
+            <legend class="font-medium">1) The primary chemical action of formaldehyde is:</legend>
+            <label class="block mt-1"><input type="radio" name="q1" value="A"> Coagulation of proteins</label>
+            <label class="block mt-1"><input type="radio" name="q1" value="B"> Oxidation of lipids</label>
+            <label class="block mt-1"><input type="radio" name="q1" value="C"> Crosslinking of proteins via methylene bridges</label>
+            <label class="block mt-1"><input type="radio" name="q1" value="D"> Hydrolysis of nucleic acids</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <!-- 2 -->
+          <fieldset data-correct="B" data-expl="Minimise cold ischemia; speed to fix is critical.">
+            <legend class="font-medium">2) Most critical pre-analytic control for small GI biopsies:</legend>
+            <label class="block mt-1"><input type="radio" name="q2" value="A"> High paraffin temperature</label>
+            <label class="block mt-1"><input type="radio" name="q2" value="B"> Minimized time to fixation</label>
+            <label class="block mt-1"><input type="radio" name="q2" value="C"> Prolonged water bath float time</label>
+            <label class="block mt-1"><input type="radio" name="q2" value="D"> Use of zinc salts</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <!-- 3 -->
+          <fieldset data-correct="B" data-expl="Classic acid hematin from acidic formalin or long fixation.">
+            <legend class="font-medium">3) Brown-black granular pigment after long acidic formalin storage is:</legend>
+            <label class="block mt-1"><input type="radio" name="q3" value="A"> Melanin</label>
+            <label class="block mt-1"><input type="radio" name="q3" value="B"> Formalin pigment (acid hematin)</label>
+            <label class="block mt-1"><input type="radio" name="q3" value="C"> Hemosiderin</label>
+            <label class="block mt-1"><input type="radio" name="q3" value="D"> Carbon</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <!-- 4 -->
+          <fieldset data-correct="C" data-expl="Iodine → sodium thiosulfate removes mercury pigment.">
+            <legend class="font-medium">4) Best removal for mercury pigment:</legend>
+            <label class="block mt-1"><input type="radio" name="q4" value="A"> Saturated alcoholic lithium carbonate</label>
+            <label class="block mt-1"><input type="radio" name="q4" value="B"> Potassium permanganate</label>
+            <label class="block mt-1"><input type="radio" name="q4" value="C"> Iodine followed by sodium thiosulfate</label>
+            <label class="block mt-1"><input type="radio" name="q4" value="D"> Hydrogen peroxide</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <!-- 5 -->
+          <fieldset data-correct="B" data-expl="Coagulants act fast but shrink tissue; great for cytology/frozen.">
+            <legend class="font-medium">5) Fixative class causing shrinkage but rapid nuclear preservation:</legend>
+            <label class="block mt-1"><input type="radio" name="q5" value="A"> Dialdehydes</label>
+            <label class="block mt-1"><input type="radio" name="q5" value="B"> Alcohols</label>
+            <label class="block mt-1"><input type="radio" name="q5" value="C"> Aldehydes</label>
+            <label class="block mt-1"><input type="radio" name="q5" value="D"> Osmium tetroxide</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <!-- 6 -->
+          <fieldset data-correct="C" data-expl="EDTA preserves antigen/nucleic acids for IHC/ISH.">
+            <legend class="font-medium">6) For IHC-heavy bone marrow requiring decalcification, choose:</legend>
+            <label class="block mt-1"><input type="radio" name="q6" value="A"> Strong hydrochloric acid</label>
+            <label class="block mt-1"><input type="radio" name="q6" value="B"> Formic acid with heat</label>
+            <label class="block mt-1"><input type="radio" name="q6" value="C"> EDTA at room temperature</label>
+            <label class="block mt-1"><input type="radio" name="q6" value="D"> Trichloroacetic acid</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <!-- 7 -->
+          <fieldset data-correct="B" data-expl="Two 100% stations limit water carryover.">
+            <legend class="font-medium">7) The main purpose of two 100% alcohol stations is to reduce:</legend>
+            <label class="block mt-1"><input type="radio" name="q7" value="A"> Over-dehydration</label>
+            <label class="block mt-1"><input type="radio" name="q7" value="B"> Water carryover</label>
+            <label class="block mt-1"><input type="radio" name="q7" value="C"> Brittleness</label>
+            <label class="block mt-1"><input type="radio" name="q7" value="D"> Heat damage</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <!-- 8 -->
+          <fieldset data-correct="B" data-expl="Over-retrieval damages morphology and raises background.">
+            <legend class="font-medium">8) After very long fixation, excessive retrieval most commonly causes:</legend>
+            <label class="block mt-1"><input type="radio" name="q8" value="A"> Enhanced specific signal only</label>
+            <label class="block mt-1"><input type="radio" name="q8" value="B"> Loss of morphology/high background</label>
+            <label class="block mt-1"><input type="radio" name="q8" value="C"> No change</label>
+            <label class="block mt-1"><input type="radio" name="q8" value="D"> Stronger counterstain</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <!-- 9 -->
+          <fieldset data-correct="B" data-expl="Soften block (ice/glycerol), trim thinner, adjust angle.">
+            <legend class="font-medium">9) To reduce chatter in an over-fixed brittle block, first:</legend>
+            <label class="block mt-1"><input type="radio" name="q9" value="A"> Raise water bath to 55–60 °C</label>
+            <label class="block mt-1"><input type="radio" name="q9" value="B"> Soften block, trim thinner, adjust angle</label>
+            <label class="block mt-1"><input type="radio" name="q9" value="C"> Prolong xylene clearing</label>
+            <label class="block mt-1"><input type="radio" name="q9" value="D"> Use a coarser blade</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <!-- 10 -->
+          <fieldset data-correct="B" data-expl="NBF is buffered near neutral (~7.0–7.2).">
+            <legend class="font-medium">10) Typical pH of standard NBF:</legend>
+            <label class="block mt-1"><input type="radio" name="q10" value="A"> 5.0–5.5</label>
+            <label class="block mt-1"><input type="radio" name="q10" value="B"> 7.0–7.2</label>
+            <label class="block mt-1"><input type="radio" name="q10" value="C"> 8.5–9.0</label>
+            <label class="block mt-1"><input type="radio" name="q10" value="D"> 10.5–11.0</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+        </form>
 
-        <fieldset data-correct="B" data-expl="Classic acid hematin from acidic formalin or long fixation.">
-          <legend class="font-medium">3) Brown-black granular pigment after long acidic formalin storage is:</legend>
-          <label class="block mt-1"><input type="radio" name="q3" value="A"> Melanin</label>
-          <label class="block mt-1"><input type="radio" name="q3" value="B"> Formalin pigment (acid hematin)</label>
-          <label class="block mt-1"><input type="radio" name="q3" value="C"> Hemosiderin</label>
-          <label class="block mt-1"><input type="radio" name="q3" value="D"> Carbon</label>
-          <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
-        </fieldset>
+        <div class="quiz-actions mt-3 flex gap-3">
+          <button id="gradeBtn" type="button" class="rounded-xl px-4 py-2 text-white font-semibold" style="background:var(--brand)">Submit</button>
+          <button id="retryBtn" type="button" class="rounded-xl border px-4 py-2">Retry</button>
+        </div>
+        <div id="quizResult" class="hidden mt-4 p-4 rounded-xl border" aria-live="polite"></div>
+      </section>
 
-        <fieldset data-correct="C" data-expl="Iodine → sodium thiosulfate removes mercury pigment.">
-          <legend class="font-medium">4) Best removal for mercury pigment:</legend>
-          <label class="block mt-1"><input type="radio" name="q4" value="A"> Saturated alcoholic lithium carbonate</label>
-          <label class="block mt-1"><input type="radio" name="q4" value="B"> Potassium permanganate</label>
-          <label class="block mt-1"><input type="radio" name="q4" value="C"> Iodine followed by sodium thiosulfate</label>
-          <label class="block mt-1"><input type="radio" name="q4" value="D"> Hydrogen peroxide</label>
-          <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
-        </fieldset>
+      <section id="downloads" class="rounded-2xl border p-6">
+        <h2 class="text-xl font-bold">Downloads</h2>
+        <div class="mt-3 flex flex-wrap gap-3">
+          <a class="rounded-xl border px-3 py-2" href="../assets/Fixation_Quick_Card.pdf">Quick-card (PDF)</a>
+          <a class="rounded-xl border px-3 py-2" href="../assets/Pigment_Removal_OnePager.pdf">Pigment removal (PDF)</a>
+          <a class="rounded-xl border px-3 py-2" href="../assets/NBF_Prep_Worksheet.pdf">NBF worksheet (PDF)</a>
+          <a class="rounded-xl border px-3 py-2" href="../assets/IHC_Validation_Checklist.pdf">IHC/ISH checklist (PDF)</a>
+          <a class="rounded-xl px-3 py-2 text-white" style="background:var(--brand)" href="../assets/all-fixation-downloads.zip">All downloads (ZIP)</a>
+        </div>
+      </section>
 
-        <fieldset data-correct="B" data-expl="Coagulants act fast but shrink tissue; great for cytology/frozen.">
-          <legend class="font-medium">5) Fixative class causing shrinkage but rapid nuclear preservation:</legend>
-          <label class="block mt-1"><input type="radio" name="q5" value="A"> Dialdehydes</label>
-          <label class="block mt-1"><input type="radio" name="q5" value="B"> Alcohols</label>
-          <label class="block mt-1"><input type="radio" name="q5" value="C"> Aldehydes</label>
-          <label class="block mt-1"><input type="radio" name="q5" value="D"> Osmium tetroxide</label>
-          <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
-        </fieldset>
+      <section id="summary" class="rounded-2xl border p-6">
+        <h2 class="text-xl font-bold">Summary — what you can do now</h2>
+        <ul class="list-disc ml-5">
+          <li>Choose fixatives by mechanism and downstream assay.</li>
+          <li>Control pre-analytics to protect morphology and targets.</li>
+          <li>Remove formalin/mercury pigments; adjust retrieval.</li>
+          <li>Document QC and validate changes.</li>
+        </ul>
+        <h3 class="font-semibold mt-4">Common pitfalls</h3>
+        <ul class="list-disc ml-5 text-slate-700">
+          <li>“Overnight” fits all tissues.</li>
+          <li>Treating poor nuclear detail purely as a staining issue.</li>
+          <li>Switching fixatives without parallel validation.</li>
+        </ul>
+        <div class="mt-4 actions flex justify-between">
+          <a class="rounded-xl border px-3 py-2" href="./fixation.html">← Back to module</a>
+          <a class="rounded-xl border px-3 py-2" href="./processing.html">Next: Processing →</a>
+        </div>
+      </section>
 
-        <fieldset data-correct="C" data-expl="EDTA preserves antigen/nucleic acids for IHC/ISH.">
-          <legend class="font-medium">6) For IHC-heavy bone marrow requiring decalcification, choose:</legend>
-          <label class="block mt-1"><input type="radio" name="q6" value="A"> Strong hydrochloric acid</label>
-          <label class="block mt-1"><input type="radio" name="q6" value="B"> Formic acid with heat</label>
-          <label class="block mt-1"><input type="radio" name="q6" value="C"> EDTA at room temperature</label>
-          <label class="block mt-1"><input type="radio" name="q6" value="D"> Trichloroacetic acid</label>
-          <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
-        </fieldset>
+      <section id="version" class="rounded-2xl border p-6">
+        <h2 class="text-xl font-bold">Version & sources</h2>
+        <p class="text-sm text-slate-600">Updated <span id="verDate"></span> • v1.0</p>
+        <ul class="list-disc ml-5 mt-2 text-sm">
+          <li>Standard histotechnology references and bench SOPs (general guidance; follow local policy and assay IFUs).</li>
+        </ul>
+      </section>
+    </article>
 
-        <fieldset data-correct="B" data-expl="Two 100% stations limit water carryover.">
-          <legend class="font-medium">7) The main purpose of two 100% alcohol stations is to reduce:</legend>
-          <label class="block mt-1"><input type="radio" name="q7" value="A"> Over-dehydration</label>
-          <label class="block mt-1"><input type="radio" name="q7" value="B"> Water carryover</label>
-          <label class="block mt-1"><input type="radio" name="q7" value="C"> Brittleness</label>
-          <label class="block mt-1"><input type="radio" name="q7" value="D"> Heat damage</label>
-          <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
-        </fieldset>
+    <!-- Right rail -->
+    <aside class="space-y-4">
+      <section class="rounded-2xl border p-4">
+        <p class="text-xs font-semibold tracking-wide text-slate-500">OBJECTIVES</p>
+        <ul class="mt-2 text-sm list-disc ml-5">
+          <li>Mechanisms: crosslinking vs coagulative</li>
+          <li>Pre-analytics control</li>
+          <li>Fixatives selection</li>
+          <li>Artifacts & removal</li>
+        </ul>
+        <p class="mt-3 text-xs text-slate-500">Time: 35–45 min</p>
+      </section>
+      <section class="rounded-2xl border p-4 notes">
+        <p class="text-xs font-semibold tracking-wide text-slate-500">YOUR NOTES</p>
+        <textarea id="notes" class="mt-2 w-full h-40 p-2 rounded-lg border" placeholder="Jot key takeaways…"></textarea>
+        <p class="text-xs text-slate-500 mt-1">Autosaved locally</p>
+      </section>
+    </aside>
+  </main>
 
-        <fieldset data-correct="B" data-expl="Over-retrieval damages morphology and raises background.">
-          <legend class="font-medium">8) After very long fixation, excessive retrieval most commonly causes:</legend>
-          <label class="block mt-1"><input type="radio" name="q8" value="A"> Enhanced specific signal only</label>
-          <label class="block mt-1"><input type="radio" name="q8" value="B"> Loss of morphology/high background</label>
-          <label class="block mt-1"><input type="radio" name="q8" value="C"> No change</label>
-          <label class="block mt-1"><input type="radio" name="q8" value="D"> Stronger counterstain</label>
-          <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
-        </fieldset>
-
-        <fieldset data-correct="B" data-expl="Soften block (ice/glycerol), trim thinner, and adjust angle.">
-          <legend class="font-medium">9) To reduce chatter in an over-fixed brittle block, first:</legend>
-          <label class="block mt-1"><input type="radio" name="q9" value="A"> Raise water bath to 55–60 °C</label>
-          <label class="block mt-1"><input type="radio" name="q9" value="B"> Soften block, trim thinner, adjust angle</label>
-          <label class="block mt-1"><input type="radio" name="q9" value="C"> Prolong xylene clearing</label>
-          <label class="block mt-1"><input type="radio" name="q9" value="D"> Use a coarser blade</label>
-          <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
-        </fieldset>
-
-        <fieldset data-correct="B" data-expl="NBF is buffered near neutral, ~7.0–7.2.">
-          <legend class="font-medium">10) Typical pH of standard NBF:</legend>
-          <label class="block mt-1"><input type="radio" name="q10" value="A"> 5.0–5.5</label>
-          <label class="block mt-1"><input type="radio" name="q10" value="B"> 7.0–7.2</label>
-          <label class="block mt-1"><input type="radio" name="q10" value="C"> 8.5–9.0</label>
-          <label class="block mt-1"><input type="radio" name="q10" value="D"> 10.5–11.0</label>
-          <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
-        </fieldset>
-      </form>
-
-      <div class="quiz-actions mt-3 flex gap-3">
-        <button type="button" class="btn btn-brand" id="gradeBtn">Submit</button>
-        <button type="button" class="btn btn-ghost" id="retryBtn">Retry</button>
-      </div>
-      <div id="quizResult" class="hidden mt-4 p-4 rounded-xl border" aria-live="polite"></div>
-    </section>
-
-    <!-- Downloads -->
-    <section id="downloads" class="card p-6">
-      <h2 class="text-xl font-bold">Downloads</h2>
-      <div class="mt-3 flex flex-wrap gap-3">
-        <a class="btn btn-ghost" href="../assets/Fixation_Quick_Card.pdf">Quick-card (PDF)</a>
-        <a class="btn btn-ghost" href="../assets/Pigment_Removal_OnePager.pdf">Pigment removal (PDF)</a>
-        <a class="btn btn-ghost" href="../assets/NBF_Prep_Worksheet.pdf">NBF worksheet (PDF)</a>
-        <a class="btn btn-ghost" href="../assets/IHC_Validation_Checklist.pdf">IHC/ISH checklist (PDF)</a>
-        <a class="btn btn-brand" href="../assets/all-fixation-downloads.zip">All downloads (ZIP)</a>
-      </div>
-    </section>
-
-    <!-- Summary / Pitfalls -->
-    <section id="summary" class="card p-6">
-      <h2 class="text-xl font-bold">Summary — what you can do now</h2>
-      <ul class="list-disc ml-5">
-        <li>Choose fixatives based on mechanism and downstream assays.</li>
-        <li>Control pre-analytics to protect morphology and targets.</li>
-        <li>Remove formalin/mercury pigments and adjust retrieval.</li>
-        <li>Document QC and validate changes.</li>
-      </ul>
-      <h3 class="font-semibold mt-4">Common pitfalls</h3>
-      <ul class="list-disc ml-5 text-slate-700">
-        <li>“Overnight” generic timing for all tissues.</li>
-        <li>Parsing poor nuclear detail as only a staining issue.</li>
-        <li>Switching fixatives without parallel validation.</li>
-      </ul>
-      <div class="mt-4 actions flex justify-between">
-        <a href="./fixation.html" class="btn btn-ghost">← Back to module</a>
-        <a href="./processing.html" class="btn btn-ghost">Next: Processing →</a>
-      </div>
-    </section>
-
-    <!-- Version / Sources -->
-    <section id="version" class="card p-6">
-      <h2 class="text-xl font-bold">Version & sources</h2>
-      <p class="text-sm text-slate-600">Updated <span id="verDate"></span> • v1.0</p>
-      <ul class="list-disc ml-5 mt-2 text-sm">
-        <li>Standard histotechnology references and bench SOPs (general guidance; local policy prevails).</li>
-        <li>For regulated assays, follow your lab’s validation requirements and manufacturer IFU.</li>
-      </ul>
-    </section>
-  </article>
-
-  <!-- Right: Objectives / Time / Notes -->
-  <aside class="space-y-4">
-    <section class="card p-4">
-      <p class="text-xs font-semibold tracking-wide text-slate-500">OBJECTIVES</p>
-      <ul class="mt-2 text-sm list-disc ml-5">
-        <li>Mechanisms: crosslinking vs coagulative</li>
-        <li>Pre-analytics control</li>
-        <li>Fixatives selection</li>
-        <li>Artifacts & removal</li>
-      </ul>
-      <div class="mt-3 text-xs text-slate-500">Time: 35–45 min</div>
-    </section>
-    <section class="card p-4 notes">
-      <p class="text-xs font-semibold tracking-wide text-slate-500">YOUR NOTES</p>
-      <textarea id="notes" class="mt-2 w-full h-40 p-2 rounded-lg border border-slate-300" placeholder="Jot key takeaways…"></textarea>
-      <div class="text-xs text-slate-500 mt-1">Autosaved locally</div>
-    </section>
-  </aside>
-</main>
-
-<!-- Help drawer -->
-<aside id="helpDrawer" class="fixed right-0 top-0 h-full w-[92%] sm:w-[480px] bg-white border-l border-slate-200 shadow-xl translate-x-full transition-transform"
-       role="dialog" aria-modal="true" aria-labelledby="helpTitle">
-  <div class="h-16 px-4 border-b flex items-center justify-between">
-    <h2 id="helpTitle" class="font-semibold">Ask a question</h2>
-    <button id="helpClose" class="btn btn-ghost">Close</button>
-  </div>
-  <div class="p-4 space-y-3">
-    <p class="text-sm text-slate-600">Your question will be saved to this device. You can copy it to email or paste into our contact form.</p>
-    <label class="text-sm">Section (optional)
-      <input id="helpSection" class="mt-1 w-full rounded-lg border border-slate-300 p-2" placeholder="e.g., Lesson 2 — Pre-analytics"/>
-    </label>
-    <label class="text-sm">Question
-      <textarea id="helpText" class="mt-1 w-full h-32 rounded-lg border border-slate-300 p-2" placeholder="Type your question…"></textarea>
-    </label>
-    <div class="flex gap-2">
-      <button id="helpSave" class="btn btn-brand">Save</button>
-      <button id="helpCopy" class="btn btn-ghost">Copy</button>
+  <!-- Help drawer -->
+  <aside id="helpDrawer" class="fixed right-0 top-0 h-full w-[92%] sm:w-[480px] bg-white border-l shadow-xl translate-x-full transition-transform" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="h-16 px-4 border-b flex items-center justify-between">
+      <h2 id="helpTitle" class="font-semibold">Ask a question</h2>
+      <button id="helpClose" class="rounded-xl border px-3 py-2 text-sm">Close</button>
     </div>
-    <div id="helpSaved" class="text-xs text-green-700 hidden">Saved ✓</div>
-  </div>
-</aside>
+    <div class="p-4 space-y-3">
+      <p class="text-sm text-slate-600">Your question saves to this device. Copy/paste to email or your contact form.</p>
+      <label class="text-sm">Section (optional)
+        <input id="helpSection" class="mt-1 w-full rounded-lg border p-2" placeholder="e.g., Lesson 2 — Pre-analytics"/>
+      </label>
+      <label class="text-sm">Question
+        <textarea id="helpText" class="mt-1 w-full h-32 rounded-lg border p-2" placeholder="Type your question…"></textarea>
+      </label>
+      <div class="flex gap-2">
+        <button id="helpSave" class="rounded-xl px-3 py-2 text-white" style="background:var(--brand)">Save</button>
+        <button id="helpCopy" class="rounded-xl border px-3 py-2">Copy</button>
+      </div>
+      <div id="helpSaved" class="text-xs text-green-700 hidden">Saved ✓</div>
+    </div>
+  </aside>
 
-<footer class="py-10 border-t">
-  <div class="max-w-6xl mx-auto px-4 text-slate-600">© <span id="y"></span> Free HTL Guide</div>
-</footer>
+  <footer class="py-10 border-t">
+    <div class="max-w-6xl mx-auto px-4 text-slate-600">© <span id="y"></span> Free HTL Guide</div>
+  </footer>
 
-<!-- Scripts (robust & guarded) -->
-<script>
-(function(){
-  const $ = (s,root=document)=>root.querySelector(s);
-  const $$ = (s,root=document)=>Array.from(root.querySelectorAll(s));
+  <!-- Scripts -->
+  <script>
+  (function(){
+    const $ = (s,root=document)=>root.querySelector(s);
+    const $$ = (s,root=document)=>Array.from(root.querySelectorAll(s));
 
-  // Year + version date
-  $('#y').textContent = new Date().getFullYear();
-  $('#verDate').textContent = new Date().toLocaleDateString(undefined,{year:'numeric',month:'short'});
+    // Footer year + version date
+    $('#y').textContent = new Date().getFullYear();
+    $('#verDate').textContent = new Date().toLocaleDateString(undefined,{year:'numeric',month:'short'});
 
-  // Progress bar + sticky outline highlight (guarded)
-  try {
-    const bar = $('#progressBar');
+    // Progress bar & outline highlight
+    const progBar = $('#progressBar');
     document.addEventListener('scroll',()=>{
-      const h=document.documentElement, pct=(h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
-      bar.style.setProperty('--pct', pct+'%');
+      const h=document.documentElement;
+      const pct=(h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
+      progBar.style.setProperty('--pct', pct+'%');
     });
-    if ('IntersectionObserver' in window){
-      const headings = $$('#content section[id]');
-      const links = $$('#outline a');
-      const io = new IntersectionObserver((entries)=>{
+    if('IntersectionObserver' in window){
+      const io = new IntersectionObserver(entries=>{
         entries.forEach(e=>{
           if(e.isIntersecting){
-            links.forEach(a=>a.removeAttribute('aria-current'));
+            $$('#outline a').forEach(a=>a.removeAttribute('aria-current'));
             const hit = $('#outline a[href="#'+e.target.id+'"]');
             if(hit) hit.setAttribute('aria-current','true');
           }
         });
       },{rootMargin:'-40% 0px -50% 0px',threshold:0});
-      headings.forEach(h=>io.observe(h));
+      $$('#content section[id]').forEach(s=>io.observe(s));
     }
-  } catch(e){ console.warn('progress/outline disabled',e); }
 
-  // Start/Resume: restore last section
-  const LS_KEY_LAST='fixation_pro_last';
-  $('#startBtn').addEventListener('click',()=>{
-    const last=localStorage.getItem(LS_KEY_LAST);
-    if(last){ location.hash=last; }
-  });
-  document.addEventListener('scroll',()=>{
-    const current = $('[aria-current="true"]','#outline');
-    if(current){ localStorage.setItem(LS_KEY_LAST, current.getAttribute('href').substring(1)); }
-  });
-
-  // Mark complete
-  const DONE='fixation_pro_done';
-  const markBtn=$('#markBtn'), statusChip=$('#statusChip');
-  function renderDone(){ const v=localStorage.getItem(DONE)==='1'; markBtn.textContent=v?'Completed ✓':'Mark complete'; markBtn.setAttribute('aria-pressed',v); statusChip.textContent=v?'Completed':'Not completed'; }
-  markBtn.addEventListener('click',()=>{ localStorage.setItem(DONE, localStorage.getItem(DONE)==='1'?'0':'1'); renderDone(); });
-  renderDone();
-
-  // Glossary tooltips (click toggles small tooltip)
-  const terms={
-    crosslinking:'Aldehydes (e.g., formaldehyde) form methylene bridges between proteins; strong architecture.',
-    coagulative:'Alcohols/acetone precipitate proteins rapidly; used in cytology and frozen/enzyme work.'
-  };
-  document.addEventListener('click',(e)=>{
-    const t=e.target.closest('.gloss'); if(!t) return;
-    const txt=terms[t.dataset.term]||'';
-    let tip=t.nextElementSibling; if(!tip || !tip.classList.contains('tip')){
-      tip=document.createElement('span'); tip.className='tip ml-2 text-xs bg-slate-100 border px-2 py-1 rounded-lg'; t.after(tip);
-    }
-    tip.textContent=txt; tip.hidden=!tip.hidden;
-  });
-
-  // Sortable table
-  $('#fixTable thead').addEventListener('click',(e)=>{
-    const th=e.target.closest('th'); if(!th) return;
-    const key=th.dataset.key;
-    const rows=$$('#fixTable tbody tr');
-    const get=(tr)=> (tr.querySelector('[data-name]')?.dataset.name || tr.children[0].textContent).toLowerCase();
-    const collators=new Intl.Collator(undefined,{numeric:true,sensitivity:'base'});
-    const sorted=rows.sort((a,b)=> collators.compare(get(a),get(b)) );
-    const tb=$('#fixTable tbody'); sorted.forEach(r=>tb.appendChild(r));
-  });
-
-  // Notes autosave
-  const NOTES='fixation_pro_notes'; const notes=$('#notes');
-  notes.value=localStorage.getItem(NOTES)||''; notes.addEventListener('input',()=>localStorage.setItem(NOTES,notes.value));
-
-  // Help drawer
-  const drawer=$('#helpDrawer');
-  $('#helpBtn').addEventListener('click',()=>drawer.style.transform='translateX(0)');
-  $('#helpClose').addEventListener('click',()=>drawer.style.transform='translateX(100%)');
-  $('#helpSave').addEventListener('click',()=>{
-    const payload={section:$('#helpSection').value, text:$('#helpText').value, ts:new Date().toISOString()};
-    localStorage.setItem('fixation_pro_help', JSON.stringify(payload));
-    $('#helpSaved').classList.remove('hidden');
-    setTimeout(()=>$('#helpSaved').classList.add('hidden'),1500);
-  });
-  $('#helpCopy').addEventListener('click', async ()=>{
-    const txt = `Fixation module question\nSection: ${$('#helpSection').value}\n\n${$('#helpText').value}`;
-    try{ await navigator.clipboard.writeText(txt); alert('Copied to clipboard'); }catch(e){ alert('Copy failed—select and copy manually.'); }
-  });
-
-  // Image hotspot tooltip
-  const tip = document.createElement('div');
-  tip.className='hidden absolute right-2 bottom-2 max-w-[280px] p-3 rounded-xl border bg-white shadow text-sm';
-  tip.innerHTML='<b>Methanol stabilizer</b><br>Commercial formalin stocks contain ~10–15% methanol to reduce polymerization of formaldehyde. It slightly affects fixation behavior vs truly methanol-free prep.';
-  const hero = document.querySelector('section.bg-slate-50 .relative');
-  if(hero){ hero.appendChild(tip); hero.addEventListener('mouseenter',e=>{
-    if(e.target.classList.contains('hotspot')){ tip.classList.remove('hidden'); }
-  },true); hero.addEventListener('mouseleave',()=>tip.classList.add('hidden'),true); }
-
-  // Quiz: targeted feedback
-  const quizForm=$('#quizForm'), result=$('#quizResult');
-  function grade(){
-    let score=0, total=0;
-    $$('#quizForm fieldset').forEach((fs,i)=>{
-      total++;
-      fs.classList.remove('correct','incorrect');
-      const correct=fs.dataset.correct; const chosen=fs.querySelector('input:checked');
-      const exp=fs.querySelector('.exp'); if(exp) { exp.classList.add('hidden'); exp.textContent=''; }
-      if(chosen && chosen.value===correct){ score++; fs.classList.add('correct'); }
-      else{ fs.classList.add('incorrect'); if(exp){ exp.textContent=fs.dataset.expl||''; exp.classList.remove('hidden'); } }
+    // Start/Resume remembers last section
+    const LAST='fix_pro_last';
+    $('#startBtn').addEventListener('click', (ev)=>{
+      const last = localStorage.getItem(LAST);
+      if(last){ ev.preventDefault(); location.hash=last; }
     });
-    const pct=Math.round(score/total*100);
-    result.classList.remove('hidden');
-    result.innerHTML = `<strong>Score: ${score}/${total} (${pct}%)</strong>`;
-    localStorage.setItem('fixation_pro_best', Math.max(pct, +(localStorage.getItem('fixation_pro_best')||0)));
-  }
-  function retry(){
-    $$('#quizForm input[type=radio]').forEach(i=>i.checked=false);
-    $$('#quizForm fieldset').forEach(fs=>fs.classList.remove('correct','incorrect'));
-    $$('#quizForm .exp').forEach(e=>{e.textContent=''; e.classList.add('hidden');});
-    result.classList.add('hidden');
-  }
-  $('#gradeBtn').addEventListener('click', grade);
-  $('#retryBtn').addEventListener('click', retry);
+    document.addEventListener('scroll', ()=>{
+      const cur = $('#outline a[aria-current="true"]');
+      if(cur){ localStorage.setItem(LAST, cur.getAttribute('href').substring(1)); }
+    });
 
-  // Progress text by sections completed (simple: how many sections viewed)
-  const progTxt=$('#progressText'); let seen=new Set(JSON.parse(localStorage.getItem('fixation_pro_seen')||'[]'));
-  function updateSeen(id){ if(!id) return; seen.add(id); localStorage.setItem('fixation_pro_seen', JSON.stringify([...seen])); const percent=Math.round(seen.size / $$('#content section[id]').length * 100); progTxt.textContent='Progress: '+percent+'%'; }
-  document.addEventListener('scroll',()=>{ const cur=$('[aria-current="true"]','#outline'); if(cur) updateSeen(cur.getAttribute('href').substring(1)); });
-  updateSeen(location.hash?.substring(1));
+    // Mark complete
+    const DONE='fix_pro_done';
+    const markBtn=$('#markBtn'), statusChip=$('#statusChip');
+    function renderDone(){ const v=localStorage.getItem(DONE)==='1'; markBtn.textContent=v?'Completed ✓':'Mark complete'; markBtn.setAttribute('aria-pressed',v); statusChip.textContent=v?'Completed':'Not completed'; }
+    markBtn.addEventListener('click',()=>{ localStorage.setItem(DONE, localStorage.getItem(DONE)==='1'?'0':'1'); renderDone(); });
+    renderDone();
 
-  // Scroll-to-top
-  $('#scrollTopBtn').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
-})();
-</script>
+    // Back to top
+    $('#topBtn').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+    // Glossary tooltips
+    const defs={
+      crosslinking:'Aldehydes (e.g., formaldehyde) form methylene bridges between proteins; preserves architecture.',
+      coagulative:'Alcohols/acetone precipitate proteins rapidly; suited for cytology and frozen/enzyme work.'
+    };
+    document.addEventListener('click',(e)=>{
+      const t=e.target.closest('.gloss'); if(!t) return;
+      const text=defs[t.dataset.term]||'';
+      let tip=t.nextElementSibling; if(!tip || !tip.classList.contains('tip')){
+        tip=document.createElement('span'); tip.className='tip ml-2 text-xs bg-slate-100 border px-2 py-1 rounded-lg'; t.after(tip);
+      }
+      tip.textContent=text; tip.hidden=!tip.hidden;
+    });
+
+    // Sortable table
+    $('#fixTable thead').addEventListener('click',(e)=>{
+      const th=e.target.closest('th'); if(!th) return;
+      const rows=$$('#fixTable tbody tr');
+      const get=(tr)=> (tr.querySelector('[data-name]')?.dataset.name || tr.children[0].textContent).toLowerCase();
+      const coll=new Intl.Collator(undefined,{numeric:true,sensitivity:'base'});
+      rows.sort((a,b)=>coll.compare(get(a),get(b)));
+      const tb=$('#fixTable tbody'); rows.forEach(r=>tb.appendChild(r));
+    });
+
+    // Notes autosave
+    const NOTES='fix_pro_notes';
+    const notes=$('#notes');
+    notes.value=localStorage.getItem(NOTES)||'';
+    notes.addEventListener('input',()=>localStorage.setItem(NOTES, notes.value));
+
+    // Help drawer
+    const drawer=$('#helpDrawer');
+    $('#helpBtn').addEventListener('click',()=>drawer.style.transform='translateX(0)');
+    $('#helpClose').addEventListener('click',()=>drawer.style.transform='translateX(100%)');
+    $('#helpSave').addEventListener('click',()=>{
+      const payload={section:$('#helpSection').value, text:$('#helpText').value, ts:new Date().toISOString()};
+      localStorage.setItem('fix_pro_help', JSON.stringify(payload));
+      $('#helpSaved').classList.remove('hidden'); setTimeout(()=>$('#helpSaved').classList.add('hidden'),1500);
+    });
+    $('#helpCopy').addEventListener('click', async ()=>{
+      const txt=`Fixation module question\nSection: ${$('#helpSection').value}\n\n${$('#helpText').value}`;
+      try{ await navigator.clipboard.writeText(txt); alert('Copied to clipboard'); }catch(e){ alert('Copy failed. Select and copy manually.'); }
+    });
+
+    // Hotspot tip
+    const hero = document.querySelector('section.bg-slate-50 .relative');
+    if(hero){
+      const tip=document.createElement('div');
+      tip.className='hidden absolute right-2 bottom-2 max-w-[280px] p-3 rounded-xl border bg-white shadow text-sm';
+      tip.innerHTML='<b>Methanol stabiliser</b><br>Commercial formalin often includes ~10–15% methanol to limit polymerisation; this slightly changes fixation behaviour vs methanol-free prep.';
+      hero.appendChild(tip);
+      hero.addEventListener('mouseenter',e=>{ if(e.target.tagName==='BUTTON') tip.classList.remove('hidden'); },true);
+      hero.addEventListener('mouseleave',()=>tip.classList.add('hidden'),true);
+    }
+
+    // Quiz grading with explanations
+    const form=$('#quizForm'), res=$('#quizResult');
+    function grade(){
+      let score=0,total=0;
+      $$('#quizForm fieldset').forEach(fs=>{
+        total++; fs.classList.remove('correct','incorrect');
+        const correct=fs.dataset.correct; const chosen=fs.querySelector('input:checked');
+        const expl=fs.querySelector('.exp'); if(expl){ expl.classList.add('hidden'); expl.textContent=''; }
+        if(chosen && chosen.value===correct){ score++; fs.classList.add('correct'); }
+        else{ fs.classList.add('incorrect'); if(expl){ expl.textContent=fs.dataset.expl||''; expl.classList.remove('hidden'); } }
+      });
+      const pct=Math.round(score/total*100);
+      res.classList.remove('hidden');
+      res.innerHTML=`<strong>Score: ${score}/${total} (${pct}%)</strong>`;
+      localStorage.setItem('fix_pro_best', Math.max(pct, +(localStorage.getItem('fix_pro_best')||0)));
+    }
+    function retry(){
+      $$('#quizForm input[type=radio]').forEach(i=>i.checked=false);
+      $$('#quizForm fieldset').forEach(fs=>fs.classList.remove('correct','incorrect'));
+      $$('#quizForm .exp').forEach(e=>{e.textContent=''; e.classList.add('hidden');});
+      res.classList.add('hidden');
+    }
+    $('#gradeBtn').addEventListener('click',grade);
+    $('#retryBtn').addEventListener('click',retry);
+
+    // Simple progress based on sections viewed
+    const PROG='fix_pro_seen';
+    const progTxt=$('#progressText');
+    let seen=new Set(JSON.parse(localStorage.getItem(PROG)||'[]'));
+    function bump(id){ if(!id) return; seen.add(id); localStorage.setItem(PROG, JSON.stringify([...seen])); const pct=Math.round(seen.size / $$('#content section[id]').length * 100); progTxt.textContent='Progress: '+pct+'%'; }
+    document.addEventListener('scroll',()=>{ const cur=$('#outline a[aria-current="true"]'); if(cur) bump(cur.getAttribute('href').substring(1)); });
+    bump(location.hash?.substring(1));
+  })();
+  </script>
 </body>
 </html>
