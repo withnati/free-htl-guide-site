@@ -204,5 +204,103 @@
       if (typeof buildKey === 'function') { try { buildKey(); } catch (e) { console.error(e); } }
     });
   </script>
+<!-- QUIZ FIX PATCH for Processing: renders questions even if earlier scripts fail -->
+<script>
+(function () {
+  function $(id){ return document.getElementById(id); }
+  var form = $('quizForm');
+  if (!form) return;                 // no quiz form on this page
+  if (form.querySelector('fieldset')) return; // already rendered by original script
+
+  var QUESTIONS = [
+    ["Primary purpose of dehydration:", ["Remove free water","Replace fat with solvent","Infuse paraffin","Fix nucleic acids"], "A"],
+    ["Two 100% alcohol stations primarily reduce:", ["Over-dehydration","Water carryover","Brittleness","Heat damage"], "B"],
+    ["Xylene substitutes often require:", ["No clearing steps","Longer times vs xylene","Lower paraffin temps","Skipping 100% alcohol"], "B"],
+    ["Typical paraffin melting point range:", ["40-45 deg C","50-55 deg C","56-60 deg C","65-70 deg C"], "C"],
+    ["Opaque paraffin around tissue suggests:", ["Overheating paraffin","Water carryover","Too much vacuum","Dirty molds"], "B"],
+    ["Soft/spongy block likely due to:", ["Under-dehydration/clearing","Over-dehydration","Excess xylene","Low paraffin MP"], "A"],
+    ["Brittle/shrunken tissue likely due to:", ["Under-dehydration","Over-clearing and long 100% alcohol","Low bath temperature","Too little vacuum"], "B"],
+    ["For fatty tissue you should usually:", ["Shorten clearant steps","Use only one paraffin station","Extend clearant/paraffin, consider vacuum","Skip 70% alcohol"], "C"],
+    ["Carryover control best practice:", ["Single 100% alcohol then xylene","Two 100% alcohols and two clearants","Skip 95% alcohol for speed","Reduce agitation"], "B"],
+    ["Best immediate fix for soft block:", ["Re-embed without changes","Repeat from 95% alcohol, extend clearant, reinfiltrate","Cool block longer","Change microtome angle"], "B"],
+    ["Evidence of reagent exhaustion:", ["Clear, colorless xylene","Alcohol stations reading 0% water","Cloudy clearant or paraffin","Stable processing times"], "C"],
+    ["To protect antigens for IHC:", ["Use very hot paraffin >65 deg C","Limit over-dehydration and overheating","Switch to methanol for all steps","Always skip vacuum"], "B"],
+    ["Dense/calcified tissue needs:", ["Shorter alcohol steps","Longer dehydration/clearing and thin grossing","Fewer paraffin steps","Higher water content"], "B"],
+    ["Best practice for logs:", ["No documentation needed","Note only reagent lot numbers","Track rotation dates, lots, temps, actions","Track only xylene"], "C"],
+    ["When using substitutes:", ["Assume times equal to xylene","Verify compatibility with paraffin and extend times as needed","Reduce number of stations","Use colder paraffin"], "B"]
+  ];
+
+  var EXPL = [
+    "Dehydration removes water so clearant and paraffin can replace it.",
+    "Two absolutes limit water carryover into clearant/wax.",
+    "Most substitutes clear slower; extend times vs xylene.",
+    "Common histology waxes: ~56–60 °C.",
+    "Water contamination clouds paraffin around tissue.",
+    "Under-dehydration/clearing leaves tissue soft/spongy.",
+    "Over-dehydration/clearing + heat causes brittleness/shrinkage.",
+    "Fat benefits from longer clearant/paraffin and vacuum.",
+    "Two absolutes + two clearants is standard to limit carryover.",
+    "Reprocess: 95% → absolutes → clearant → paraffin (extend times).",
+    "Cloudy clearant/paraffin suggests contamination/exhaustion.",
+    "Protect antigens: avoid overheating and over-dehydration.",
+    "Dense/calcified tissue needs longer steps + thin grossing.",
+    "Logs: rotation/refresh dates, lots, temps, actions.",
+    "Verify paraffin compatibility and adjust times with substitutes."
+  ];
+
+  function renderQuiz(){
+    form.innerHTML = "";
+    for (var i=0;i<QUESTIONS.length;i++){
+      var stem = QUESTIONS[i][0], opts = QUESTIONS[i][1], num = i+1;
+      var fs = document.createElement('fieldset'); fs.className = "mt-1";
+      var lg = document.createElement('legend'); lg.className = "font-medium"; lg.textContent = num + ") " + stem; fs.appendChild(lg);
+      for (var k=0;k<opts.length;k++){
+        var id = "q"+num+"_"+k;
+        var lab = document.createElement('label'); lab.className = "block mt-1"; lab.setAttribute('for', id);
+        var input = document.createElement('input'); input.type="radio"; input.id=id; input.name="q"+num; input.value=String.fromCharCode(65+k);
+        lab.appendChild(input); lab.appendChild(document.createTextNode(" "+opts[k]));
+        fs.appendChild(lab);
+      }
+      form.appendChild(fs);
+    }
+  }
+  function buildKey(){ var k={}; for (var i=0;i<QUESTIONS.length;i++){ k["q"+(i+1)] = QUESTIONS[i][2]; } return k; }
+  var KEY = buildKey();
+
+  window.grade = function(){
+    var sets = form.querySelectorAll('fieldset'), score = 0;
+    for (var i=0;i<sets.length;i++){
+      var fs = sets[i], correct = KEY["q"+(i+1)];
+      fs.classList.remove('correct','incorrect');
+      var chosen = fs.querySelector('input:checked');
+      if (chosen && chosen.value===correct){ score++; fs.classList.add('correct'); }
+      else { fs.classList.add('incorrect'); }
+    }
+    var pct = Math.round(score/sets.length*100);
+    var res = document.getElementById('quizResult');
+    if (res){
+      res.classList.remove('hidden');
+      res.innerHTML = "<strong>Score: "+score+"/"+sets.length+" ("+pct+"%)</strong>"
+        + "<div class='mt-2 text-sm text-slate-700'>"
+        + EXPL.map(function(e,i){ return "Q"+(i+1)+": "+e; }).join("<br>")
+        + "</div>";
+      window.scrollTo({ top: res.offsetTop-80, behavior: 'smooth' });
+    }
+  };
+
+  window.retry = function(){
+    renderQuiz();
+    var res = document.getElementById('quizResult'); if(res) res.classList.add('hidden');
+    var q = document.getElementById('quiz') || form;
+    window.scrollTo({ top: q.offsetTop-80, behavior: 'smooth' });
+  };
+
+  // Render now + on DOM ready (double safety)
+  try { renderQuiz(); } catch(e) { console && console.warn("processing quiz immediate render failed", e); }
+  if (document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ try{ renderQuiz(); }catch(e){ console && console.warn("processing quiz DOMContentLoaded render failed", e); } });
+  }
+})();
+</script>
 </body>
 </html>
