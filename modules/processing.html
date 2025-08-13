@@ -1119,5 +1119,41 @@
     $('#retryBtnHTL').addEventListener('click',()=>retry(formH,resH));
   })();
   </script>
+  <!-- PATCH: robust collapsibles + null-safe bindings -->
+<script>
+(function(){
+  // Local helpers (don't rely on earlier script; safe even if it crashed)
+  const $  = (s,root=document)=>root.querySelector(s);
+  const $$ = (s,root=document)=>Array.from(root.querySelectorAll(s));
+
+  function setToggleState(btn, open){
+    if(!btn) return;
+    btn.setAttribute('aria-expanded', String(open));
+    // Update button label text ("Expand"/"Collapse")
+    const label = btn.querySelector('.chev + span') || btn.querySelector('span:last-child');
+    if(label) label.textContent = open ? 'Collapse' : 'Expand';
+    // Show/hide the associated content block in the same <section>
+    const section = btn.closest('section');
+    const content = section ? section.querySelector('.content') : null;
+    if(content) content.style.display = open ? '' : 'none';
+  }
+
+  // Bind individual collapsibles safely
+  $$('.collapsible').forEach(btn=>{
+    const startOpen = btn.getAttribute('aria-expanded') !== 'false';
+    setToggleState(btn, startOpen);
+    btn.addEventListener('click', ()=>{
+      const isOpen = btn.getAttribute('aria-expanded') === 'true';
+      setToggleState(btn, !isOpen);
+    });
+  });
+
+  // Expand/Collapse all (only if the controls exist)
+  const expandAllBtn   = $('#expandAll');
+  const collapseAllBtn = $('#collapseAll');
+  if (expandAllBtn)   expandAllBtn.addEventListener('click', ()=> $$('.collapsible').forEach(b=>setToggleState(b,true)));
+  if (collapseAllBtn) collapseAllBtn.addEventListener('click', ()=> $$('.collapsible').forEach(b=>setToggleState(b,false)));
+})();
+</script>
 </body>
 </html>
