@@ -1,0 +1,1004 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Embedding & Microtomy — Pro Module (Expanded v2.1) | Free HTL Guide</title>
+  <meta name="description" content="HT/HTL Embedding & Microtomy module with orientation rules, ribbon physics, troubleshooting matrix, quizzes, notes, downloads, and image lightbox."/>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root{ --brand:#0F4C81; --ink:#0f172a }
+    html{ scroll-behavior:smooth }
+    body{ color:var(--ink) }
+    .card{ border:1px solid #e5e7eb; background:#fff; border-radius:1.25rem; box-shadow:0 2px 12px rgba(2,6,23,.04) }
+    .pill{ padding:.15rem .5rem; border-radius:999px; background:#eef2ff; color:#1e3a8a; font-size:.8rem; font-weight:600 }
+    #progressBar{ position:sticky; top:0; height:4px; z-index:50; background:linear-gradient(to right,var(--brand) var(--pct,0%),#e5e7eb 0) }
+    .table{ border-collapse:collapse; width:100% }
+    .table th,.table td{ border:1px solid #e5e7eb; padding:.6rem; vertical-align:top; line-height:1.35 }
+    .table th{ background:#f8fafc; font-weight:700 }
+    .table tbody tr:nth-child(even){ background:#fafafa }
+    .collapsible .content{ display:block }
+    .collapsible[aria-expanded="false"] .content{ display:none }
+    .collapsible .chev{ transition:transform .2s ease }
+    .collapsible[aria-expanded="false"] .chev{ transform:rotate(-90deg) }
+    .copy-btn{ border:1px solid #e5e7eb; border-radius:.6rem; padding:.25rem .5rem; font-size:.8rem }
+    fieldset.correct{ border:2px solid #10b981; border-radius:.75rem; padding:.5rem }
+    fieldset.incorrect{ border:2px solid #ef4444; border-radius:.75rem; padding:.5rem }
+    @media print{
+      header,.toc,.actions,.notes,.quiz-actions,#helpBtn,#helpDrawer,.mobile-nav,.filters,.compareDock { display:none !important }
+      main{ max-width:100% !important }
+      article>section{ break-inside:avoid; margin-bottom:1.2rem }
+      a[href]:after{ content:" (" attr(href) ")"; font-size:90% }
+    }
+    @media (prefers-color-scheme: dark){
+      body{ background:#0b1220; color:#e5e7eb }
+      header,.card,nav,.toc{ background:#0d1426; color:#e5e7eb; border-color:#1f2a44 }
+      .table th{ background:#121b33 }
+      .table td,.table th{ border-color:#1f2a44 }
+      a{ color:#8ab9ff }
+    }
+  </style>
+</head>
+<body class="antialiased bg-white">
+  <!-- sticky progress -->
+  <div id="progressBar" aria-hidden="true"></div>
+
+  <!-- Header -->
+  <header class="border-b bg-white/90 backdrop-blur">
+    <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+      <nav class="text-sm text-slate-600">
+        <a href="../index.html" class="hover:text-[color:var(--brand)]">Home</a>
+        <span class="mx-1">›</span>
+        <a href="./embedding.html" class="hover:text-[color:var(--brand)]">Embedding & Microtomy</a>
+        <span class="mx-1">›</span>
+        <strong>Pro Module (Expanded v2.1)</strong>
+      </nav>
+      <div class="flex items-center gap-2">
+        <button id="expandAll" class="rounded-xl border px-3 py-2 text-sm">Expand all</button>
+        <button id="collapseAll" class="rounded-xl border px-3 py-2 text-sm">Collapse all</button>
+        <button id="markBtn" class="rounded-xl border px-3 py-2 text-sm">Mark complete</button>
+        <button id="helpBtn" class="rounded-xl border px-3 py-2 text-sm">Ask a question</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="relative border-b">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-slate-50 via-white to-white"></div>
+    <div class="pointer-events-none absolute right-[-10%] top-[-20%] h-[38rem] w-[38rem] rounded-full blur-3xl opacity-20"
+         style="background:radial-gradient(closest-side,#0F4C81 0%,#74a3c7 35%,transparent 70%);"></div>
+
+    <div class="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-[1.15fr,0.85fr] md:items-center gap-8">
+      <div>
+        <p class="uppercase tracking-wide text-xs text-slate-500">Module • Core • Exam weight 15–25%</p>
+        <h1 class="max-w-[22ch] leading-tight text-4xl md:text-5xl font-extrabold mt-1">Embedding & Microtomy</h1>
+        <p class="max-w-[60ch] mt-3 text-slate-600 md:text-lg">
+          Orientation rules, ribbon physics, artifact decision trees, and HTL molecular prep — with quizzes, notes, downloads, lightbox, and progress memory.
+        </p>
+        <div class="mt-4 flex flex-wrap gap-2 text-[11px] font-medium text-slate-700">
+          <span class="px-2 py-1 rounded-full bg-slate-100/80 ring-1 ring-slate-200">HT skills</span>
+          <span class="px-2 py-1 rounded-full bg-slate-100/80 ring-1 ring-slate-200">HTL depth</span>
+          <span class="px-2 py-1 rounded-full bg-slate-100/80 ring-1 ring-slate-200">Quizzes: 25 Q</span>
+        </div>
+        <div class="mt-5 flex gap-3">
+          <a id="startBtn" href="#objectives" class="rounded-xl px-4 py-2 text-white font-semibold" style="background:var(--brand)">Start / Resume</a>
+          <button id="topBtn" class="rounded-xl border px-4 py-2">Back to top</button>
+        </div>
+        <p class="mt-2 text-xs text-slate-500">Estimated time: 45–60 min • reading 20 m • practice 20 m</p>
+      </div>
+
+      <div class="hidden md:block relative">
+        <img id="heroImg" src="../assets/microtome.jpg" alt="Microtome and paraffin context for embedding and sectioning."
+             class="w-full h-auto max-h-[360px] object-contain rounded-none border-0 shadow-none cursor-zoom-in"
+             loading="eager" decoding="async" onerror="this.style.display='none'">
+        <div class="absolute left-2 top-2 bg-white/90 text-xs rounded px-2 py-1 border">Click image to zoom</div>
+      </div>
+    </div>
+  </section>
+
+  <main class="max-w-6xl mx-auto px-4 py-8 grid lg:grid-cols-[260px,1fr,320px] gap-8">
+    <!-- TOC -->
+    <aside class="toc hidden lg:block sticky top-24 h-max">
+      <div class="card p-4">
+        <p class="text-xs font-semibold tracking-wide text-slate-500">MODULE MAP</p>
+        <ol id="outline" class="mt-3 space-y-2 text-sm">
+          <li><a href="#objectives">Objectives</a></li>
+          <li><a href="#orientation">A) Orientation rules</a></li>
+          <li><a href="#procedures">B) Procedures</a></li>
+          <li><a href="#instrument">C) Instrumentation & QC</a></li>
+          <li><a href="#safety">Safety essentials</a></li>
+          <li><a href="#numbers">Quick numbers</a></li>
+          <li><a href="#quiz15">Practice quiz (15)</a></li>
+          <li><a href="#quiz-htl">HTL extension quiz (10)</a></li>
+          <li><a href="#downloads">Downloads & storyboard</a></li>
+          <li><a href="#completion">Completion criteria</a></li>
+          <li><a href="#version">Version & sources</a></li>
+        </ol>
+      </div>
+    </aside>
+
+    <!-- CONTENT -->
+    <article id="content" class="space-y-10 max-w-[68ch] lg:max-w-none">
+      <!-- Objectives -->
+      <section id="objectives" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🎯 Learning objectives</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block">▾</span><span>Collapse</span>
+          </button>
+        </div>
+        <div class="content">
+          <ul id="objList" class="list-disc ml-5 mt-2 space-y-1">
+            <li><label class="flex gap-2 items-start">
+              <input type="checkbox" data-k="o1" class="mt-1"> Orient and embed diverse tissues to preserve diagnostic morphology.</label></li>
+            <li><label class="flex gap-2 items-start">
+              <input type="checkbox" data-k="o2" class="mt-1"> Control sectioning variables (angles, temp, speed, humidity) to hit target thickness.</label></li>
+            <li><label class="flex gap-2 items-start">
+              <input type="checkbox" data-k="o3" class="mt-1"> Diagnose and correct artifacts (compression, chatter, knife marks, folds, lifting, floaters).</label></li>
+            <li><label class="flex gap-2 items-start">
+              <input type="checkbox" data-k="o4" class="mt-1"> Implement QC/maintenance/safety; document corrective actions.</label></li>
+            <li><label class="flex gap-2 items-start">
+              <input type="checkbox" data-k="o5" class="mt-1"> (HTL) Prepare blocks/sections for molecular testing without contamination.</label></li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Orientation -->
+      <section id="orientation" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🧭 A) Tissues — Orientation rules</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block">▾</span><span>Collapse</span>
+          </button>
+        </div>
+        <div class="content">
+          <p class="text-slate-700">Goal: present the structure of interest in the <b>plane of section</b> that answers the clinical question.</p>
+          <ul class="list-disc ml-5 mt-2">
+            <li>Cut surface <b>down</b>; minimize tilt; avoid trapped folds/air.</li>
+            <li>Multiple tiny pieces → sponges/mesh; align consistently; centralize fragile tissue.</li>
+            <li>Work near paraffin temperature just above MP; avoid overheating.</li>
+          </ul>
+          <div class="overflow-x-auto mt-4">
+            <table class="table text-sm">
+              <thead><tr><th>Tissue / Specimen</th><th>Best orientation & why</th><th>Notes</th><th>Image</th></tr></thead>
+              <tbody id="oriBody">
+                <tr>
+                  <td><b>Skin (shave/excision)</b></td>
+                  <td>Epidermis <b>perpendicular</b> to knife; epidermis same level</td>
+                  <td>Preserve hair follicles; avoid rolled edges</td>
+                  <td><button class="copy-btn showImg" data-img="../assets/orient-skin.jpg" data-alt="Skin embedding good vs poor">Show</button></td>
+                </tr>
+                <tr>
+                  <td><b>Skin ellipse</b></td>
+                  <td>Long axis <b>perpendicular</b> to knife; support tips</td>
+                  <td>Prevents curling; uniform epidermis/dermis</td>
+                  <td><button class="copy-btn showImg" data-img="../assets/orient-skin-ellipse.jpg">Show</button></td>
+                </tr>
+                <tr>
+                  <td><b>GI mucosa (bx)</b></td>
+                  <td>On edge, <b>mucosa out</b></td>
+                  <td>Keep villi/crypts intact; avoid mucosa-on-mucosa</td>
+                  <td><button class="copy-btn showImg" data-img="../assets/orient-gi.jpg">Show</button></td>
+                </tr>
+                <tr>
+                  <td><b>Tubular (vas/vessels)</b></td>
+                  <td><b>Cross-section</b></td>
+                  <td>Lumen + wall layers</td>
+                  <td><button class="copy-btn showImg" data-img="../assets/orient-tubular.jpg">Show</button></td>
+                </tr>
+                <tr>
+                  <td><b>Cysts</b></td>
+                  <td><b>Wall on edge</b></td>
+                  <td>Avoid collapse; preserve lining</td>
+                  <td><button class="copy-btn showImg" data-img="../assets/orient-cyst.jpg">Show</button></td>
+                </tr>
+                <tr>
+                  <td><b>Lymph node</b></td>
+                  <td><b>Capsule perpendicular</b></td>
+                  <td>Show subcapsular sinus</td>
+                  <td><button class="copy-btn showImg" data-img="../assets/orient-ln.jpg">Show</button></td>
+                </tr>
+                <tr>
+                  <td><b>Muscle</b></td>
+                  <td><b>Transverse</b> for fiber diameter; long axis if neuropath specified</td>
+                  <td>Cryo often preferred for enzymes</td>
+                  <td><button class="copy-btn showImg" data-img="../assets/orient-muscle.jpg">Show</button></td>
+                </tr>
+                <tr>
+                  <td><b>Nerve</b></td>
+                  <td><b>Cross-section</b></td>
+                  <td>Endoneurium/perineurium</td>
+                  <td><button class="copy-btn showImg" data-img="../assets/orient-nerve.jpg">Show</button></td>
+                </tr>
+                <tr>
+                  <td><b>Kidney</b></td>
+                  <td>Orient <b>cortex</b> to present glomeruli</td>
+                  <td>2–3 µm for PAS</td>
+                  <td><button class="copy-btn showImg" data-img="../assets/orient-kidney.jpg">Show</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Procedures -->
+      <section id="procedures" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🛠️ B) Procedures</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block">▾</span><span>Collapse</span>
+          </button>
+        </div>
+        <div class="content space-y-4">
+          <details open class="rounded-xl border p-4">
+            <summary class="font-semibold cursor-pointer">1) Paraffin embedding — technique controls</summary>
+            <ul class="list-disc ml-5 mt-2">
+              <li>Paraffin temperature: typically <b>60 °C</b> (or MP + ~2–4 °C). Overheat → vacuoles/hardness.</li>
+              <li>Molds: center specimen; avoid slopes/tilt; lock orientation on cold plate, then fully cool.</li>
+              <li>Adhesives: favor <b>charged slides</b>; avoid heavy gelatin unless validated.</li>
+            </ul>
+          </details>
+
+          <details class="rounded-xl border p-4">
+            <summary class="font-semibold cursor-pointer">2) Microtomy — ribbon physics & parameters</summary>
+            <ul class="list-disc ml-5 mt-2">
+              <li>Thickness: routine <b>3–5 µm</b> (kidney <b>2–3 µm</b>; bone/collagen-rich <b>4–6 µm</b>).</li>
+              <li>Clearance angle: start <b>3–5°</b>; ↑ angle → chatter risk; ↓ angle → compression.</li>
+              <li>Speed steady; block just below MP; bath <b>~40–45 °C</b> (10–15 °C below MP).</li>
+              <li>Humidity/static: moderate humidity; anti-static brush/blower as needed.</li>
+            </ul>
+          </details>
+
+          <details class="rounded-xl border p-4">
+            <summary class="font-semibold cursor-pointer">3) Frozen section (cryotomy)</summary>
+            <ul class="list-disc ml-5 mt-2">
+              <li>OCT; avoid bubbles; anti-roll plate alignment critical.</li>
+              <li>Chamber: start <b>−20 °C</b>; fatty <b>−10 to −15 °C</b>; hard <b>−25 to −30 °C</b>.</li>
+              <li>Thickness: <b>5–10 µm</b>; muscle enzymes <b>8–10 µm</b>.</li>
+              <li>Biohazard: disinfect between cases; cut-resistant gloves.</li>
+            </ul>
+          </details>
+
+          <details class="rounded-xl border p-4">
+            <summary class="font-semibold cursor-pointer">4) Gelatin/adhesive supports</summary>
+            <ul class="list-disc ml-5 mt-2">
+              <li><b>Charged slides</b> for adhesion-challenged tissues and IHC/specials.</li>
+              <li>Poly-L-lysine/APES (legacy) — validate for your stains.</li>
+              <li>Gelatin bath 0.5–1% (last resort) — may increase background; document.</li>
+            </ul>
+          </details>
+
+          <details class="rounded-xl border p-4">
+            <summary class="font-semibold cursor-pointer">5) (HTL) Prep for molecular testing</summary>
+            <ul class="list-disc ml-5 mt-2">
+              <li>RNase-free area; new blade; powder-free gloves; baked slides when needed.</li>
+              <li>Scrolls: discard first <b>20–50 µm</b>; collect next 5–10× 10-µm scrolls.</li>
+              <li>Macrodissection: enrich tumor; document % tumor.</li>
+              <li>LCM: membrane slides; dewax with <b>fresh xylene</b>; minimal water; rapid dry.</li>
+              <li>Cross-contamination control: clean microtome between cases; isolated supplies for molecular cases.</li>
+            </ul>
+          </details>
+        </div>
+      </section>
+
+      <!-- Instrumentation & QC -->
+      <section id="instrument" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🧩 C) Instrumentation — components, use, maintenance, troubleshooting, QC</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block">▾</span><span>Collapse</span>
+          </button>
+        </div>
+        <div class="content space-y-4">
+          <details open class="rounded-xl border p-4">
+            <summary class="font-semibold cursor-pointer">1) Components (rotary microtome & cryostat)</summary>
+            <ul class="list-disc ml-5 mt-2">
+              <li>Microtome: base, handwheel, specimen arm, <b>blade holder</b>, angle adjuster, thickness selector, anti-static brush, waste tray.</li>
+              <li>Cryostat: refrigerated chamber, internal microtome, <b>anti-roll plate</b>, specimen chuck, quick-freeze stage, UV/heat disinfection/defrost.</li>
+            </ul>
+          </details>
+
+          <details class="rounded-xl border p-4">
+            <summary class="font-semibold cursor-pointer">2) Use — safe setup</summary>
+            <ul class="list-disc ml-5 mt-2">
+              <li>Lock handwheel when loading/unloading; forceps/guards; blades to sharps.</li>
+            </ul>
+          </details>
+
+          <details class="rounded-xl border p-4">
+            <summary class="font-semibold cursor-pointer">3) Maintenance</summary>
+            <ul class="list-disc ml-5 mt-2">
+              <li><b>Daily</b>: clean paraffin; check clamps; verify thickness; empty waste.</li>
+              <li><b>Weekly</b>: lubricate per IFU; check stage play; angle scale; cryostat defrost/disinfect.</li>
+              <li><b>Post-biohazard/prion</b>: institutional protocol.</li>
+            </ul>
+          </details>
+
+          <details class="rounded-xl border p-4">
+            <summary class="font-semibold cursor-pointer">4) Troubleshooting & decision trees</summary>
+            <div class="overflow-x-auto mt-3">
+              <div class="flex gap-2 items-center text-sm mb-2">
+                <input id="tsSearch" class="border rounded-lg px-2 py-1" placeholder="Search artifact, cause, fix…"/>
+                <select id="tsFilter" class="border rounded-lg px-2 py-1">
+                  <option value="">All tags</option>
+                  <option>Compression</option><option>Chatter</option><option>Knife marks</option>
+                  <option>Folds</option><option>Lift-offs</option><option>Floaters</option><option>Static</option>
+                </select>
+                <button id="tsClear" class="copy-btn">Clear</button>
+              </div>
+              <table id="tsTable" class="table text-sm">
+                <thead><tr><th>Artifact</th><th>Likely cause(s)</th><th>Fix (click to copy)</th><th>Tags</th></tr></thead>
+                <tbody>
+                  <tr data-tags="Compression">
+                    <td><b>Compression / wrinkling</b></td>
+                    <td>Dull blade; block warm; clearance angle too small; cutting too fast</td>
+                    <td><button class="copy-btn" data-copy="New blade; cool block; increase clearance angle slightly; slower stroke; lower bath temp.">New blade; cool block; ↑ clearance angle; slow stroke; ↓ bath temp</button></td>
+                    <td>Compression</td>
+                  </tr>
+                  <tr data-tags="Chatter">
+                    <td><b>Chatter / washboarding</b></td>
+                    <td>Clearance angle too large; hard/over-fixed tissue; vibration; paraffin too hard/cold</td>
+                    <td><button class="copy-btn" data-copy="Reduce clearance angle; soften/soak block; tighten clamps; raise room/bath temp or lower paraffin MP.">↓ clearance; soften; tighten; adjust temp/MP</button></td>
+                    <td>Chatter</td>
+                  </tr>
+                  <tr data-tags="Knife marks">
+                    <td><b>Knife / score marks</b></td>
+                    <td>Nick/debris on blade; hard inclusion</td>
+                    <td><button class="copy-btn" data-copy="Shift to fresh blade area; clean; recut deeper; decalcify residual grit.">Shift blade; clean; recut deeper</button></td>
+                    <td>Knife marks</td>
+                  </tr>
+                  <tr data-tags="Lift-offs">
+                    <td><b>Sections lift from slide</b></td>
+                    <td>Poor adhesion; incomplete drying; contaminated slides</td>
+                    <td><button class="copy-btn" data-copy="Charged slides; oven dry 60 °C for 10–20 min; clean bath; avoid oils.">Charged slides; 60 °C 10–20 min; clean bath</button></td>
+                    <td>Lift-offs</td>
+                  </tr>
+                  <tr data-tags="Folds">
+                    <td><b>Folds</b></td>
+                    <td>Bath too hot; overcrowded ribbons; poor layout</td>
+                    <td><button class="copy-btn" data-copy="Lower bath temperature; float fewer sections; gentle stretch; pick up without trapping air.">↓ bath; fewer sections; gentle stretch</button></td>
+                    <td>Folds</td>
+                  </tr>
+                  <tr data-tags="Floaters">
+                    <td><b>Floaters / contamination</b></td>
+                    <td>Dirty water bath/forceps/brush</td>
+                    <td><button class="copy-btn" data-copy="Change bath often; skim surface; dedicated clean tools per case.">Change bath; skim; clean tools</button></td>
+                    <td>Floaters</td>
+                  </tr>
+                  <tr data-tags="Static">
+                    <td><b>Static / curl (cryostat)</b></td>
+                    <td>Dry air; anti-roll misaligned</td>
+                    <td><button class="copy-btn" data-copy="Humidify chamber; adjust anti-roll plate angle; anti-static brush.">Humidify; adjust plate; anti-static brush</button></td>
+                    <td>Static</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          <details class="rounded-xl border p-4">
+            <summary class="font-semibold cursor-pointer">5) Quality control</summary>
+            <ul class="list-disc ml-5 mt-2">
+              <li>Thickness verification: reference block/film gauge — routine <b>3–5 µm</b> (kidney <b>2–3 µm</b>).</li>
+              <li>Ribbon quality log per run; record block temp adjustments.</li>
+              <li>Bath QC: temperature log; replace water; record additives.</li>
+              <li>Slide adhesion check: include challenging tissue; record lift-offs & corrective action.</li>
+            </ul>
+          </details>
+        </div>
+      </section>
+
+      <!-- Safety -->
+      <section id="safety" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🛡️ Safety essentials</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="false">
+            <span class="chev inline-block">▾</span><span>Expand</span>
+          </button>
+        </div>
+        <div class="content">
+          <ul class="list-disc ml-5">
+            <li>Sharps: lock handwheel; tools not fingers.</li>
+            <li>Heat: avoid prolonged 60 °C oven exposure; follow SOP limits.</li>
+            <li>Cryostat biohazards: assume infectious; decon between cases; PPE + cut-resistant gloves.</li>
+            <li>Chemical: good ventilation around xylene/EtOH; no open flames.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Numbers -->
+      <section id="numbers" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🔢 Quick reference — numbers that win points</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block">▾</span><span>Collapse</span>
+          </button>
+        </div>
+        <div class="content">
+          <ul id="numList" class="list-disc ml-5">
+            <li>Paraffin sections <b>3–5 µm</b> (kidney <b>2–3 µm</b>; bone <b>4–6 µm</b>).</li>
+            <li><b>Clearance angle 3–5°</b>; reduce for chatter; increase for compression.</li>
+            <li>Water bath <b>~40–45 °C</b> (10–15 °C below MP).</li>
+            <li>Cryostat: start <b>−20 °C</b>; fatty <b>−10 to −15 °C</b>; hard <b>−25 to −30 °C</b>.</li>
+            <li>Oven dry <b>60 °C for 10–20 min</b> before IHC/specials (per SOP).</li>
+          </ul>
+          <button id="copyNums" class="copy-btn mt-3">Copy all</button>
+        </div>
+      </section>
+
+      <!-- Quiz 15 -->
+      <section id="quiz15" class="card p-6">
+        <div class="flex flex-wrap items-center gap-3 justify-between">
+          <h2 class="text-xl font-bold">✅ Practice quiz (15)</h2>
+          <div class="flex items-center gap-2">
+            <span class="pill">Target ≥ 80%</span>
+            <span id="bestScore" class="pill">Best: —</span>
+          </div>
+        </div>
+        <p class="text-sm text-slate-600">Immediate feedback appears under each item.</p>
+
+        <form id="quizForm" class="mt-4 grid gap-5 max-w-3xl">
+          <!-- Q1–Q15 -->
+          <fieldset data-correct="B" data-expl="Start at 3–5°; adjust for tissue and artifacts.">
+            <legend class="font-medium">1) Best starting clearance angle for paraffin microtomy is:</legend>
+            <label class="block mt-1"><input type="radio" name="q1" value="A"> 0–1°</label>
+            <label class="block mt-1"><input type="radio" name="q1" value="B"> 3–5°</label>
+            <label class="block mt-1"><input type="radio" name="q1" value="C"> 7–10°</label>
+            <label class="block mt-1"><input type="radio" name="q1" value="D"> 15°</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Chatter = too large angle, hard block, or vibration.">
+            <legend class="font-medium">2) “Venetian blinds” most likely result from:</legend>
+            <label class="block mt-1"><input type="radio" name="q2" value="A"> Bath too cool</label>
+            <label class="block mt-1"><input type="radio" name="q2" value="B"> Excessive clearance angle / hard block / vibration</label>
+            <label class="block mt-1"><input type="radio" name="q2" value="C"> Adhesive too strong</label>
+            <label class="block mt-1"><input type="radio" name="q2" value="D"> Blade bevel too small</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Target ~10–15 °C below paraffin MP.">
+            <legend class="font-medium">3) The water bath should be set approximately:</legend>
+            <label class="block mt-1"><input type="radio" name="q3" value="A"> 5–7 °C above MP</label>
+            <label class="block mt-1"><input type="radio" name="q3" value="B"> 10–15 °C below MP</label>
+            <label class="block mt-1"><input type="radio" name="q3" value="C"> Room temperature</label>
+            <label class="block mt-1"><input type="radio" name="q3" value="D"> Exactly at MP</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Kidney often 2–3 μm for PAS.">
+            <legend class="font-medium">4) For kidney PAS work, a typical section thickness is:</legend>
+            <label class="block mt-1"><input type="radio" name="q4" value="A"> 1 µm</label>
+            <label class="block mt-1"><input type="radio" name="q4" value="B"> 2–3 µm</label>
+            <label class="block mt-1"><input type="radio" name="q4" value="C"> 5 µm</label>
+            <label class="block mt-1"><input type="radio" name="q4" value="D"> 10 µm</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="C" data-expl="Fatty tissue cuts better warmer cryostat: −10 to −15 °C.">
+            <legend class="font-medium">5) Cryostat temperature for fatty tissue is best at:</legend>
+            <label class="block mt-1"><input type="radio" name="q5" value="A"> −35 °C</label>
+            <label class="block mt-1"><input type="radio" name="q5" value="B"> −25 °C</label>
+            <label class="block mt-1"><input type="radio" name="q5" value="C"> −10 to −15 °C</label>
+            <label class="block mt-1"><input type="radio" name="q5" value="D"> 0 °C</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Diagonal lines → nick/debris on blade.">
+            <legend class="font-medium">6) Knife marks that traverse diagonally most often indicate:</legend>
+            <label class="block mt-1"><input type="radio" name="q6" value="A"> Clearance angle too small</label>
+            <label class="block mt-1"><input type="radio" name="q6" value="B"> Nick or debris on blade</label>
+            <label class="block mt-1"><input type="radio" name="q6" value="C"> Bath temperature too low</label>
+            <label class="block mt-1"><input type="radio" name="q6" value="D"> Block too warm</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Lift-offs = adhesion/drying first.">
+            <legend class="font-medium">7) Tissue lifting off during silver stain suggests first checking:</legend>
+            <label class="block mt-1"><input type="radio" name="q7" value="A"> Thickness dial</label>
+            <label class="block mt-1"><input type="radio" name="q7" value="B"> Slide adhesion/drying</label>
+            <label class="block mt-1"><input type="radio" name="q7" value="C"> Bath pH</label>
+            <label class="block mt-1"><input type="radio" name="q7" value="D"> Block temperature</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Lower bath + float fewer sections reduces folds.">
+            <legend class="font-medium">8) Folds on the slide are most directly reduced by:</legend>
+            <label class="block mt-1"><input type="radio" name="q8" value="A"> Raise oven to 80 °C</label>
+            <label class="block mt-1"><input type="radio" name="q8" value="B"> Lower bath temperature and float fewer sections</label>
+            <label class="block mt-1"><input type="radio" name="q8" value="C"> Increase clearance angle to 12°</label>
+            <label class="block mt-1"><input type="radio" name="q8" value="D"> Cut faster</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Cool block and fresh edge are first-line.">
+            <legend class="font-medium">9) To reduce compression, you should first:</legend>
+            <label class="block mt-1"><input type="radio" name="q9" value="A"> Switch to lower MP paraffin</label>
+            <label class="block mt-1"><input type="radio" name="q9" value="B"> Cool the block and use a fresh blade edge</label>
+            <label class="block mt-1"><input type="radio" name="q9" value="C"> Add gelatin to the bath</label>
+            <label class="block mt-1"><input type="radio" name="q9" value="D"> Increase bath temperature</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Fatty: higher MP paraffin + ensure infiltration.">
+            <legend class="font-medium">10) Correct about embedding fatty tissue:</legend>
+            <label class="block mt-1"><input type="radio" name="q10" value="A"> Warm block above MP for easier ribboning</label>
+            <label class="block mt-1"><input type="radio" name="q10" value="B"> Use higher-MP paraffin and ensure full infiltration</label>
+            <label class="block mt-1"><input type="radio" name="q10" value="C"> Tilt specimen to one side</label>
+            <label class="block mt-1"><input type="radio" name="q10" value="D"> Submerge mold in water before cooling</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Anti-roll keeps section from curling.">
+            <legend class="font-medium">11) Anti-roll plate in cryotomy primarily:</legend>
+            <label class="block mt-1"><input type="radio" name="q11" value="A"> Reduces chatter</label>
+            <label class="block mt-1"><input type="radio" name="q11" value="B"> Prevents curling of the section</label>
+            <label class="block mt-1"><input type="radio" name="q11" value="C"> Lowers chamber temp</label>
+            <label class="block mt-1"><input type="radio" name="q11" value="D"> Increases cutting speed</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Loose clamp/vibration common chatter cause.">
+            <legend class="font-medium">12) Chatter in a well-embedded uterus block most likely:</legend>
+            <label class="block mt-1"><input type="radio" name="q12" value="A"> Clearance 4°</label>
+            <label class="block mt-1"><input type="radio" name="q12" value="B"> Loose blade clamp/vibration</label>
+            <label class="block mt-1"><input type="radio" name="q12" value="C"> Bath 42 °C</label>
+            <label class="block mt-1"><input type="radio" name="q12" value="D"> Section 4 µm</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="RNase-free area + new blade first.">
+            <legend class="font-medium">13) LCM prep (HTL), first action before trimming scrolls:</legend>
+            <label class="block mt-1"><input type="radio" name="q13" value="A"> Lower MP paraffin</label>
+            <label class="block mt-1"><input type="radio" name="q13" value="B"> Change to a new, clean blade and decontaminate area</label>
+            <label class="block mt-1"><input type="radio" name="q13" value="C"> Add RNase to bath</label>
+            <label class="block mt-1"><input type="radio" name="q13" value="D"> Bake slides 80 °C for 2 h</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Pickup angle/technique avoids trapped air.">
+            <legend class="font-medium">14) To avoid air trapping during pickup you should:</legend>
+            <label class="block mt-1"><input type="radio" name="q14" value="A"> Raise bath to 50–55 °C</label>
+            <label class="block mt-1"><input type="radio" name="q14" value="B"> Pick up at a shallow angle with steady motion</label>
+            <label class="block mt-1"><input type="radio" name="q14" value="C"> Use uncharged slides only</label>
+            <label class="block mt-1"><input type="radio" name="q14" value="D"> Dry sections only at RT</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Lift-offs during retrieval = adhesion/drying.">
+            <legend class="font-medium">15) Sections lifting during antigen retrieval most likely reflect:</legend>
+            <label class="block mt-1"><input type="radio" name="q15" value="A"> Over-decalcification</label>
+            <label class="block mt-1"><input type="radio" name="q15" value="B"> Inadequate adhesion/incomplete drying</label>
+            <label class="block mt-1"><input type="radio" name="q15" value="C"> Bath too cold</label>
+            <label class="block mt-1"><input type="radio" name="q15" value="D"> Clearance angle too small</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+        </form>
+
+        <div class="quiz-actions mt-3 flex gap-3">
+          <button id="gradeBtn" type="button" class="rounded-xl px-4 py-2 text-white font-semibold" style="background:var(--brand)">Submit</button>
+          <button id="retryBtn" type="button" class="rounded-xl border px-4 py-2">Retry</button>
+        </div>
+        <div id="quizResult" class="hidden mt-4 p-4 rounded-xl border" aria-live="polite"></div>
+      </section>
+
+      <!-- HTL extension quiz -->
+      <section id="quiz-htl" class="card p-6">
+        <div class="flex flex-wrap items-center gap-3 justify-between">
+          <h2 class="text-xl font-bold">🧬 HTL extension quiz (10)</h2>
+          <span class="pill">Advanced</span>
+        </div>
+        <form id="quizFormHTL" class="mt-4 grid gap-5 max-w-3xl">
+          <!-- 10 true stems rendered as MCQ for consistency -->
+          <fieldset data-correct="A" data-expl="Increasing clearance angle increases chatter risk on hard tissue.">
+            <legend class="font-medium">1) Increasing clearance angle generally increases chatter risk on hard tissue.</legend>
+            <label class="block mt-1"><input type="radio" name="h1" value="A"> True</label>
+            <label class="block mt-1"><input type="radio" name="h1" value="B"> False</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="Anti-roll alignment is first adjustment.">
+            <legend class="font-medium">2) For curled liver cryostat sections, first adjust the anti-roll plate.</legend>
+            <label class="block mt-1"><input type="radio" name="h2" value="A"> True</label>
+            <label class="block mt-1"><input type="radio" name="h2" value="B"> False</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="LCM dewax: fresh xylene; minimal water; rapid dry.">
+            <legend class="font-medium">3) LCM dewax should use fresh xylene with minimal aqueous exposure and quick dry.</legend>
+            <label class="block mt-1"><input type="radio" name="h3" value="A"> True</label>
+            <label class="block mt-1"><input type="radio" name="h3" value="B"> False</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="% tumor and enrichment are required.">
+            <legend class="font-medium">4) Macrodissection for NGS should document % tumor and enrichment method.</legend>
+            <label class="block mt-1"><input type="radio" name="h4" value="A"> True</label>
+            <label class="block mt-1"><input type="radio" name="h4" value="B"> False</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="Discard oxidized/contaminated surface.">
+            <legend class="font-medium">5) RNase-free scrolls: discard first 20–50 µm.</legend>
+            <label class="block mt-1"><input type="radio" name="h5" value="A"> True</label>
+            <label class="block mt-1"><input type="radio" name="h5" value="B"> False</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="Water bath additives can affect silver methods.">
+            <legend class="font-medium">6) Water bath additives can interfere with some silver stains and must be documented.</legend>
+            <label class="block mt-1"><input type="radio" name="h6" value="A"> True</label>
+            <label class="block mt-1"><input type="radio" name="h6" value="B"> False</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="Muscle enzymes commonly 8–10 µm.">
+            <legend class="font-medium">7) An 8 µm section is appropriate for enzyme histochemistry in muscle.</legend>
+            <label class="block mt-1"><input type="radio" name="h7" value="A"> True</label>
+            <label class="block mt-1"><input type="radio" name="h7" value="B"> False</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="Reduce clearance; soften face for decalc bone.">
+            <legend class="font-medium">8) To resolve washboarding in decalcified bone, reduce clearance angle and consider softening.</legend>
+            <label class="block mt-1"><input type="radio" name="h8" value="A"> True</label>
+            <label class="block mt-1"><input type="radio" name="h8" value="B"> False</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="Fatty = pre-cool + higher MP paraffin.">
+            <legend class="font-medium">9) For chronic compression on fatty tissues, pre-cool block and try higher-MP paraffin.</legend>
+            <label class="block mt-1"><input type="radio" name="h9" value="A"> True</label>
+            <label class="block mt-1"><input type="radio" name="h9" value="B"> False</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="ISH: charged slides + extended oven dry (validated).">
+            <legend class="font-medium">10) For persistent lift-offs on ISH, switch to charged slides and extend oven dry per SOP.</legend>
+            <label class="block mt-1"><input type="radio" name="h10" value="A"> True</label>
+            <label class="block mt-1"><input type="radio" name="h10" value="B"> False</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+        </form>
+
+        <div class="quiz-actions mt-3 flex gap-3">
+          <button id="gradeBtnHTL" type="button" class="rounded-xl px-4 py-2 text-white font-semibold" style="background:var(--brand)">Submit</button>
+          <button id="retryBtnHTL" type="button" class="rounded-xl border px-4 py-2">Retry</button>
+        </div>
+        <div id="quizResultHTL" class="hidden mt-4 p-4 rounded-xl border" aria-live="polite"></div>
+      </section>
+
+      <!-- Downloads & storyboard -->
+      <section id="downloads" class="card p-6">
+        <h2 class="text-xl font-bold">⬇️ Downloads & image storyboard</h2>
+        <div class="mt-3 flex flex-wrap gap-3 text-sm">
+          <a class="rounded-xl border px-3 py-2" href="../assets/Orientation_Quick_Cards.pdf">Orientation quick-cards (PDF)</a>
+          <a class="rounded-xl border px-3 py-2" href="../assets/Artifact_Poster.pdf">Microtomy artifact poster (PDF)</a>
+          <a class="rounded-xl border px-3 py-2" href="../assets/Bath_Oven_Temp_Log.pdf">Bath & oven temp log (PDF)</a>
+          <a class="rounded-xl border px-3 py-2" href="../assets/Thickness_Verification.pdf">Thickness verification sheet (PDF)</a>
+          <a class="rounded-xl border px-3 py-2" href="../assets/Cryostat_Decon_Checklist.pdf">Cryostat decon checklist (PDF)</a>
+          <a class="rounded-xl px-3 py-2 text-white" style="background:var(--brand)" href="../assets/all-embedding-downloads.zip">All downloads (ZIP)</a>
+        </div>
+
+        <div class="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Thumbnails (placeholders) -->
+          <button class="rounded-xl border overflow-hidden group" data-lb="../assets/orient-skin.jpg">
+            <img src="../assets/orient-skin.jpg" alt="Skin embedding: good vs poor" class="w-full h-40 object-cover" onerror="this.style.display='none'">
+            <div class="px-3 py-2 text-sm">Skin — good vs poor</div>
+          </button>
+          <button class="rounded-xl border overflow-hidden group" data-lb="../assets/orient-gi.jpg">
+            <img src="../assets/orient-gi.jpg" alt="GI mucosa on edge vs piled" class="w-full h-40 object-cover" onerror="this.style.display='none'">
+            <div class="px-3 py-2 text-sm">GI — on-edge vs piled</div>
+          </button>
+          <button class="rounded-xl border overflow-hidden group" data-lb="../assets/orient-tubular.jpg">
+            <img src="../assets/orient-tubular.jpg" alt="Tubular cross sections" class="w-full h-40 object-cover" onerror="this.style.display='none'">
+            <div class="px-3 py-2 text-sm">Tubular — cross sections</div>
+          </button>
+        </div>
+        <p class="text-xs text-slate-500 mt-2">Don’t have images yet? The page still works — buttons hide automatically when assets are missing.</p>
+      </section>
+
+      <!-- Completion -->
+      <section id="completion" class="card p-6">
+        <h2 class="text-xl font-bold">🏁 Completion criteria</h2>
+        <ul class="list-disc ml-5">
+          <li>≥80% on the core quiz and ≥80% on HTL extension.</li>
+          <li>Lab drill: embed/orient <b>skin, GI bx, tubular, cyst wall</b> (mock ok) → cut target thickness → document artifacts & corrective actions.</li>
+        </ul>
+        <div class="mt-4 actions flex justify-between">
+          <a class="rounded-xl border px-3 py-2" href="./processing-pro.html">← Back to Processing</a>
+          <a class="rounded-xl border px-3 py-2" href="./staining-he-pro.html">Next: Routine H&amp;E →</a>
+        </div>
+      </section>
+
+      <!-- Version -->
+      <section id="version" class="card p-6">
+        <h2 class="text-xl font-bold">📌 Version & sources</h2>
+        <p class="text-sm text-slate-600">Updated <span id="verDate"></span> • v2.1</p>
+        <ul class="list-disc ml-5 mt-2 text-sm">
+          <li>Standard histotechnology references and bench SOPs (follow local policy and assay IFUs).</li>
+        </ul>
+      </section>
+    </article>
+
+    <!-- RIGHT RAIL -->
+    <aside class="space-y-4">
+      <section class="card p-4">
+        <p class="text-xs font-semibold tracking-wide text-slate-500">PROGRESS</p>
+        <div class="w-full h-2 mt-2 rounded bg-slate-200 overflow-hidden">
+          <div id="miniProg" class="h-2" style="width:0%; background:var(--brand)"></div>
+        </div>
+        <p id="progressText" class="text-xs text-slate-500 mt-2">Progress: 0%</p>
+      </section>
+      <section class="card p-4">
+        <p class="text-xs font-semibold tracking-wide text-slate-500">KEY NUMBERS</p>
+        <ul class="mt-2 text-sm list-disc ml-5">
+          <li>Clearance <b>3–5°</b></li>
+          <li>Bath <b>40–45 °C</b></li>
+          <li>Paraffin <b>3–5 µm</b></li>
+          <li>Cryostat start <b>−20 °C</b></li>
+        </ul>
+        <button id="copyNums2" class="copy-btn mt-2">Copy</button>
+      </section>
+      <section class="card p-4 notes" id="notesPanel">
+        <p class="text-xs font-semibold tracking-wide text-slate-500">YOUR NOTES</p>
+        <textarea id="notes" class="mt-2 w-full h-40 p-2 rounded-lg border" placeholder="Jot key takeaways…"></textarea>
+        <p class="text-xs text-slate-500 mt-1">Autosaved locally</p>
+      </section>
+    </aside>
+  </main>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,.65)">
+    <div class="relative bg-white rounded-xl shadow-xl max-w-4xl w-full p-4">
+      <button id="lbClose" class="absolute right-2 top-2 rounded-lg border px-2 py-1 text-sm">Close</button>
+      <img id="lbImg" src="" alt="" class="w-full h-auto rounded-lg"/>
+      <p class="mt-2 text-xs text-slate-600">Embedding & Microtomy image (ESC to close).</p>
+    </div>
+  </div>
+
+  <!-- HELP DRAWER -->
+  <aside id="helpDrawer" class="fixed right-0 top-0 h-full w-[92%] sm:w-[480px] bg-white border-l shadow-xl translate-x-full transition-transform" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="h-16 px-4 border-b flex items-center justify-between">
+      <h2 id="helpTitle" class="font-semibold">Ask a question</h2>
+      <button id="helpClose" class="rounded-xl border px-3 py-2 text-sm">Close</button>
+    </div>
+    <div class="p-4 space-y-3">
+      <p class="text-sm text-slate-600">Your question saves on this device. Copy/paste to email or your contact form.</p>
+      <label class="text-sm">Section (optional)
+        <input id="helpSection" class="mt-1 w-full rounded-lg border p-2" placeholder="e.g., Orientation — Skin"/>
+      </label>
+      <label class="text-sm">Question
+        <textarea id="helpText" class="mt-1 w-full h-32 rounded-lg border p-2" placeholder="Type your question…"></textarea>
+      </label>
+      <div class="flex gap-2">
+        <button id="helpSave" class="rounded-xl px-3 py-2 text-white" style="background:var(--brand)">Save</button>
+        <button id="helpCopy" class="rounded-xl border px-3 py-2">Copy</button>
+      </div>
+      <div id="helpSaved" class="text-xs text-green-700 hidden">Saved ✓</div>
+    </div>
+  </aside>
+
+  <!-- MOBILE NAV -->
+  <nav class="mobile-nav fixed bottom-3 inset-x-0 z-40 px-3 md:hidden">
+    <div class="mx-auto max-w-lg grid grid-cols-3 gap-2 rounded-2xl bg-white/95 backdrop-blur border shadow">
+      <a href="#outline" class="py-2 text-center text-sm">Outline</a>
+      <a href="#notesPanel" class="py-2 text-center text-sm">Notes</a>
+      <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="py-2 text-sm">Top</button>
+    </div>
+  </nav>
+
+  <footer class="py-10 border-t">
+    <div class="max-w-6xl mx-auto px-4 text-slate-600">© <span id="y"></span> Free HTL Guide</div>
+  </footer>
+
+  <!-- Main JS (robust, null-safe) -->
+  <script>
+  (function(){
+    const $ = (s,root=document)=>root.querySelector(s);
+    const $$= (s,root=document)=>Array.from(root.querySelectorAll(s));
+
+    // Footer year & version
+    $('#y').textContent = new Date().getFullYear();
+    $('#verDate').textContent = new Date().toLocaleDateString(undefined,{year:'numeric',month:'short'});
+
+    // Page progress bar
+    const progBar = $('#progressBar');
+    document.addEventListener('scroll',()=>{
+      const h=document.documentElement;
+      const pct=(h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
+      progBar.style.setProperty('--pct', pct+'%');
+    });
+
+    // Start/Resume memory
+    const LAST='emb_pro_last_v21';
+    $('#startBtn')?.addEventListener('click',(ev)=>{
+      const last=localStorage.getItem(LAST);
+      if(last){ ev.preventDefault(); location.hash=last; }
+    });
+
+    // TOC ScrollSpy + simple progress %
+    const PROG='emb_pro_seen_v21';
+    const miniProg=$('#miniProg'); const progTxt=$('#progressText');
+    let seen=new Set(JSON.parse(localStorage.getItem(PROG)||'[]'));
+    function bump(id){
+      if(!id) return;
+      if(!seen.has(id)){ seen.add(id); localStorage.setItem(PROG, JSON.stringify([...seen])); }
+      const total=$$('#content section[id]').length;
+      const pct=Math.max(0,Math.min(100, Math.round(seen.size/total*100)));
+      if(miniProg) miniProg.style.width=pct+'%';
+      if(progTxt) progTxt.textContent='Progress: '+pct+'%';
+      localStorage.setItem(LAST, id);
+    }
+    if('IntersectionObserver' in window){
+      const io = new IntersectionObserver(entries=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){
+            $$('#outline a').forEach(a=>a.removeAttribute('aria-current'));
+            const hit = $('#outline a[href="#'+e.target.id+'"]');
+            if(hit) hit.setAttribute('aria-current','true');
+            bump(e.target.id);
+          }
+        });
+      },{rootMargin:'-45% 0px -50% 0px',threshold:0});
+      $$('#content section[id]').forEach(s=>io.observe(s));
+    }
+
+    // Back to top
+    $('#topBtn')?.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+    // Objectives check persistence
+    const OBJKEY='emb_pro_obj_v21';
+    const objState = JSON.parse(localStorage.getItem(OBJKEY)||'{}');
+    $$('#objList input[type=checkbox]').forEach(cb=>{
+      const k=cb.dataset.k; if(objState[k]) cb.checked=true;
+      cb.addEventListener('change',()=>{ objState[k]=cb.checked; localStorage.setItem(OBJKEY, JSON.stringify(objState)); });
+    });
+
+    // Notes save
+    const NOTES='emb_pro_notes_v21';
+    const notes=$('#notes'); if(notes){ notes.value=localStorage.getItem(NOTES)||''; notes.addEventListener('input',()=>localStorage.setItem(NOTES, notes.value)); }
+
+    // Help drawer
+    const drawer=$('#helpDrawer');
+    $('#helpBtn')?.addEventListener('click',()=>drawer.style.transform='translateX(0)');
+    $('#helpClose')?.addEventListener('click',()=>drawer.style.transform='translateX(100%)');
+    $('#helpSave')?.addEventListener('click',()=>{
+      const payload={section:$('#helpSection').value, text:$('#helpText').value, ts:new Date().toISOString()};
+      localStorage.setItem('emb_pro_help_v21', JSON.stringify(payload));
+      $('#helpSaved').classList.remove('hidden'); setTimeout(()=>$('#helpSaved').classList.add('hidden'),1500);
+    });
+    $('#helpCopy')?.addEventListener('click', async ()=>{
+      const txt=\`Embedding/Microtomy module question\\nSection: \${$('#helpSection').value}\\n\\n\${$('#helpText').value}\`;
+      try{ await navigator.clipboard.writeText(txt); alert('Copied to clipboard'); }catch(e){ alert('Copy failed.'); }
+    });
+
+    // Collapsible controls (robust)
+    function setToggle(btn, open){
+      if(!btn) return;
+      btn.setAttribute('aria-expanded', String(open));
+      const label = btn.querySelector('.chev + span') || btn.querySelector('span:last-child');
+      if(label) label.textContent = open ? 'Collapse' : 'Expand';
+      const content = btn.closest('section')?.querySelector('.content');
+      if(content) content.style.display = open ? '' : 'none';
+    }
+    $$('.collapsible').forEach(btn=>{
+      setToggle(btn, btn.getAttribute('aria-expanded')!=='false');
+      btn.addEventListener('click', ()=>setToggle(btn, btn.getAttribute('aria-expanded')!=='true'));
+    });
+    $('#expandAll')?.addEventListener('click',()=>$$('.collapsible').forEach(b=>setToggle(b,true)));
+    $('#collapseAll')?.addEventListener('click',()=>$$('.collapsible').forEach(b=>setToggle(b,false)));
+
+    // Mark complete
+    const DONE='emb_pro_done_v21';
+    const markBtn=$('#markBtn'), statusChip=$('#statusChip');
+    function renderDone(){ const v=localStorage.getItem(DONE)==='1'; if(markBtn){ markBtn.textContent=v?'Completed ✓':'Mark complete'; markBtn.setAttribute('aria-pressed',v); } if(statusChip){ statusChip.textContent=v?'Completed':'Not completed'; } }
+    markBtn?.addEventListener('click',()=>{ localStorage.setItem(DONE, localStorage.getItem(DONE)==='1'?'0':'1'); renderDone(); });
+    renderDone();
+
+    // Lightbox for hero + storyboard + table buttons
+    const lb=$('#lightbox'), lbImg=$('#lbImg');
+    function openLB(src){ if(!src) return; lbImg.src=src; lb.classList.remove('hidden'); lb.classList.add('flex'); }
+    function closeLB(){ lb.classList.add('hidden'); lb.classList.remove('flex'); lbImg.src=''; }
+    $('#heroImg')?.addEventListener('click',e=>openLB(e.currentTarget.src));
+    $$('#downloads [data-lb]').forEach(btn=>btn.addEventListener('click',()=>openLB(btn.getAttribute('data-lb'))));
+    $$('.showImg').forEach(b=>b.addEventListener('click',()=>{
+      const src=b.getAttribute('data-img'); const img=new Image();
+      img.onload=()=>openLB(src); img.onerror=()=>alert('Image not available yet.'); img.src=src;
+    }));
+    $('#lbClose')?.addEventListener('click',closeLB);
+    $('#lightbox')?.addEventListener('click',e=>{ if(e.target===lb) closeLB(); });
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeLB(); });
+
+    // Copy numbers
+    function copyText(t){ return navigator.clipboard.writeText(t); }
+    $('#copyNums')?.addEventListener('click', async ()=>{
+      const txt=$$('#numList li').map(li=>li.textContent.trim()).join('\\n'); try{ await copyText(txt); alert('Copied'); }catch(e){ alert('Copy failed'); }
+    });
+    $('#copyNums2')?.addEventListener('click', async ()=>{
+      const txt='Clearance 3–5°; Bath 40–45 °C; Paraffin 3–5 µm; Cryostat start −20 °C';
+      try{ await copyText(txt); alert('Copied'); }catch(e){ alert('Copy failed'); }
+    });
+    $$('.copy-btn[data-copy]').forEach(btn=>btn.addEventListener('click',async ()=>{
+      try{ await copyText(btn.getAttribute('data-copy')); btn.textContent='Copied'; setTimeout(()=>btn.textContent='Copy',1200); }catch(e){ alert('Copy failed'); }
+    }));
+
+    // Troubleshoot search/filter
+    const tsSearch=$('#tsSearch'), tsFilter=$('#tsFilter'), tsTable=$('#tsTable tbody'), tsClear=$('#tsClear');
+    function tsApply(){
+      const q=(tsSearch?.value||'').toLowerCase(); const tag=(tsFilter?.value||'').toLowerCase();
+      Array.from(tsTable?.rows||[]).forEach(r=>{
+        const hay=r.textContent.toLowerCase(); const tags=(r.getAttribute('data-tags')||'').toLowerCase();
+        const okQ=!q || hay.includes(q); const okT=!tag || tags.includes(tag);
+        r.style.display = (okQ && okT)?'':'none';
+      });
+    }
+    tsSearch?.addEventListener('input',tsApply);
+    tsFilter?.addEventListener('change',tsApply);
+    tsClear?.addEventListener('click',()=>{ if(tsSearch) tsSearch.value=''; if(tsFilter) tsFilter.value=''; tsApply(); });
+    tsApply();
+
+    // Quizzes (shared grader)
+    function grade(formEl, resultEl, bestKey, bestChip){
+      let score=0,total=0;
+      Array.from(formEl.querySelectorAll('fieldset')).forEach(fs=>{
+        total++; fs.classList.remove('correct','incorrect');
+        const correct=fs.dataset.correct; const chosen=fs.querySelector('input:checked'); const expl=fs.querySelector('.exp');
+        if(chosen && chosen.value===correct){ score++; fs.classList.add('correct'); if(expl){ expl.classList.add('hidden'); expl.textContent=''; } }
+        else{ fs.classList.add('incorrect'); if(expl){ expl.textContent=fs.dataset.expl||''; expl.classList.remove('hidden'); } }
+      });
+      const pct=Math.round(score/total*100);
+      resultEl.classList.remove('hidden');
+      resultEl.innerHTML=`<strong>Score: ${score}/${total} (${pct}%)</strong>`;
+      const prev=+(localStorage.getItem(bestKey)||0);
+      if(pct>prev){ localStorage.setItem(bestKey, pct); if(bestChip) bestChip.textContent='Best: '+pct+'%'; }
+    }
+    function retry(formEl, resultEl){
+      Array.from(formEl.querySelectorAll('input[type=radio]')).forEach(i=>i.checked=false);
+      Array.from(formEl.querySelectorAll('fieldset')).forEach(fs=>fs.classList.remove('correct','incorrect'));
+      Array.from(formEl.querySelectorAll('.exp')).forEach(e=>{e.textContent=''; e.classList.add('hidden');});
+      resultEl.classList.add('hidden');
+    }
+    const form=$('#quizForm'), res=$('#quizResult'), bestChip=$('#bestScore');
+    const formH=$('#quizFormHTL'), resH=$('#quizResultHTL');
+    const BEST_MAIN='emb_pro_best_v21', BEST_HTL='emb_pro_best_htl_v21';
+    const bm = localStorage.getItem(BEST_MAIN); if(bm && bestChip) bestChip.textContent='Best: '+bm+'%';
+    $('#gradeBtn')?.addEventListener('click',()=>grade(form,res,BEST_MAIN,bestChip));
+    $('#retryBtn')?.addEventListener('click',()=>retry(form,res));
+    $('#gradeBtnHTL')?.addEventListener('click',()=>grade(formH,resH,BEST_HTL,null));
+    $('#retryBtnHTL')?.addEventListener('click',()=>retry(formH,resH));
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown',(e)=>{
+      if(e.target && ['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName)) return;
+      if(e.key==='['){ // prev section
+        const links=$$('#outline a'); const cur=links.findIndex(a=>a.getAttribute('aria-current')==='true'); const idx=Math.max(0, (cur<0?links.length-1:cur-1));
+        const href=links[idx]?.getAttribute('href'); if(href) location.hash=href;
+      }
+      if(e.key===']'){ // next section
+        const links=$$('#outline a'); const cur=links.findIndex(a=>a.getAttribute('aria-current')==='true'); const idx=Math.min(links.length-1, cur+1);
+        const href=links[idx]?.getAttribute('href'); if(href) location.hash=href;
+      }
+      if(e.key==='q'){ $('#quiz15')?.scrollIntoView({behavior:'smooth'}); }
+      if(e.key==='n'){ $('#notesPanel')?.scrollIntoView({behavior:'smooth'}); }
+      if(e.key==='/'){ e.preventDefault(); $('#tsSearch')?.focus(); }
+    });
+  })();
+  </script>
+
+  <!-- PATCH: ensure collapsibles always work even if earlier JS fails -->
+  <script>
+  (function(){
+    const $  = (s,root=document)=>root.querySelector(s);
+    const $$ = (s,root=document)=>Array.from(root.querySelectorAll(s));
+    function setToggleState(btn, open){
+      if(!btn) return;
+      btn.setAttribute('aria-expanded', String(open));
+      const label = btn.querySelector('.chev + span') || btn.querySelector('span:last-child');
+      if(label) label.textContent = open ? 'Collapse' : 'Expand';
+      const content = btn.closest('section')?.querySelector('.content');
+      if(content) content.style.display = open ? '' : 'none';
+    }
+    $$('.collapsible').forEach(btn=>{
+      const startOpen = btn.getAttribute('aria-expanded') !== 'false';
+      setToggleState(btn, startOpen);
+      btn.addEventListener('click', ()=>setToggleState(btn, btn.getAttribute('aria-expanded')!=='true'));
+    });
+    $('#expandAll')?.addEventListener('click', ()=> $$('.collapsible').forEach(b=>setToggleState(b,true)));
+    $('#collapseAll')?.addEventListener('click', ()=> $$('.collapsible').forEach(b=>setToggleState(b,false)));
+  })();
+  </script>
+</body>
+</html>
