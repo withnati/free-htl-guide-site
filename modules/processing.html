@@ -2,285 +2,1121 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Processing — Core Module | Free HTL Guide</title>
-  <meta name="description" content="Processing core module for ASCP HT/HTL: dehydration, clearing, paraffin infiltration, schedules, QC, troubleshooting, and a 15-question quiz."/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Processing & Decalcification — Pro Module (Expanded v2.1) | Free HTL Guide</title>
+  <meta name="description" content="Expanded HT/HTL processing & decalcification module with collapsible lessons, searchable reagents matrix, compare mode, copyable recipes, and quizzes."/>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="prefetch" href="./embedding.html" as="document">
   <style>
-    :root{ --brand:#0F4C81; --text:#1E293B; }
-    .pill{ padding:.15rem .5rem; border-radius:999px; background:#EEF2FF; color:#1E3A8A; font-size:.8rem; }
-    .k{ background:#F1F5F9; padding:.15rem .4rem; border-radius:.375rem; }
-    .table{ border-collapse: collapse; width: 100%; }
-    .table th,.table td{ border:1px solid #E5E7EB; padding:.6rem; vertical-align:top; }
-    .table th{ background:#F8FAFC; font-weight:700; }
-    fieldset.correct{ background:#ECFDF5; }
-    fieldset.incorrect{ background:#FEF2F2; }
-    @media print{ header,nav,footer,.btn{ display:none !important; } main{ max-width:100% !important; } }
-    .btn{ display:inline-flex; align-items:center; gap:.5rem; padding:.6rem 1rem; border-radius:.75rem; font-weight:600; }
-    .btn-brand{ background:var(--brand); color:#fff; }
-    .btn-ghost{ border:1px solid #CBD5E1; }
+    :root{ --brand:#0F4C81; --ink:#0f172a }
+    html{ scroll-behavior:smooth }
+    body{ color:var(--ink) }
+
+    .card{ border-radius:1.25rem; border:1px solid #e5e7eb; background:#fff; box-shadow:0 2px 12px rgba(2,6,23,.04) }
+    .pill{ padding:.15rem .5rem; border-radius:999px; background:#eef2ff; color:#1e3a8a; font-size:.8rem; font-weight:600 }
+
+    #progressBar{ position:sticky; top:0; height:4px; z-index:50; background:linear-gradient(to right,var(--brand) var(--pct,0%),#e5e7eb 0) }
+
+    .table{ border-collapse:collapse; width:100% }
+    .table th,.table td{ border:1px solid #e5e7eb; padding:.6rem; vertical-align:top; line-height:1.35 }
+    .table th{ background:#f8fafc; font-weight:700; cursor:pointer; position:sticky; top:0; z-index:1 }
+    .table tbody tr:nth-child(even){ background:#fafafa }
+
+    fieldset.correct{ border:2px solid #10b981 }
+    fieldset.incorrect{ border:2px solid #ef4444 }
+
+    @keyframes pulse{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.15);opacity:.6}}
+    .animate-pulse{ animation:pulse 1.8s ease-in-out infinite }
+
+    /* Collapsible sections */
+    .collapsible .content{ display:block }
+    .collapsible[aria-expanded="false"] .content{ display:none }
+    .collapsible .chev{ transition:transform .2s ease }
+    .collapsible[aria-expanded="false"] .chev{ transform:rotate(-90deg) }
+
+    /* Lightbox */
+    #lightbox{ background:rgba(0,0,0,.6) }
+
+    @media print{
+      header, .toc, .actions, .notes, .quiz-actions, #helpBtn, #helpDrawer, .mobile-nav, .filters, .compareDock { display:none !important }
+      main{ max-width:100% !important }
+      article > section{ break-inside:avoid; margin-bottom:1.2rem }
+      a[href]:after{ content:" (" attr(href) ")"; font-size:90% }
+    }
+
+    @media (prefers-color-scheme: dark){
+      body{ background:#0b1220; color:#e5e7eb }
+      header, .card, nav, .toc{ background:#0d1426; color:#e5e7eb; border-color:#1f2a44 }
+      .table th{ background:#121b33 }
+      .table td, .table th{ border-color:#1f2a44 }
+      a{ color:#8ab9ff }
+      #lightbox{ background:rgba(0,0,0,.75) }
+    }
   </style>
 </head>
-<body class="antialiased text-[color:var(--text)]">
-  <!-- Header -->
+<body class="antialiased bg-white">
+  <div id="progressBar" aria-hidden="true"></div>
+
   <header class="border-b bg-white/90 backdrop-blur">
     <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-      <a href="../index.html" class="font-bold text-lg text-[color:var(--brand)]">Free HTL Guide</a>
-      <nav class="hidden md:flex gap-6 text-sm">
-        <a class="hover:text-[color:var(--brand)]" href="../index.html#syllabus">Syllabus</a>
-        <a class="hover:text-[color:var(--brand)]" href="../index.html#waitlist">Waitlist</a>
+      <nav class="text-sm text-slate-600">
+        <a class="hover:text-[color:var(--brand)]" href="../index.html">Home</a>
+        <span class="mx-1">›</span>
+        <a class="hover:text-[color:var(--brand)]" href="./processing.html">Processing</a>
+        <span class="mx-1">›</span>
+        <strong>Pro Module (Expanded v2.1)</strong>
       </nav>
+      <div class="flex items-center gap-2">
+        <button id="expandAll" class="rounded-xl border px-3 py-2 text-sm">Expand all</button>
+        <button id="collapseAll" class="rounded-xl border px-3 py-2 text-sm">Collapse all</button>
+        <button id="markBtn" class="rounded-xl border px-3 py-2 text-sm">Mark complete</button>
+        <button id="helpBtn" class="rounded-xl border px-3 py-2 text-sm">Ask a question</button>
+      </div>
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="bg-slate-50 border-b">
-    <div class="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-2 gap-8">
+  <!-- HERO -->
+  <section class="relative border-b">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-slate-50 via-white to-white"></div>
+    <div class="pointer-events-none absolute right-[-10%] top-[-20%] h-[38rem] w-[38rem] rounded-full blur-3xl opacity-20"
+         style="background:radial-gradient(closest-side,#0F4C81 0%,#74a3c7 35%,transparent 70%);"></div>
+
+    <div class="max-w-6xl mx-auto px-4 py-8 grid md:grid-cols-[1.15fr,0.85fr] md:items-center gap-8">
       <div>
-        <p class="uppercase tracking-wide text-xs text-slate-500">Module • Core</p>
-        <h1 class="text-3xl md:text-4xl font-extrabold mt-1">Processing</h1>
-        <p class="mt-3 text-slate-700">
-          Dehydration → Clearing → Paraffin infiltration. Learn schedules, reagent choices, carryover control, and troubleshooting to produce strong H&amp;E and downstream IHC/ISH results.
+        <p class="uppercase tracking-wide text-xs text-slate-500">Module • Core • Exam weight 10–20% (+ decalc impacts)</p>
+        <h1 class="max-w-[22ch] leading-tight text-4xl md:text-5xl font-extrabold mt-1">Processing & Decalcification</h1>
+        <p class="max-w-[60ch] mt-3 text-slate-600 md:text-lg">
+          Expanded v2.1 with collapsible lessons, searchable reagent matrix, compare mode, lightbox, copyable recipes & two quizzes.
         </p>
-        <div class="mt-4 flex flex-wrap gap-2 text-xs">
-          <span class="pill">Bench skills</span><span class="pill">QC &amp; logs</span><span class="pill">Quiz: 15 Q</span>
+        <div class="mt-4 flex flex-wrap gap-2 text-[11px] font-medium text-slate-700">
+          <span class="px-2 py-1 rounded-full bg-slate-100/80 ring-1 ring-slate-200">HT skills</span>
+          <span class="px-2 py-1 rounded-full bg-slate-100/80 ring-1 ring-slate-200">HTL depth</span>
+          <span class="px-2 py-1 rounded-full bg-slate-100/80 ring-1 ring-slate-200">Quizzes: 25 Q</span>
         </div>
+        <div class="mt-5 flex gap-3">
+          <a id="startBtn" href="#start" class="rounded-xl px-4 py-2 text-white font-semibold" style="background:var(--brand)" fetchpriority="high">Start / Resume</a>
+          <button id="topBtn" class="rounded-xl border px-4 py-2">Back to top</button>
+        </div>
+        <p class="mt-2 text-xs text-slate-500">Estimated time: 45–60 min • Video 10 m • reading 20 m • practice 20 m</p>
       </div>
-      <div class="hidden md:block">
-        <img src="../Microtome.jpg" alt="Processing workflow" class="rounded-xl border shadow-sm w-full object-cover h-56 md:h-64">
+
+      <div class="hidden md:block relative">
+        <img id="heroImg" src="../assets/microtome.jpg" alt="Processor and paraffin embedding context (microtome/processor)."
+             class="w-full h-auto max-h-[360px] object-contain rounded-none border-0 shadow-none cursor-zoom-in"
+             loading="eager" decoding="async" onerror="this.style.display='none'">
+        <div class="absolute left-2 top-2 bg-white/90 text-xs rounded px-2 py-1 border">Click image to zoom</div>
       </div>
     </div>
   </section>
 
-  <!-- Main -->
-  <main class="max-w-6xl mx-auto px-4 py-10 grid lg:grid-cols-[1fr,320px] gap-10">
-    <!-- Article -->
-    <article class="prose max-w-none">
-      <h2 class="text-2xl font-bold">Learning objectives</h2>
-      <ul class="mt-2">
-        <li>Describe the goals and sequence of <b>dehydration → clearing → infiltration</b>.</li>
-        <li>Choose appropriate <b>reagents/temps/times</b> for tissue types (fatty, dense, delicate, calcified).</li>
-        <li>Implement <b>carryover control</b> (two absolutes/two clearants) and reagent rotation.</li>
-        <li>Troubleshoot <b>soft blocks, brittleness, opaque wax, incomplete infiltration</b>.</li>
-        <li>Document with <b>rotation logs, lots, temps, actions</b> and validate changes.</li>
-      </ul>
-
-      <h2 class="text-2xl font-bold mt-10">Workflow summary</h2>
-      <ul>
-        <li><b>Dehydration:</b> graded alcohols remove water (70% → 95% → 100% ×2).</li>
-        <li><b>Clearing:</b> xylene or substitute replaces alcohol (often ×2 stations).</li>
-        <li><b>Infiltration:</b> paraffin (MP usually <b>56–60 °C</b>), often ×2–3 baths; vacuum helps fatty/dense tissue.</li>
-      </ul>
-
-      <h2 class="text-2xl font-bold mt-10">Schedules (templates)</h2>
-      <div class="overflow-x-auto">
-        <table class="table text-sm">
-          <thead><tr><th>Tissue</th><th>Alcohols</th><th>Clearant</th><th>Paraffin</th><th>Notes</th></tr></thead>
-          <tbody>
-            <tr>
-              <td>Routine small biopsies</td>
-              <td>70% (10–20 m) → 95% (20–30 m) → 100% ×2 (20–30 m)</td>
-              <td>Xylene ×2 (15–20 m)</td>
-              <td>Paraffin ×2–3 (20–30 m, 56–60 °C)</td>
-              <td>Do not overcrowd cassettes; monitor temps.</td>
-            </tr>
-            <tr>
-              <td>Fatty (breast/skin)</td>
-              <td>Extend 95% and 100% steps</td>
-              <td>Extend clearant; consider vacuum</td>
-              <td>Paraffin ×3; vacuum beneficial</td>
-              <td>Fat slows diffusion—longer times reduce soft cores.</td>
-            </tr>
-            <tr>
-              <td>Dense/calcified*</td>
-              <td>Longer 95% and 100%</td>
-              <td>Longer clearant</td>
-              <td>Paraffin ×3</td>
-              <td>*Prefer EDTA decalc if IHC/ISH planned.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <h2 class="text-2xl font-bold mt-10">Reagent choices &amp; carryover control</h2>
-      <ul>
-        <li><b>Alcohols:</b> ethanol is standard. Two <b>100%</b> stations reduce water carryover.</li>
-        <li><b>Clearants:</b> xylene (fast) or substitutes (often require <b>longer times</b>). Ensure paraffin compatibility.</li>
-        <li><b>Paraffin:</b> MP ~56–60 °C; avoid overheating &gt;60–62 °C to protect morphology/antigens.</li>
-        <li><b>Carryover best practice:</b> Two absolutes + two clearants; maintain <b>fresh/rotation schedule</b> and monitor cloudiness/odor.</li>
-      </ul>
-
-      <h2 class="text-2xl font-bold mt-10">QC, logs, and safety</h2>
-      <ul>
-        <li><b>Rotation log:</b> dates, actions (refresh/replace), lot #s, temperatures, anomalies.</li>
-        <li><b>Evidence of exhaustion:</b> cloudy clearant/paraffin, slow processing, soft blocks.</li>
-        <li><b>Safety:</b> flammables (alcohols/xylene/substitutes), ventilation, waste handling.</li>
-      </ul>
-
-      <h2 class="text-2xl font-bold mt-10">Troubleshooting quick guide</h2>
-      <ul>
-        <li><b>Soft/spongy block:</b> under-dehydration/clearing → reprocess from 95% → 100% ×2 → clearant ×2 (extended) → paraffin ×2–3.</li>
-        <li><b>Brittle/shrunken tissue:</b> over-dehydration/clearing + heat → shorten absolutes/clearant; avoid overheating; consider lower MP wax.</li>
-        <li><b>Opaque paraffin around tissue:</b> water carryover → refresh absolutes/clearant; verify two 100% stations are effective.</li>
-        <li><b>Poor infiltration in fatty tissue:</b> extend clearant/paraffin; use vacuum; ensure adequate cassettes spacing.</li>
-      </ul>
-
-      <h2 class="text-2xl font-bold mt-10">Downloads</h2>
-      <p class="text-sm text-slate-600">These links work as soon as you upload the PDFs to <span class="k">/assets/</span>:</p>
-      <div class="mt-3 flex flex-wrap gap-3">
-        <a class="btn btn-ghost" href="../assets/Processing_Quick_Card.pdf">Quick-card (PDF)</a>
-        <a class="btn btn-ghost" href="../assets/Processing_Schedules.pdf">Schedules (PDF)</a>
-        <a class="btn btn-ghost" href="../assets/Processing_Troubleshooting.pdf">Troubleshooting (PDF)</a>
-        <a class="btn btn-ghost" href="../assets/Reagent_Rotation_Log.pdf">Rotation log (PDF)</a>
-        <a class="btn btn-brand" href="../assets/all-processing-downloads.zip">All downloads (ZIP)</a>
-      </div>
-
-      <!-- QUIZ -->
-      <h2 id="quiz" class="text-2xl font-bold mt-12">Practice quiz (15)</h2>
-      <p class="text-sm text-slate-600">Select the best option for each question. Submit to score; Retry clears answers.</p>
-      <form id="quizForm" class="mt-4 grid gap-5 max-w-3xl" aria-describedby="quizDesc">
-        <p id="quizDesc" class="sr-only">Processing multiple choice questions</p>
-        <!-- Rendered by patch script below -->
-      </form>
-      <div class="mt-3 flex gap-3">
-        <button type="button" class="btn btn-brand" onclick="grade()">Submit</button>
-        <button type="button" class="btn btn-ghost" onclick="retry()">Retry</button>
-      </div>
-      <div id="quizResult" class="hidden mt-4 p-4 rounded-xl border" aria-live="polite"></div>
-
-      <div class="mt-10 flex justify-between">
-        <a href="./fixation-core-v2.html" class="btn btn-ghost">← Fixation Core</a>
-        <a href="./embedding.html" class="btn btn-ghost">Next: Embedding →</a>
-      </div>
-    </article>
-
-    <!-- Sidebar -->
-    <aside class="space-y-4">
-      <div class="p-4 rounded-xl border">
-        <p class="text-xs font-semibold tracking-wide text-slate-500">ON THIS PAGE</p>
-        <ul class="mt-3 space-y-2 text-sm">
-          <li><a class="hover:text-[color:var(--brand)]" href="#quiz">Quiz</a></li>
-        </ul>
-      </div>
-      <div class="p-4 rounded-xl border">
-        <p class="text-sm text-slate-700">Track progress on this device.</p>
-        <button id="doneBtn" class="mt-2 btn btn-ghost w-full">Mark complete</button>
-        <p id="doneNote" class="mt-2 text-xs text-slate-500"></p>
+  <main class="max-w-6xl mx-auto px-4 py-8 grid lg:grid-cols-[260px,1fr,320px] gap-8">
+    <!-- TOC -->
+    <aside class="toc hidden lg:block sticky top-24 h-max">
+      <div class="card p-4">
+        <p class="text-xs font-semibold tracking-wide text-slate-500">MODULE MAP</p>
+        <ol id="outline" class="mt-3 space-y-2 text-sm">
+          <li><a href="#start">Start</a></li>
+          <li><a href="#objectives">Objectives</a></li>
+          <li><a href="#overview">Processing overview</a></li>
+          <li><a href="#reagents">Reagents matrix</a></li>
+          <li><a href="#schedules">Processor schedules</a></li>
+          <li><a href="#decalc">Decalcification</a></li>
+          <li><a href="#qc">QC & safety</a></li>
+          <li><a href="#troubleshoot">Troubleshooting</a></li>
+          <li><a href="#bench">Bench protocols</a></li>
+          <li><a href="#math">Micro-math & quick checks</a></li>
+          <li><a href="#quiz15">Practice quiz (15)</a></li>
+          <li><a href="#quiz-htl">HTL extension quiz (10)</a></li>
+          <li><a href="#downloads">Downloads</a></li>
+          <li><a href="#summary">Summary & pitfalls</a></li>
+          <li><a href="#version">Version & sources</a></li>
+        </ol>
       </div>
     </aside>
+
+    <!-- CONTENT -->
+    <article id="content" class="space-y-10 max-w-[68ch] lg:max-w-none">
+      <!-- Start -->
+      <section id="start" class="card p-6">
+        <div class="flex items-start justify-between">
+          <div>
+            <h2 class="text-xl font-bold">Start / Resume</h2>
+            <p class="text-slate-600 mt-1">We’ll remember your spot, quiz attempts, and notes on this device.</p>
+            <div class="mt-3 flex gap-2 text-sm">
+              <span id="progressText" class="px-2 py-1 rounded bg-slate-100">Progress: 0%</span>
+              <span id="statusChip" class="px-2 py-1 rounded bg-slate-100">Not completed</span>
+            </div>
+          </div>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block rotate-0">▾</span><span>Collapse</span>
+          </button>
+        </div>
+        <div class="content mt-4">
+          <div class="grid sm:grid-cols-2 gap-3 text-sm">
+            <div class="rounded-xl border p-3">
+              <div class="font-semibold">Prereqs</div>
+              <ul class="list-disc ml-5 mt-1">
+                <li>Fixation module (pre-analytics)</li>
+                <li>Basic instrument familiarity (processor, paraffin station)</li>
+              </ul>
+            </div>
+            <div class="rounded-xl border p-3">
+              <div class="font-semibold">What you’ll need</div>
+              <ul class="list-disc ml-5 mt-1">
+                <li>Local processor schedules & SOPs</li>
+                <li>Decalc log examples (if available)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Objectives -->
+      <section id="objectives" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🎯 Learning objectives</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block rotate-0">▾</span><span>Collapse</span>
+          </button>
+        </div>
+        <div class="content">
+          <ul class="list-disc ml-5 mt-2">
+            <li>Map the dehydration → clearing → infiltration pipeline and predict impacts of time/temp/vacuum/agitation.</li>
+            <li>Choose reagents & schedules for biopsy vs large/fatty/fibrous/bone; justify paraffin MP/additives.</li>
+            <li>Detect and fix processing failures (dehydration/clearing/infiltration; carryover; over-hardening).</li>
+            <li>Select & monitor decalcification (EDTA vs acids); verify endpoints; anticipate H&amp;E/special/IHC/ISH impacts.</li>
+            <li>Run reagent rotation & QC; safety/compliance; write audit-proof corrective actions.</li>
+          </ul>
+          <div class="mt-4 text-sm text-slate-700 bg-amber-50 border border-amber-200 rounded-xl p-3">
+            <strong>Takeaways:</strong> Control dwell, temperature, vacuum, and load. EDTA for IHC/ISH; acids for speed (with trade-offs).
+          </div>
+        </div>
+      </section>
+
+      <!-- Overview -->
+      <section id="overview" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🔎 Processing overview</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block rotate-0">▾</span><span>Collapse</span>
+          </button>
+        </div>
+        <div class="content">
+          <p><b>Goal:</b> replace water with a solid medium (paraffin/resin) while preserving structure, targets, and dimensions.</p>
+          <ol class="list-decimal ml-5 mt-2">
+            <li><b>Dehydration</b> — graded alcohols remove free/bound water.</li>
+            <li><b>Clearing</b> — solvent miscible with alcohol + paraffin displaces alcohol.</li>
+            <li><b>Infiltration</b> — molten paraffin (or resin) replaces clearing solvent.</li>
+          </ol>
+          <p class="mt-2"><b>Control levers:</b> ≤3–5 mm thickness, dwell time, bath temperature (avoid overheating), vacuum/pressure, agitation.</p>
+        </div>
+      </section>
+
+      <!-- Reagents matrix -->
+      <section id="reagents" class="card p-6">
+        <div class="flex items-start justify-between">
+          <div>
+            <h2 class="text-xl font-bold">📋 Reagents — searchable quick compare</h2>
+            <p class="text-sm text-slate-600">Click headers to sort. Filter by class & use. Select two rows to compare.</p>
+          </div>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block rotate-0">▾</span><span>Collapse</span>
+          </button>
+        </div>
+
+        <div class="filters mt-4 grid sm:grid-cols-[1fr,200px,220px] gap-2">
+          <input id="rgSearch" class="rounded-lg border px-3 py-2 text-sm" placeholder="Search (name, pro, con, note)…"/>
+          <select id="classFilter" class="rounded-lg border px-3 py-2 text-sm">
+            <option value="">All classes</option>
+            <option>Dehydrant</option>
+            <option>Clearing</option>
+            <option>Infiltration</option>
+          </select>
+          <select id="useFilter" class="rounded-lg border px-3 py-2 text-sm">
+            <option value="">All uses</option>
+            <option>Routine</option>
+            <option>Rapid</option>
+            <option>Fatty</option>
+            <option>Xylene-free</option>
+            <option>EM/Resin</option>
+            <option>Odor-sensitive</option>
+          </select>
+        </div>
+
+        <div class="overflow-x-auto mt-3">
+          <table id="rgTable" class="table text-sm">
+            <thead>
+              <tr>
+                <th data-key="compare">Compare</th>
+                <th data-key="name">Reagent</th>
+                <th data-key="class">Class</th>
+                <th>Strengths / Pros</th>
+                <th>Watch-outs / Cons</th>
+                <th>Typical use / Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Dehydrants -->
+              <tr data-class="Dehydrant" data-use="Routine">
+                <td><input type="checkbox" class="cmp"></td>
+                <td data-name="Ethanol (70→95→100%)">Ethanol (70→95→100%)</td>
+                <td>Dehydrant</td>
+                <td>Predictable; compatible with most protocols</td>
+                <td>Over-dehydration → brittle tissue</td>
+                <td>Routine processors (biopsies/routine)</td>
+              </tr>
+              <tr data-class="Dehydrant" data-use="Xylene-free,Routine">
+                <td><input type="checkbox" class="cmp"></td>
+                <td data-name="Isopropanol (IPA)">Isopropanol (IPA)</td>
+                <td>Dehydrant</td>
+                <td>Lower odor; good water removal</td>
+                <td>Slightly slower to absolute; can soften blocks</td>
+                <td>Xylene-free or substitute workflows</td>
+              </tr>
+              <tr data-class="Dehydrant" data-use="Rapid">
+                <td><input type="checkbox" class="cmp"></td>
+                <td data-name="Acetone">Acetone</td>
+                <td>Dehydrant</td>
+                <td>Rapid at RT; miscible with many solvents</td>
+                <td>Over-hardening; flammable</td>
+                <td>Rapid cycles / urgent</td>
+              </tr>
+              <!-- Clearing agents -->
+              <tr data-class="Clearing" data-use="Routine">
+                <td><input type="checkbox" class="cmp"></td>
+                <td data-name="Xylene">Xylene</td>
+                <td>Clearing</td>
+                <td>Fast, efficient clearing</td>
+                <td>Prolonged exposure → <b>brittleness</b>; neurotoxic/flammable</td>
+                <td>Gold-standard reference; monitor dwell</td>
+              </tr>
+              <tr data-class="Clearing" data-use="Odor-sensitive,Routine">
+                <td><input type="checkbox" class="cmp"></td>
+                <td data-name="Aliphatic substitutes">Aliphatic substitutes (isoparaffinic)</td>
+                <td>Clearing</td>
+                <td>Lower odor/toxicity</td>
+                <td><b>Slower</b>; may yield <b>softer blocks</b> unless paraffin extended</td>
+                <td>Adjust paraffin time / raise MP</td>
+              </tr>
+              <tr data-class="Clearing" data-use="Odor-sensitive">
+                <td><input type="checkbox" class="cmp"></td>
+                <td data-name="Limonene">Limonene</td>
+                <td>Clearing</td>
+                <td>Good clearing; citrus odor</td>
+                <td>Oily residue; sensitizer; longer times</td>
+                <td>Consider for odor-sensitive areas</td>
+              </tr>
+              <tr data-class="Clearing" data-use="Xylene-free,Routine">
+                <td><input type="checkbox" class="cmp"></td>
+                <td data-name="IPA→Paraffin direct">IPA→Paraffin direct</td>
+                <td>Clearing</td>
+                <td>Simplifies stations (no xylene)</td>
+                <td>Longer transitions; softness risk</td>
+                <td>Some xylene-free systems</td>
+              </tr>
+              <!-- Infiltration -->
+              <tr data-class="Infiltration" data-use="Routine,Fatty">
+                <td><input type="checkbox" class="cmp"></td>
+                <td data-name="Paraffin MP 54–56 °C">Paraffin MP 54–56 °C</td>
+                <td>Infiltration</td>
+                <td>Delicate tissues; easier ribboning</td>
+                <td>Softer blocks on fatty/fibrous tissue</td>
+                <td>Use for small/soft tissues</td>
+              </tr>
+              <tr data-class="Infiltration" data-use="Fatty,Routine">
+                <td><input type="checkbox" class="cmp"></td>
+                <td data-name="Paraffin MP 58–62 °C (+polymers)">Paraffin MP 58–62 °C (+polymers)</td>
+                <td>Infiltration</td>
+                <td>Better support for fatty/fibrous</td>
+                <td>Too hot → hard/brittle if prolonged</td>
+                <td>Additives tune hardness/tack</td>
+              </tr>
+              <tr data-class="Infiltration" data-use="EM/Resin">
+                <td><input type="checkbox" class="cmp"></td>
+                <td data-name="Resins (GMA/epoxy)">Resins (GMA/epoxy)</td>
+                <td>Infiltration</td>
+                <td>High hardness; superb detail</td>
+                <td>Toxicity/handling; long processing</td>
+                <td>Hard/mineralized or high-res work</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Compare dock -->
+        <div class="compareDock mt-4 hidden">
+          <div class="rounded-xl border p-3 bg-slate-50">
+            <div class="flex items-center justify-between">
+              <strong>Compare</strong>
+              <button id="clearCmp" class="text-sm underline">Clear</button>
+            </div>
+            <div id="cmpGrid" class="grid md:grid-cols-2 gap-3 mt-2 text-sm"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Schedules -->
+      <section id="schedules" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🗂️ Processor schedules — validated templates</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block">▾</span><span>Collapse</span>
+          </button>
+        </div>
+        <div class="content">
+          <p class="text-sm text-slate-600">Start points — adapt to size/density and local SOPs.</p>
+          <div class="overflow-x-auto mt-3">
+            <table class="table text-sm">
+              <thead><tr><th>Template</th><th>Stages</th><th>Notes</th></tr></thead>
+              <tbody>
+                <tr>
+                  <td><b>A) Small biopsies (≤3 mm)</b></td>
+                  <td>70% 15–30 → 95%×2 (15–30) → 100%×2 (15–30) → Xyl×2 (15–20) → Paraffin×2–3 (20–30)</td>
+                  <td>Paraffin ~60 °C</td>
+                </tr>
+                <tr>
+                  <td><b>B) Routine surgicals (3–5 mm)</b></td>
+                  <td>70% 45 → 95%×2 (45) → 100%×2 (45–60) → Xyl×2 (30–45) → Paraffin×3 (45–60)</td>
+                  <td>Vacuum/pressure for dense</td>
+                </tr>
+                <tr>
+                  <td><b>C) Fatty tissue</b></td>
+                  <td>70% 45–60 → 95%×2 (60) → 100%×2–3 (60–90) → Xyl×3 (45–60) → Paraffin×3 (60)</td>
+                  <td>Ensure absolute alcohol; consider higher MP; vacuum</td>
+                </tr>
+                <tr>
+                  <td><b>D) Dense/fibrous</b></td>
+                  <td>Extend dwell across stations; use vacuum; extend paraffin</td>
+                  <td>Support fibrous matrices</td>
+                </tr>
+                <tr>
+                  <td><b>E) Bone/BM</b></td>
+                  <td>Fix → <b>Decalc</b> → rinse → routine/targeted schedule</td>
+                  <td>Prefer EDTA for IHC/ISH</td>
+                </tr>
+                <tr>
+                  <td><b>F) Rapid/STAT</b></td>
+                  <td>Heated reagents + stronger vacuum</td>
+                  <td>Expect morphology trade-offs</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs text-slate-500 mt-2">Tip: start conservative, then trim once QC confirms full dehydration/clearing without brittleness.</p>
+        </div>
+      </section>
+
+      <!-- Decalc -->
+      <section id="decalc" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🦴 Decalcification — method, endpoint, downstream impact</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block">▾</span><span>Collapse</span>
+          </button>
+        </div>
+        <div class="content">
+          <p><b>When:</b> bone, teeth, calcified vessels, some marrow cores.</p>
+          <div class="grid sm:grid-cols-2 gap-3 mt-3">
+            <div class="rounded-xl border p-3 text-sm">
+              <div class="font-semibold">Methods</div>
+              <ul class="list-disc ml-5 mt-1">
+                <li><b>EDTA pH ~7–7.4</b> — best morphology/antigen/NA; slower.</li>
+                <li><b>Acids</b> — formic (moderate speed/preservation), HCl/Nitric (fastest; most damaging).</li>
+                <li>Microwave-assisted — accelerates; strict control needed.</li>
+                <li>Ion-exchange resins — can speed EDTA.</li>
+              </ul>
+            </div>
+            <div class="rounded-xl border p-3 text-sm">
+              <div class="font-semibold">Endpoint monitoring</div>
+              <ul class="list-disc ml-5 mt-1">
+                <li><b>Chemical</b> (ammonium oxalate test on spent solution).</li>
+                <li><b>Radiography</b> (dense cores/teeth).</li>
+                <li>Mechanical (least reliable).</li>
+                <li>Timed charts (guides only; validate locally).</li>
+              </ul>
+            </div>
+          </div>
+          <details class="mt-3">
+            <summary class="cursor-pointer font-semibold">Downstream impacts</summary>
+            <ul class="list-disc ml-5 mt-2">
+              <li>Acids → <b>weaker hematoxylin</b>, reduced silver & IHC signals; risk false negatives.</li>
+              <li>EDTA → slower TAT but <b>superior morphology/antigen/NA preservation</b>.</li>
+            </ul>
+          </details>
+
+          <div class="grid sm:grid-cols-2 gap-3 mt-4">
+            <div class="rounded-xl border p-3 text-sm">
+              <div class="font-semibold flex items-center justify-between">EDTA working tip
+                <button class="copy rounded-lg border px-2 py-1 text-xs" data-copy="EDTA decalc: pH 7.0–7.4; gentle agitation; change solution regularly; verify endpoint by radiography or chemical test.">Copy</button>
+              </div>
+              <p class="mt-1">Maintain pH 7–7.4, agitate, refresh; verify endpoint.</p>
+            </div>
+            <div class="rounded-xl border p-3 text-sm">
+              <div class="font-semibold flex items-center justify-between">Chemical endpoint blurb
+                <button class="copy rounded-lg border px-2 py-1 text-xs" data-copy="Ammonium oxalate test: take spent decalc solution; add ammonium oxalate; absence of precipitate suggests completion. Beware false negatives after prolonged acid use.">Copy</button>
+              </div>
+              <p class="mt-1">Ammonium oxalate check; beware acid overuse artifacts.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- QC -->
+      <section id="qc" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🧾 QC, reagent management & safety</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="false">
+            <span class="chev inline-block">▾</span><span>Expand</span>
+          </button>
+        </div>
+        <div class="content">
+          <ul class="list-disc ml-5">
+            <li><b>Rotation:</b> last bath → first; discard dirtiest; track by cassettes processed + quick checks (SG for alcohol; cloudiness for xylene).</li>
+            <li><b>Logs:</b> station times/temps, vacuum, alarms, reagent changes, lot numbers.</li>
+            <li><b>Controls:</b> include a processing control (e.g., liver/uterus) when schedules or reagents change.</li>
+            <li><b>Safety:</b> xylene/toluene (flammable, neurotoxic) → ventilation/PPE; limonene (sensitizer); hot paraffin burns; waste segregation.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Troubleshooting -->
+      <section id="troubleshoot" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🧯 Troubleshooting decision trees</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="false">
+            <span class="chev inline-block">▾</span><span>Expand</span>
+          </button>
+        </div>
+        <div class="content">
+          <ul class="list-disc ml-5">
+            <li><b>Cloudy xylene</b> → water carryover. <i>Fix:</i> refresh 100% alcohols & xylene; check dwell & cassette load.</li>
+            <li><b>Mushy centers / edge-only infiltration</b> → poor paraffin infiltration. <i>Fix:</i> extend paraffin (add bath), raise MP slightly, apply vacuum in paraffin.</li>
+            <li><b>Brittle, shattery tissue</b> → over-dehydration or prolonged xylene. <i>Fix:</i> shorten absolute alcohol; reduce clearing dwell/temperature; try lower MP paraffin.</li>
+            <li><b>Retic/silver weak post-decalc</b> → acid decalc. <i>Fix:</i> document; prefer EDTA for IHC/ISH/silver cases.</li>
+            <li><b>Xylene odor in alcohols / eosin leach</b> → carryover contamination. <i>Fix:</i> enforce rotation & load limits; add intermediate alcohol if needed.</li>
+            <li><b>Tissue floats out at sectioning</b> → paraffin contamination or poor infiltration. <i>Fix:</i> reprocess; change paraffin baths; verify clearing completeness.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Bench protocols -->
+      <section id="bench" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🛠️ Bench protocols (ready to print)</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block">▾</span><span>Collapse</span>
+          </button>
+        </div>
+        <div class="content">
+          <p class="font-semibold mt-1">Breast core (fatty)</p>
+          <ul class="list-disc ml-5">
+            <li>Thin ≤3 mm → extend absolute alcohol & clearing → high-MP paraffin (60–62 °C) with vacuum.</li>
+          </ul>
+          <p class="font-semibold mt-3">BM trephine</p>
+          <ul class="list-disc ml-5">
+            <li>Fix NBF → <b>EDTA decalc</b> with agitation → endpoint by radiography or validated timing → thorough rinse → routine schedule.</li>
+          </ul>
+          <p class="font-semibold mt-3">Calcified artery</p>
+          <ul class="list-disc ml-5">
+            <li>Short <b>formic acid</b> decalc (document time/pH) → neutralize/wash → routine processing.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Micro-math -->
+      <section id="math" class="card p-6">
+        <div class="flex items-start justify-between">
+          <h2 class="text-xl font-bold">🔢 Micro-math & quick checks</h2>
+          <button class="collapsible rounded-xl border px-3 py-2 text-sm flex items-center gap-2" aria-expanded="true">
+            <span class="chev inline-block">▾</span><span>Collapse</span>
+          </button>
+        </div>
+        <div class="content">
+          <ul class="list-disc ml-5">
+            <li><b>Throughput:</b> keep ~10% spare capacity per run to avoid under-processing dense/fatty loads.</li>
+            <li><b>Alcohol→xylene water check:</b> mix aliquots; <b>clouding</b> means upstream alcohols are water-laden.</li>
+            <li><b>Paraffin choice:</b> compression at 4 μm on fat → try +2–4 °C MP or longer infiltration before changing blade angle.</li>
+          </ul>
+          <div class="grid sm:grid-cols-2 gap-3 mt-3">
+            <div class="rounded-xl border p-3 text-sm">
+              <div class="font-semibold flex items-center justify-between">Water-carryover check
+                <button class="copy rounded-lg border px-2 py-1 text-xs" data-copy="Water carryover check: mix 100% alcohol with xylene; any clouding indicates water contamination upstream.">Copy</button>
+              </div>
+              <p class="mt-1">Mix 100% alcohol + xylene; clouding = water contamination.</p>
+            </div>
+            <div class="rounded-xl border p-3 text-sm">
+              <div class="font-semibold flex items-center justify-between">Paraffin selection tip
+                <button class="copy rounded-lg border px-2 py-1 text-xs" data-copy="Paraffin MP selection: 54–56 °C for delicate tissues; 58–62 °C for fatty/fibrous. Add polymers to tune hardness/tack.">Copy</button>
+              </div>
+              <p class="mt-1">54–56 °C for delicate; 58–62 °C for fatty/fibrous; additives tune hardness.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quiz 15 -->
+      <section id="quiz15" class="card p-6">
+        <div class="flex flex-wrap items-center gap-3 justify-between">
+          <h2 class="text-xl font-bold">✅ Practice quiz (15)</h2>
+          <div class="flex items-center gap-2">
+            <span class="pill">Target ≥ 80%</span>
+            <span id="bestScore" class="pill">Best: —</span>
+          </div>
+        </div>
+        <p class="text-sm text-slate-600">Immediate feedback appears under each item.</p>
+
+        <form id="quizForm" class="mt-4 grid gap-5 max-w-3xl">
+          <fieldset data-correct="A" data-expl="Clearing replaces alcohol with a paraffin-miscible solvent.">
+            <legend class="font-medium">1) The primary function of clearing is to:</legend>
+            <label class="block mt-1"><input type="radio" name="q1" value="A"> Replace alcohol with a paraffin-miscible solvent</label>
+            <label class="block mt-1"><input type="radio" name="q1" value="B"> Remove water directly from tissue</label>
+            <label class="block mt-1"><input type="radio" name="q1" value="C"> Infiltrate paraffin into tissue spaces</label>
+            <label class="block mt-1"><input type="radio" name="q1" value="D"> Extract lipids selectively</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Cloudy xylene indicates water carryover from alcohols.">
+            <legend class="font-medium">2) Cloudy xylene most likely indicates:</legend>
+            <label class="block mt-1"><input type="radio" name="q2" value="A"> Resin contamination</label>
+            <label class="block mt-1"><input type="radio" name="q2" value="B"> Water carryover</label>
+            <label class="block mt-1"><input type="radio" name="q2" value="C"> Paraffin crystallization</label>
+            <label class="block mt-1"><input type="radio" name="q2" value="D"> Excessive temperature</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="A" data-expl="Ethanol is the standard graded-series dehydrant.">
+            <legend class="font-medium">3) Best dehydrant for routine graded series is:</legend>
+            <label class="block mt-1"><input type="radio" name="q3" value="A"> Ethanol</label>
+            <label class="block mt-1"><input type="radio" name="q3" value="B"> Isopropanol only</label>
+            <label class="block mt-1"><input type="radio" name="q3" value="C"> Methanol</label>
+            <label class="block mt-1"><input type="radio" name="q3" value="D"> Acetone</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="C" data-expl="Prolonged xylene exposure gives brittle, shattery tissue.">
+            <legend class="font-medium">4) Prolonged xylene exposure most commonly leads to:</legend>
+            <label class="block mt-1"><input type="radio" name="q4" value="A"> Over-hydration</label>
+            <label class="block mt-1"><input type="radio" name="q4" value="B"> Nuclear bubbling</label>
+            <label class="block mt-1"><input type="radio" name="q4" value="C"> Brittleness</label>
+            <label class="block mt-1"><input type="radio" name="q4" value="D"> Oily residue</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="C" data-expl="Fatty cores need extended absolute alcohol and clearing.">
+            <legend class="font-medium">5) For fatty breast cores, the most helpful change is to:</legend>
+            <label class="block mt-1"><input type="radio" name="q5" value="A"> Lower paraffin MP to 54 °C</label>
+            <label class="block mt-1"><input type="radio" name="q5" value="B"> Shorten xylene dwell</label>
+            <label class="block mt-1"><input type="radio" name="q5" value="C"> Extend absolute alcohol & clearing times</label>
+            <label class="block mt-1"><input type="radio" name="q5" value="D"> Use water-soluble wax</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="A" data-expl="EDTA preserves antigens and nucleic acids for IHC/ISH.">
+            <legend class="font-medium">6) Decalc method that best preserves IHC/ISH targets:</legend>
+            <label class="block mt-1"><input type="radio" name="q6" value="A"> EDTA</label>
+            <label class="block mt-1"><input type="radio" name="q6" value="B"> Hydrochloric acid</label>
+            <label class="block mt-1"><input type="radio" name="q6" value="C"> Nitric acid</label>
+            <label class="block mt-1"><input type="radio" name="q6" value="D"> Formic acid only</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="D" data-expl="Ammonium oxalate is used in the chemical endpoint test.">
+            <legend class="font-medium">7) Chemical decalc endpoint uses:</legend>
+            <label class="block mt-1"><input type="radio" name="q7" value="A"> Sodium thiosulfate</label>
+            <label class="block mt-1"><input type="radio" name="q7" value="B"> Citrate buffer</label>
+            <label class="block mt-1"><input type="radio" name="q7" value="C"> Ferric chloride</label>
+            <label class="block mt-1"><input type="radio" name="q7" value="D"> Ammonium oxalate</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="C" data-expl="Soft centers with hard edges suggest poor paraffin infiltration.">
+            <legend class="font-medium">8) Soft center / hard edge blocks most often indicate:</legend>
+            <label class="block mt-1"><input type="radio" name="q8" value="A"> Over-dehydration</label>
+            <label class="block mt-1"><input type="radio" name="q8" value="B"> Excessive retrieval</label>
+            <label class="block mt-1"><input type="radio" name="q8" value="C"> Incomplete paraffin infiltration</label>
+            <label class="block mt-1"><input type="radio" name="q8" value="D"> Inadequate flotation temp</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="A" data-expl="Xylene is fast but hardening; substitutes are gentler but slower.">
+            <legend class="font-medium">9) Which clearing agent is fast but tends to harden tissue if overused?</legend>
+            <label class="block mt-1"><input type="radio" name="q9" value="A"> Xylene</label>
+            <label class="block mt-1"><input type="radio" name="q9" value="B"> Limonene</label>
+            <label class="block mt-1"><input type="radio" name="q9" value="C"> Aliphatic substitute</label>
+            <label class="block mt-1"><input type="radio" name="q9" value="D"> Chloroform</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="C" data-expl="Rotation + load limits reduce carryover and contamination.">
+            <legend class="font-medium">10) Best approach to reduce solvent carryover is to:</legend>
+            <label class="block mt-1"><input type="radio" name="q10" value="A"> Raise paraffin MP by 6–8 °C</label>
+            <label class="block mt-1"><input type="radio" name="q10" value="B"> Remove one xylene station</label>
+            <label class="block mt-1"><input type="radio" name="q10" value="C"> Maintain rotated baths and cassette load limits</label>
+            <label class="block mt-1"><input type="radio" name="q10" value="D"> Skip 95% alcohol</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Radiography reliably confirms endpoint in dense bone/teeth.">
+            <legend class="font-medium">11) Most reliable endpoint for dense bone/teeth:</legend>
+            <label class="block mt-1"><input type="radio" name="q11" value="A"> Mechanical bend test</label>
+            <label class="block mt-1"><input type="radio" name="q11" value="B"> Radiography</label>
+            <label class="block mt-1"><input type="radio" name="q11" value="C"> Fixed time chart only</label>
+            <label class="block mt-1"><input type="radio" name="q11" value="D"> pH strip</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="B" data-expl="Brittleness: shorten absolute alcohol and reduce clearing heat/time.">
+            <legend class="font-medium">12) To fix brittle tissue after processing, first:</legend>
+            <label class="block mt-1"><input type="radio" name="q12" value="A"> Add more xylene</label>
+            <label class="block mt-1"><input type="radio" name="q12" value="B"> Shorten absolute alcohol and reduce clearing temperature/time</label>
+            <label class="block mt-1"><input type="radio" name="q12" value="C"> Increase flotation bath to 55–60 °C</label>
+            <label class="block mt-1"><input type="radio" name="q12" value="D"> Switch to water-soluble wax</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="C" data-expl="With xylene substitutes, extend paraffin or raise MP slightly.">
+            <legend class="font-medium">13) Using an aliphatic substitute and blocks are soft; best next step:</legend>
+            <label class="block mt-1"><input type="radio" name="q13" value="A"> Lower paraffin MP</label>
+            <label class="block mt-1"><input type="radio" name="q13" value="B"> Reduce paraffin baths</label>
+            <label class="block mt-1"><input type="radio" name="q13" value="C"> Extend paraffin infiltration or raise MP by 2–4 °C</label>
+            <label class="block mt-1"><input type="radio" name="q13" value="D"> Switch to acetone dehydrant</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="A" data-expl="Acid decalc commonly weakens nuclear hematoxylin.">
+            <legend class="font-medium">14) Acid decalcification most affects H&amp;E by causing:</legend>
+            <label class="block mt-1"><input type="radio" name="q14" value="A"> Weaker nuclear detail</label>
+            <label class="block mt-1"><input type="radio" name="q14" value="B"> Stronger eosin</label>
+            <label class="block mt-1"><input type="radio" name="q14" value="C"> Over-blueing</label>
+            <label class="block mt-1"><input type="radio" name="q14" value="D"> No change</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+
+          <fieldset data-correct="D" data-expl="No clouding when mixing 100% alcohol with xylene supports complete dehydration.">
+            <legend class="font-medium">15) Evidence that dehydration was complete:</legend>
+            <label class="block mt-1"><input type="radio" name="q15" value="A"> Strong eosin uptake</label>
+            <label class="block mt-1"><input type="radio" name="q15" value="B"> Clear ribbons at 2 μm</label>
+            <label class="block mt-1"><input type="radio" name="q15" value="C"> Faster embedding</label>
+            <label class="block mt-1"><input type="radio" name="q15" value="D"> No clouding when 100% alcohol is mixed with xylene</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+        </form>
+
+        <div class="quiz-actions mt-3 flex gap-3">
+          <button id="gradeBtn" type="button" class="rounded-xl px-4 py-2 text-white font-semibold" style="background:var(--brand)">Submit</button>
+          <button id="retryBtn" type="button" class="rounded-xl border px-4 py-2">Retry</button>
+        </div>
+        <div id="quizResult" class="hidden mt-4 p-4 rounded-xl border" aria-live="polite"></div>
+      </section>
+
+      <!-- HTL extension quiz -->
+      <section id="quiz-htl" class="card p-6">
+        <div class="flex flex-wrap items-center gap-3 justify-between">
+          <h2 class="text-xl font-bold">🧬 HTL extension quiz (10)</h2>
+          <span class="pill">Advanced</span>
+        </div>
+        <form id="quizFormHTL" class="mt-4 grid gap-5 max-w-3xl">
+          <fieldset data-correct="A" data-expl="IPA→paraffin workflows need longer infiltration to avoid softness.">
+            <legend class="font-medium">1) IPA→paraffin systems typically require:</legend>
+            <label class="block mt-1"><input type="radio" name="h1" value="A"> Longer paraffin infiltration</label>
+            <label class="block mt-1"><input type="radio" name="h1" value="B"> No paraffin baths</label>
+            <label class="block mt-1"><input type="radio" name="h1" value="C"> Elimination of vacuum</label>
+            <label class="block mt-1"><input type="radio" name="h1" value="D"> Lower MP paraffin</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="EDTA preserves nucleic acids better than strong acids for ISH.">
+            <legend class="font-medium">2) For ISH, which decalc preserves nucleic acids best?</legend>
+            <label class="block mt-1"><input type="radio" name="h2" value="A"> EDTA</label>
+            <label class="block mt-1"><input type="radio" name="h2" value="B"> Hydrochloric acid</label>
+            <label class="block mt-1"><input type="radio" name="h2" value="C"> Nitric acid</label>
+            <label class="block mt-1"><input type="radio" name="h2" value="D"> Trichloroacetic acid</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="B" data-expl="Dense tendon benefits from vacuum cycles and extended paraffin.">
+            <legend class="font-medium">3) For dense tendon, you should:</legend>
+            <label class="block mt-1"><input type="radio" name="h3" value="A"> Shorten all stations</label>
+            <label class="block mt-1"><input type="radio" name="h3" value="B"> Add vacuum cycles and extend paraffin</label>
+            <label class="block mt-1"><input type="radio" name="h3" value="C"> Use water-soluble wax</label>
+            <label class="block mt-1"><input type="radio" name="h3" value="D"> Remove xylene completely</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="Limonene can leave an oily residue if not fully removed.">
+            <legend class="font-medium">4) Limonene clearing can cause:</legend>
+            <label class="block mt-1"><input type="radio" name="h4" value="A"> Oily residue</label>
+            <label class="block mt-1"><input type="radio" name="h4" value="B"> Acid decalc artifacts</label>
+            <label class="block mt-1"><input type="radio" name="h4" value="C"> Mercury pigment</label>
+            <label class="block mt-1"><input type="radio" name="h4" value="D"> Oxidation of lipids</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="Changing clearing agents requires bridging validation with controls.">
+            <legend class="font-medium">5) When changing clearing agents, first run:</legend>
+            <label class="block mt-1"><input type="radio" name="h5" value="A"> Bridging validation with processing controls</label>
+            <label class="block mt-1"><input type="radio" name="h5" value="B"> Only an antibody dilution series</label>
+            <label class="block mt-1"><input type="radio" name="h5" value="C"> No validation</label>
+            <label class="block mt-1"><input type="radio" name="h5" value="D"> A coverslip trial</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="Carbowax can omit dehydration/clearing but impacts some stains.">
+            <legend class="font-medium">6) Water-soluble wax (Carbowax) allows:</legend>
+            <label class="block mt-1"><input type="radio" name="h6" value="A"> Omission of dehydration/clearing (with caveats)</label>
+            <label class="block mt-1"><input type="radio" name="h6" value="B"> Immediate embedding at room temp</label>
+            <label class="block mt-1"><input type="radio" name="h6" value="C"> Faster xylene clearing</label>
+            <label class="block mt-1"><input type="radio" name="h6" value="D"> Stronger silver staining</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="C" data-expl="Raising paraffin MP 2–4 °C or adding a bath helps soft blocks.">
+            <legend class="font-medium">7) Xylene substitute yields soft blocks; next step:</legend>
+            <label class="block mt-1"><input type="radio" name="h7" value="A"> Lower paraffin MP</label>
+            <label class="block mt-1"><input type="radio" name="h7" value="B"> Remove vacuum cycles</label>
+            <label class="block mt-1"><input type="radio" name="h7" value="C"> Raise paraffin MP 2–4 °C or add a paraffin bath</label>
+            <label class="block mt-1"><input type="radio" name="h7" value="D"> Shorten absolute alcohol</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="B" data-expl="Incomplete dehydration shows as nuclear bubbling/ghosting.">
+            <legend class="font-medium">8) Incomplete dehydration on H&amp;E often appears as:</legend>
+            <label class="block mt-1"><input type="radio" name="h8" value="A"> Intense basophilia only</label>
+            <label class="block mt-1"><input type="radio" name="h8" value="B"> Nuclear bubbling/ghosting</label>
+            <label class="block mt-1"><input type="radio" name="h8" value="C"> Excess eosinophilia</label>
+            <label class="block mt-1"><input type="radio" name="h8" value="D"> Retic enhancement</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="Formic acid is milder than HCl/nitric for nuclear detail.">
+            <legend class="font-medium">9) Compared with HCl/nitric, formic acid decalc usually causes:</legend>
+            <label class="block mt-1"><input type="radio" name="h9" value="A"> Milder nuclear weakening</label>
+            <label class="block mt-1"><input type="radio" name="h9" value="B"> Stronger silver methods</label>
+            <label class="block mt-1"><input type="radio" name="h9" value="C"> Better eosin only</label>
+            <label class="block mt-1"><input type="radio" name="h9" value="D"> No effect</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+          <fieldset data-correct="A" data-expl="For marrow IHC panels, EDTA pre-analytics and documented windows matter.">
+            <legend class="font-medium">10) For marrow IHC panels, prefer:</legend>
+            <label class="block mt-1"><input type="radio" name="h10" value="A"> EDTA decalc + documented pre-analytic windows</label>
+            <label class="block mt-1"><input type="radio" name="h10" value="B"> HCl decalc and no documentation</label>
+            <label class="block mt-1"><input type="radio" name="h10" value="C"> Nitric decalc for speed</label>
+            <label class="block mt-1"><input type="radio" name="h10" value="D"> Skip decalc</label>
+            <div class="exp text-sm text-slate-700 mt-2 hidden"></div>
+          </fieldset>
+        </form>
+
+        <div class="quiz-actions mt-3 flex gap-3">
+          <button id="gradeBtnHTL" type="button" class="rounded-xl px-4 py-2 text-white font-semibold" style="background:var(--brand)">Submit</button>
+          <button id="retryBtnHTL" type="button" class="rounded-xl border px-4 py-2">Retry</button>
+        </div>
+        <div id="quizResultHTL" class="hidden mt-4 p-4 rounded-xl border" aria-live="polite"></div>
+      </section>
+
+      <!-- Downloads -->
+      <section id="downloads" class="card p-6">
+        <h2 class="text-xl font-bold">⬇️ Downloads</h2>
+        <div class="mt-3 flex flex-wrap gap-3">
+          <a class="rounded-xl border px-3 py-2" href="../assets/Processing_Schedules_Templates.pdf">Processor schedule templates (PDF)</a>
+          <a class="rounded-xl border px-3 py-2" href="../assets/Decalc_Methods_Comparison.pdf">Decalc comparison chart (PDF)</a>
+          <a class="rounded-xl border px-3 py-2" href="../assets/Decalc_Endpoint_SOP.pdf">Endpoint testing SOP (PDF)</a>
+          <a class="rounded-xl border px-3 py-2" href="../assets/Reagent_Rotation_Log.pdf">Reagent rotation log (PDF)</a>
+          <a class="rounded-xl px-3 py-2 text-white" style="background:var(--brand)" href="../assets/all-processing-downloads.zip">All downloads (ZIP)</a>
+        </div>
+      </section>
+
+      <!-- Summary -->
+      <section id="summary" class="card p-6">
+        <h2 class="text-xl font-bold">🧾 Summary & common pitfalls</h2>
+        <ul class="list-disc ml-5">
+          <li>Tune dwell, temperature, vacuum, and load to tissue type.</li>
+          <li>Watch carryover; rotate reagents; confirm endpoints.</li>
+          <li>Use EDTA for IHC/ISH-critical decalc; acid only with documented trade-offs.</li>
+          <li>Document QC and corrective actions.</li>
+        </ul>
+        <h3 class="font-semibold mt-3">Easy to get wrong</h3>
+        <details class="mt-2">
+          <summary class="cursor-pointer">Show pitfalls</summary>
+          <ul class="list-disc ml-5 mt-2">
+            <li>Assuming one schedule fits all tissue loads.</li>
+            <li>Ignoring cloudiness in xylene (water carryover).</li>
+            <li>Acid decalc before IHC/ISH without documenting risks.</li>
+          </ul>
+        </details>
+        <div class="mt-4 actions flex justify-between">
+          <a class="rounded-xl border px-3 py-2" href="./fixation.html">← Back to Fixation</a>
+          <a class="rounded-xl border px-3 py-2" href="./embedding.html">Next: Embedding & Microtomy →</a>
+        </div>
+      </section>
+
+      <!-- Version -->
+      <section id="version" class="card p-6">
+        <h2 class="text-xl font-bold">📌 Version & sources</h2>
+        <p class="text-sm text-slate-600">Updated <span id="verDate"></span> • v2.1</p>
+        <ul class="list-disc ml-5 mt-2 text-sm">
+          <li>Standard histotechnology references and bench SOPs (follow local policy and assay IFUs).</li>
+        </ul>
+      </section>
+    </article>
+
+    <!-- RIGHT RAIL -->
+    <aside class="space-y-4">
+      <section class="card p-4">
+        <p class="text-xs font-semibold tracking-wide text-slate-500">OBJECTIVES</p>
+        <ul class="mt-2 text-sm list-disc ml-5">
+          <li>Pipeline & levers</li>
+          <li>Reagents & schedules</li>
+          <li>Failures & fixes</li>
+          <li>Decalc & endpoints</li>
+          <li>QC & safety</li>
+        </ul>
+        <p class="mt-3 text-xs text-slate-500">Time: 45–60 min</p>
+      </section>
+      <section class="card p-4 notes" id="notesPanel">
+        <p class="text-xs font-semibold tracking-wide text-slate-500">YOUR NOTES</p>
+        <textarea id="notes" class="mt-2 w-full h-40 p-2 rounded-lg border" placeholder="Jot key takeaways…"></textarea>
+        <p class="text-xs text-slate-500 mt-1">Autosaved locally</p>
+      </section>
+    </aside>
   </main>
+
+  <!-- LIGHTBOX -->
+  <div id="lightbox" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="relative bg-white rounded-xl shadow-xl max-w-4xl w-full p-4">
+      <button id="lbClose" class="absolute right-2 top-2 rounded-lg border px-2 py-1 text-sm">Close</button>
+      <img id="lbImg" src="" alt="" class="w-full h-auto rounded-lg"/>
+      <p class="mt-2 text-xs text-slate-600">Processing hero image (click Close or press ESC).</p>
+    </div>
+  </div>
+
+  <!-- HELP DRAWER -->
+  <aside id="helpDrawer" class="fixed right-0 top-0 h-full w-[92%] sm:w-[480px] bg-white border-l shadow-xl translate-x-full transition-transform" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+    <div class="h-16 px-4 border-b flex items-center justify-between">
+      <h2 id="helpTitle" class="font-semibold">Ask a question</h2>
+      <button id="helpClose" class="rounded-xl border px-3 py-2 text-sm">Close</button>
+    </div>
+    <div class="p-4 space-y-3">
+      <p class="text-sm text-slate-600">Your question saves to this device. Copy/paste to email or your contact form.</p>
+      <label class="text-sm">Section (optional)
+        <input id="helpSection" class="mt-1 w-full rounded-lg border p-2" placeholder="e.g., Schedules — Fatty tissue"/>
+      </label>
+      <label class="text-sm">Question
+        <textarea id="helpText" class="mt-1 w-full h-32 rounded-lg border p-2" placeholder="Type your question…"></textarea>
+      </label>
+      <div class="flex gap-2">
+        <button id="helpSave" class="rounded-xl px-3 py-2 text-white" style="background:var(--brand)">Save</button>
+        <button id="helpCopy" class="rounded-xl border px-3 py-2">Copy</button>
+      </div>
+      <div id="helpSaved" class="text-xs text-green-700 hidden">Saved ✓</div>
+    </div>
+  </aside>
+
+  <!-- MOBILE NAV -->
+  <nav class="mobile-nav fixed bottom-3 inset-x-0 z-40 px-3 md:hidden">
+    <div class="mx-auto max-w-lg grid grid-cols-3 gap-2 rounded-2xl bg-white/95 backdrop-blur border shadow">
+      <a href="#outline" class="py-2 text-center text-sm">Outline</a>
+      <a href="#notesPanel" class="py-2 text-center text-sm">Notes</a>
+      <button onclick="window.scrollTo({top:0,behavior:'smooth'})" class="py-2 text-sm">Top</button>
+    </div>
+  </nav>
 
   <footer class="py-10 border-t">
     <div class="max-w-6xl mx-auto px-4 text-slate-600">© <span id="y"></span> Free HTL Guide</div>
   </footer>
 
-  <!-- Minimal helpers -->
+  <!-- JS -->
   <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-    const DONE_KEY='processing_core_done';
-    const doneBtn=document.getElementById('doneBtn');
-    const doneNote=document.getElementById('doneNote');
-    function renderDone(){ const v=localStorage.getItem(DONE_KEY)==='1'; doneBtn.textContent=v?'Completed ✓':'Mark complete'; doneNote.textContent=v?'Saved locally.':''; }
+  (function(){
+    const $ = (s,root=document)=>root.querySelector(s);
+    const $$ = (s,root=document)=>Array.from(root.querySelectorAll(s));
+
+    // Dates
+    $('#y').textContent = new Date().getFullYear();
+    $('#verDate').textContent = new Date().toLocaleDateString(undefined,{year:'numeric',month:'short'});
+
+    // Progress bar
+    const progBar = $('#progressBar');
+    document.addEventListener('scroll',()=>{
+      const h=document.documentElement;
+      const pct=(h.scrollTop)/(h.scrollHeight-h.clientHeight)*100;
+      progBar.style.setProperty('--pct', pct+'%');
+    });
+
+    // TOC highlight
+    if('IntersectionObserver' in window){
+      const io = new IntersectionObserver(entries=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){
+            $$('#outline a').forEach(a=>a.removeAttribute('aria-current'));
+            const hit = $('#outline a[href="#'+e.target.id+'"]');
+            if(hit) hit.setAttribute('aria-current','true');
+          }
+        });
+      },{rootMargin:'-40% 0px -50% 0px',threshold:0});
+      $$('#content section[id]').forEach(s=>io.observe(s));
+    }
+
+    // Start/Resume memory
+    const LAST='proc_pro_last_v2';
+    $('#startBtn').addEventListener('click',(ev)=>{
+      const last=localStorage.getItem(LAST);
+      if(last){ ev.preventDefault(); location.hash=last; }
+    });
+    document.addEventListener('scroll', ()=>{
+      const cur=$('#outline a[aria-current="true"]');
+      if(cur){ localStorage.setItem(LAST, cur.getAttribute('href').substring(1)); }
+    });
+
+    // Mark complete
+    const DONE='proc_pro_done_v2';
+    const markBtn=$('#markBtn'), statusChip=$('#statusChip');
+    function renderDone(){ const v=localStorage.getItem(DONE)==='1'; markBtn.textContent=v?'Completed ✓':'Mark complete'; markBtn.setAttribute('aria-pressed',v); if(statusChip) statusChip.textContent=v?'Completed':'Not completed'; }
+    markBtn.addEventListener('click',()=>{ localStorage.setItem(DONE, localStorage.getItem(DONE)==='1'?'0':'1'); renderDone(); });
     renderDone();
-    doneBtn.addEventListener('click',()=>{ localStorage.setItem(DONE_KEY, localStorage.getItem(DONE_KEY)==='1'?'0':'1'); renderDone(); });
-  </script>
 
-  <!-- QUIZ FIX PATCH for Processing: renders questions even if earlier scripts fail -->
-  <script>
-  (function () {
-    function $(id){ return document.getElementById(id); }
-    var form = $('quizForm');
-    if (!form) return;                 // no quiz form on this page
-    if (form.querySelector('fieldset')) return; // already rendered
+    // Back to top
+    $('#topBtn').addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
 
-    var QUESTIONS = [
-      ["Primary purpose of dehydration:", ["Remove free water","Replace fat with solvent","Infuse paraffin","Fix nucleic acids"], "A"],
-      ["Two 100% alcohol stations primarily reduce:", ["Over-dehydration","Water carryover","Brittleness","Heat damage"], "B"],
-      ["Xylene substitutes often require:", ["No clearing steps","Longer times vs xylene","Lower paraffin temps","Skipping 100% alcohol"], "B"],
-      ["Typical paraffin melting point range:", ["40-45 °C","50-55 °C","56-60 °C","65-70 °C"], "C"],
-      ["Opaque paraffin around tissue suggests:", ["Overheating paraffin","Water carryover","Too much vacuum","Dirty molds"], "B"],
-      ["Soft/spongy block likely due to:", ["Under-dehydration/clearing","Over-dehydration","Excess xylene","Low paraffin MP"], "A"],
-      ["Brittle/shrunken tissue likely due to:", ["Under-dehydration","Over-clearing and long 100% alcohol","Low bath temperature","Too little vacuum"], "B"],
-      ["For fatty tissue you should usually:", ["Shorten clearant steps","Use only one paraffin station","Extend clearant/paraffin, consider vacuum","Skip 70% alcohol"], "C"],
-      ["Carryover control best practice:", ["Single 100% alcohol then xylene","Two 100% alcohols and two clearants","Skip 95% alcohol for speed","Reduce agitation"], "B"],
-      ["Best immediate fix for soft block:", ["Re-embed without changes","Repeat from 95% alcohol, extend clearant, reinfiltrate","Cool block longer","Change microtome angle"], "B"],
-      ["Evidence of reagent exhaustion:", ["Clear, colorless xylene","Alcohol stations reading 0% water","Cloudy clearant or paraffin","Stable processing times"], "C"],
-      ["To protect antigens for IHC:", ["Use very hot paraffin >65 °C","Limit over-dehydration and overheating","Switch to methanol for all steps","Always skip vacuum"], "B"],
-      ["Dense/calcified tissue needs:", ["Shorter alcohol steps","Longer dehydration/clearing and thin grossing","Fewer paraffin steps","Higher water content"], "B"],
-      ["Best practice for logs:", ["No documentation needed","Note only reagent lot numbers","Track rotation dates, lots, temps, actions","Track only xylene"], "C"],
-      ["When using substitutes:", ["Assume times equal to xylene","Verify compatibility with paraffin and extend times as needed","Reduce number of stations","Use colder paraffin"], "B"]
-    ];
+    // Notes
+    const NOTES='proc_pro_notes_v2';
+    const notes=$('#notes'); notes.value=localStorage.getItem(NOTES)||''; notes.addEventListener('input',()=>localStorage.setItem(NOTES, notes.value));
 
-    var EXPL = [
-      "Dehydration removes water so clearant and paraffin can replace it.",
-      "Two absolutes limit water carryover into clearant/wax.",
-      "Most substitutes clear slower; extend times vs xylene.",
-      "Common histology waxes: ~56–60 °C.",
-      "Water contamination clouds paraffin around tissue.",
-      "Insufficient dehydration/clearing leaves tissue soft/spongy.",
-      "Excess dehydration/clearing and heat cause brittleness/shrinkage.",
-      "Fat benefits from longer clearant/paraffin and vacuum.",
-      "Two absolutes + two clearants is standard to limit carryover.",
-      "Reprocess: 95% → absolutes → clearant → paraffin with extra time.",
-      "Cloudy clearant/paraffin suggests contamination/exhaustion.",
-      "Avoid overheating and excessive dehydration for IHC integrity.",
-      "Dense tissue needs longer steps and thin grossing.",
-      "Logs should record rotation/refresh, lots, temperature, actions.",
-      "Times can differ; ensure paraffin compatibility."
-    ];
+    // Help drawer
+    const drawer=$('#helpDrawer');
+    $('#helpBtn').addEventListener('click',()=>drawer.style.transform='translateX(0)');
+    $('#helpClose').addEventListener('click',()=>drawer.style.transform='translateX(100%)');
+    $('#helpSave').addEventListener('click',()=>{
+      const payload={section:$('#helpSection').value, text:$('#helpText').value, ts:new Date().toISOString()};
+      localStorage.setItem('proc_pro_help_v2', JSON.stringify(payload));
+      $('#helpSaved').classList.remove('hidden'); setTimeout(()=>$('#helpSaved').classList.add('hidden'),1500);
+    });
+    $('#helpCopy').addEventListener('click', async ()=>{
+      const txt=\`Processing module question\\nSection: \${$('#helpSection').value}\\n\\n\${$('#helpText').value}\`;
+      try{ await navigator.clipboard.writeText(txt); alert('Copied to clipboard'); }catch(e){ alert('Copy failed. Select and copy manually.'); }
+    });
 
-    function renderQuiz(){
-      form.innerHTML = "";
-      for (var i=0;i<QUESTIONS.length;i++){
-        var stem = QUESTIONS[i][0], opts = QUESTIONS[i][1], num = i+1;
-        var fs = document.createElement('fieldset'); fs.className = "mt-1";
-        var lg = document.createElement('legend'); lg.className = "font-medium"; lg.textContent = num + ") " + stem; fs.appendChild(lg);
-        for (var k=0;k<opts.length;k++){
-          var id = "q"+num+"_"+k;
-          var lab = document.createElement('label'); lab.className = "block mt-1"; lab.setAttribute('for', id);
-          var input = document.createElement('input'); input.type="radio"; input.id=id; input.name="q"+num; input.value=String.fromCharCode(65+k);
-          lab.appendChild(input); lab.appendChild(document.createTextNode(" "+opts[k]));
-          fs.appendChild(lab);
-        }
-        form.appendChild(fs);
-      }
+    // Collapsibles
+    function toggleBtn(btn, expand){
+      btn.setAttribute('aria-expanded', expand);
+      btn.querySelector('span:last-child').textContent = expand ? 'Collapse' : 'Expand';
+      const content = btn.closest('section')?.querySelector('.content');
+      if(content) content.style.display = expand ? '' : 'none';
     }
-    function buildKey(){ var k={}; for (var i=0;i<QUESTIONS.length;i++){ k["q"+(i+1)] = QUESTIONS[i][2]; } return k; }
-    var KEY = buildKey();
+    $$('.collapsible').forEach(btn=>{
+      toggleBtn(btn, btn.getAttribute('aria-expanded')!=='false');
+      btn.addEventListener('click', ()=>toggleBtn(btn, btn.getAttribute('aria-expanded')!=='true'));
+    });
+    $('#expandAll').addEventListener('click',()=>$$('.collapsible').forEach(b=>toggleBtn(b,true)));
+    $('#collapseAll').addEventListener('click',()=>$$('.collapsible').forEach(b=>toggleBtn(b,false)));
 
-    window.grade = function(){
-      var sets = form.querySelectorAll('fieldset'), score = 0;
-      for (var i=0;i<sets.length;i++){
-        var fs = sets[i], correct = KEY["q"+(i+1)];
-        fs.classList.remove('correct','incorrect');
-        var chosen = fs.querySelector('input:checked');
-        if (chosen && chosen.value===correct){ score++; fs.classList.add('correct'); }
-        else { fs.classList.add('incorrect'); }
-      }
-      var pct = Math.round(score/sets.length*100);
-      var res = document.getElementById('quizResult');
-      if (res){
-        res.classList.remove('hidden');
-        res.innerHTML = "<strong>Score: "+score+"/"+sets.length+" ("+pct+"%)</strong>"
-          + "<div class='mt-2 text-sm text-slate-700'>"
-          + EXPL.map(function(e,i){ return "Q"+(i+1)+": "+e; }).join("<br>")
-          + "</div>";
-        window.scrollTo({ top: res.offsetTop-80, behavior: 'smooth' });
-      }
-    };
+    // Hero lightbox
+    const lb=$('#lightbox'), lbImg=$('#lbImg'), heroImg=$('#heroImg');
+    function openLB(src){ lbImg.src=src; lb.classList.remove('hidden'); lb.classList.add('flex'); }
+    function closeLB(){ lb.classList.add('hidden'); lb.classList.remove('flex'); lbImg.src=''; }
+    if(heroImg){ heroImg.addEventListener('click',()=>openLB(heroImg.src)); }
+    $('#lbClose').addEventListener('click',closeLB);
+    lb.addEventListener('click',e=>{ if(e.target===lb) closeLB(); });
+    document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeLB(); });
 
-    window.retry = function(){
-      renderQuiz();
-      var res = document.getElementById('quizResult'); if(res) res.classList.add('hidden');
-      var q = document.getElementById('quiz') || form;
-      window.scrollTo({ top: q.offsetTop-80, behavior: 'smooth' });
-    };
+    // Reagents: sort, filter, compare
+    const table=$('#rgTable'), tbody=table.querySelector('tbody'), rows=$$('#rgTable tbody tr');
+    const srch=$('#rgSearch'), cFilter=$('#classFilter'), uFilter=$('#useFilter');
+    const coll=new Intl.Collator(undefined,{numeric:true,sensitivity:'base'});
 
-    // Render now + on DOM ready (double safety)
-    try { renderQuiz(); } catch(e) { console && console.warn("processing quiz immediate render failed", e); }
-    if (document.readyState === 'loading'){
-      document.addEventListener('DOMContentLoaded', function(){ try{ renderQuiz(); }catch(e){ console && console.warn("processing quiz DOMContentLoaded render failed", e); } });
+    $('#rgTable thead').addEventListener('click',(e)=>{
+      const th=e.target.closest('th'); if(!th) return;
+      const key=th.dataset.key;
+      const getVal=(tr)=>{
+        if(key==='class') return tr.children[2].textContent.trim().toLowerCase();
+        if(key==='name') return (tr.querySelector('[data-name]')?.dataset.name || tr.children[1].textContent).trim().toLowerCase();
+        return tr.textContent.trim().toLowerCase();
+      };
+      const sorted=[...rows].sort((a,b)=>coll.compare(getVal(a),getVal(b)));
+      sorted.forEach(r=>tbody.appendChild(r));
+    });
+
+    function matches(tr,q,cls,use){
+      const okClass = !cls || (tr.getAttribute('data-class')||'').toLowerCase().includes(cls.toLowerCase());
+      const okUse = !use || (tr.getAttribute('data-use')||'').toLowerCase().includes(use.toLowerCase());
+      const okQ = !q || tr.textContent.toLowerCase().includes(q.toLowerCase());
+      return okClass && okUse && okQ;
     }
+    function applyFilters(){
+      const q=srch.value.trim(), cls=cFilter.value.trim(), use=uFilter.value.trim();
+      rows.forEach(tr=>tr.style.display = matches(tr,q,cls,use)?'':'none');
+    }
+    [srch,cFilter,uFilter].forEach(el=>el.addEventListener('input',applyFilters));
+    applyFilters();
+
+    // Compare dock
+    const cmpDock=$('.compareDock'), cmpGrid=$('#cmpGrid'), clearCmp=$('#clearCmp');
+    function renderCompare(){
+      const picks=$$('#rgTable .cmp:checked').map(c=>c.closest('tr'));
+      if(picks.length===0){ cmpDock.classList.add('hidden'); cmpGrid.innerHTML=''; return; }
+      cmpDock.classList.remove('hidden'); cmpGrid.innerHTML='';
+      picks.slice(0,2).forEach(tr=>{
+        const cells=Array.from(tr.children).map(td=>td.innerHTML);
+        const card=document.createElement('div');
+        card.className='rounded-xl border bg-white p-3';
+        card.innerHTML=`
+          <div class="font-semibold mb-1">${cells[1]}</div>
+          <div class="text-xs"><b>Class:</b> ${cells[2]}</div>
+          <div class="text-xs mt-1"><b>Pros:</b> ${cells[3]}</div>
+          <div class="text-xs mt-1"><b>Cons:</b> ${cells[4]}</div>
+          <div class="text-xs mt-1"><b>Use/Notes:</b> ${cells[5]}</div>
+        `;
+        cmpGrid.appendChild(card);
+      });
+      const boxes=$$('#rgTable .cmp'); const limit=picks.length>=2;
+      boxes.forEach(b=>{ if(!b.checked) b.disabled=limit; else b.disabled=false; });
+    }
+    tbody.addEventListener('change',e=>{
+      const box=e.target.closest('.cmp'); if(!box) return; renderCompare();
+    });
+    clearCmp.addEventListener('click',()=>{
+      $$('#rgTable .cmp').forEach(b=>{ b.checked=false; b.disabled=false; });
+      renderCompare();
+    });
+
+    // Copy buttons
+    $$('.copy').forEach(btn=>{
+      btn.addEventListener('click', async ()=>{
+        const txt=btn.getAttribute('data-copy')||'';
+        try{ await navigator.clipboard.writeText(txt); btn.textContent='Copied'; setTimeout(()=>btn.textContent='Copy',1200); }
+        catch(e){ alert('Copy failed. Select and copy manually.'); }
+      });
+    });
+
+    // Simple progress memory
+    const PROG='proc_pro_seen_v2';
+    const progTxt=$('#progressText');
+    let seen=new Set(JSON.parse(localStorage.getItem(PROG)||'[]'));
+    function bump(id){ if(!id) return; seen.add(id); localStorage.setItem(PROG, JSON.stringify([...seen])); const pct=Math.round(seen.size / $$('#content section[id]').length * 100); progTxt.textContent='Progress: '+pct+'%'; }
+    document.addEventListener('scroll',()=>{ const cur=$('#outline a[aria-current="true"]'); if(cur) bump(cur.getAttribute('href').substring(1)); });
+    bump(location.hash?.substring(1));
+
+    // Quizzes
+    function grade(formEl, resultEl, bestKey, bestChip){
+      let score=0,total=0;
+      Array.from(formEl.querySelectorAll('fieldset')).forEach(fs=>{
+        total++; fs.classList.remove('correct','incorrect');
+        const correct=fs.dataset.correct; const chosen=fs.querySelector('input:checked');
+        const expl=fs.querySelector('.exp'); if(expl){ expl.classList.add('hidden'); expl.textContent=''; }
+        if(chosen && chosen.value===correct){ score++; fs.classList.add('correct'); }
+        else{ fs.classList.add('incorrect'); if(expl){ expl.textContent=fs.dataset.expl||''; expl.classList.remove('hidden'); } }
+      });
+      const pct=Math.round(score/total*100);
+      resultEl.classList.remove('hidden');
+      resultEl.innerHTML=`<strong>Score: ${score}/${total} (${pct}%)</strong>`;
+      const prev=+(localStorage.getItem(bestKey)||0);
+      if(pct>prev){ localStorage.setItem(bestKey, pct); if(bestChip) bestChip.textContent='Best: '+pct+'%'; }
+    }
+    function retry(formEl, resultEl){
+      Array.from(formEl.querySelectorAll('input[type=radio]')).forEach(i=>i.checked=false);
+      Array.from(formEl.querySelectorAll('fieldset')).forEach(fs=>fs.classList.remove('correct','incorrect'));
+      Array.from(formEl.querySelectorAll('.exp')).forEach(e=>{e.textContent=''; e.classList.add('hidden');});
+      resultEl.classList.add('hidden');
+    }
+    const form=$('#quizForm'), res=$('#quizResult'), bestChip=$('#bestScore');
+    const formH=$('#quizFormHTL'), resH=$('#quizResultHTL');
+    const BEST_MAIN='proc_pro_best_v2', BEST_HTL='proc_pro_best_htl_v2';
+    const bm = localStorage.getItem(BEST_MAIN); if(bm) bestChip.textContent='Best: '+bm+'%';
+    $('#gradeBtn').addEventListener('click',()=>grade(form,res,BEST_MAIN,bestChip));
+    $('#retryBtn').addEventListener('click',()=>retry(form,res));
+    $('#gradeBtnHTL').addEventListener('click',()=>grade(formH,resH,BEST_HTL,null));
+    $('#retryBtnHTL').addEventListener('click',()=>retry(formH,resH));
   })();
   </script>
 </body>
