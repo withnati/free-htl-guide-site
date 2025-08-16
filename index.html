@@ -54,6 +54,11 @@
     .shine{ position:relative; overflow:hidden }
     .shine::before{ content:""; position:absolute; inset:-1px; border-radius:inherit; padding:1px; background:linear-gradient(135deg, rgba(116,163,199,.35), rgba(255,255,255,0) 40%, rgba(116,163,199,.35)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
     .hover-card:hover{ transform: translateY(-2px); box-shadow:0 12px 40px rgba(2,6,23,.10) }
+    
+    /* Fix: let clicks pass through the shiny overlay */
+.shine::before,
+.shine::after { pointer-events: none !important; }
+    
     /* Hero animated blob */
     @keyframes floaty{ 0%{ transform:translateY(0) } 50%{ transform:translateY(-10px) } 100%{ transform:translateY(0) } }
     .blob{ animation: floaty 6s ease-in-out infinite }
