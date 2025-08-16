@@ -1,19 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>Free HTL Guide — Structured HT/HTL Exam Prep (Histology)</title>
-  <meta name="description" content="Pass the ASCP HT/HTL exam with a structured, expert-led study plan. Video lessons, concise notes, quizzes, and print-ready checklists aligned to the ASCP BOC outline." />
+  <meta name="description" content="Pass the ASCP HT/HTL exam with a structured, expert-led study plan. Concise lessons, worked examples, quizzes, and print-ready checklists aligned to the ASCP BOC outline." />
 
   <!-- Canonical -->
   <link rel="canonical" href="https://withnati.github.io/free-htl-guide-site/" />
 
-  <!-- Favicons -->
+  <!-- Favicons (optional) -->
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
-  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
@@ -28,121 +26,101 @@
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Free HTL Guide — Structured HT/HTL Exam Prep (Histology)">
-  <meta name="twitter:description" content="Short lessons, worked examples, targeted quizzes, and printable checklists aligned to the HT/HTL blueprint.">
+  <meta name="twitter:description" content="Short lessons, examples, quizzes, and checklists mapped to the HT/HTL blueprint.">
   <meta name="twitter:image" content="https://withnati.github.io/free-htl-guide-site/assets/og-home.png">
 
   <meta name="theme-color" content="#0F4C81" />
 
-  <!-- Perf: preconnect + preload -->
+  <!-- Perf -->
   <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
   <link rel="preload" as="image" href="assets/microtome.jpg">
+  <link rel="prefetch" href="modules/fixation-core-v2.html" as="document">
+  <link rel="prefetch" href="modules/fixation-pro.html" as="document">
+  <link rel="prefetch" href="modules/processing-pro-v2.html" as="document">
+  <link rel="prefetch" href="modules/embedding-pro.html" as="document">
 
   <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    :root{ --brand:#0F4C81; --accent:#2BB673; --text:#1E1E1E; }
-    html{ scroll-behavior:smooth; }
-    body{ font-feature-settings:'liga' 1; }
-    .container{ margin:0 auto; max-width:72rem; padding:0 1rem; }
-    .btn{ display:inline-flex; align-items:center; gap:.5rem; padding:.70rem 1rem; border-radius:.85rem; font-weight:700 }
-    .btn-primary{ background:var(--brand); color:#fff }
+    :root{ --brand:#0F4C81; --brand-2:#74a3c7; --ink:#0b1220; --ink-2:#334155; }
+    .btn{ display:inline-flex; align-items:center; gap:.6rem; padding:.72rem 1rem; border-radius:.9rem; font-weight:700 }
+    .btn-primary{ background:var(--brand); color:#fff; position:relative; overflow:hidden }
+    .btn-primary::after{ content:""; position:absolute; inset:0; background:linear-gradient(120deg,transparent 0,rgba(255,255,255,.25) 30%,transparent 60%); transform:translateX(-120%); transition:.7s }
+    .btn-primary:hover::after{ transform:translateX(120%) }
     .btn-ghost{ background:#fff; border:1px solid #e5e7eb }
     .pill{ border:1px solid #e5e7eb; background:#f8fafc; border-radius:999px; padding:2px 8px; font-size:.72rem }
-    .card{ border:1px solid #e5e7eb; background:#fff; border-radius:1.25rem; box-shadow:0 2px 12px rgba(2,6,23,.04) }
-    .sr-only{ position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0 }
+    .card{ border:1px solid #e5e7eb; background:#fff; border-radius:1.25rem; box-shadow:0 6px 30px rgba(2,6,23,.06) }
+    .shine{ position:relative; overflow:hidden }
+    .shine::before{ content:""; position:absolute; inset:-1px; border-radius:inherit; padding:1px; background:linear-gradient(135deg, rgba(116,163,199,.35), rgba(255,255,255,0) 40%, rgba(116,163,199,.35)); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+    .hover-card:hover{ transform: translateY(-2px); box-shadow:0 12px 40px rgba(2,6,23,.10) }
+    /* Hero animated blob */
+    @keyframes floaty{ 0%{ transform:translateY(0) } 50%{ transform:translateY(-10px) } 100%{ transform:translateY(0) } }
+    .blob{ animation: floaty 6s ease-in-out infinite }
+    /* Reveal on scroll */
+    .reveal{ opacity:0; transform: translateY(10px); transition:.6s cubic-bezier(.2,.8,.2,1) }
+    .reveal.in{ opacity:1; transform:none }
+    /* Focus styles */
+    a:focus, button:focus{ outline:2px solid var(--brand); outline-offset:2px }
+    /* Dark mode minimal palette */
+    .dark body{ background:#0b1220; color:#e5e7eb }
+    .dark .card{ background:#0f172a; border-color:#1f2937 }
+    .dark .btn-ghost{ background:#0f172a; border-color:#1f2937; color:#e5e7eb }
+    .dark .pill{ background:#0f172a; border-color:#1f2937; color:#cbd5e1 }
+    .dark header, .dark footer{ background:rgba(15,23,42,.7) }
   </style>
-  
-<link rel="prefetch" href="modules/fixation-core-v2.html" as="document">
-<link rel="prefetch" href="modules/fixation-pro.html" as="document">
-<link rel="prefetch" href="modules/processing-pro-v2.html" as="document">
-<link rel="prefetch" href="modules/embedding-pro.html" as="document">
-  
-  <!-- JSON-LD (WebSite + Organization + Courses) -->
+
+  <!-- JSON-LD -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "WebSite",
-        "name": "Free HTL Guide",
-        "url": "https://withnati.github.io/free-htl-guide-site/",
-        "inLanguage": "en"
-      },
-      {
-        "@type": "Organization",
-        "name": "Free HTL Guide",
-        "url": "https://withnati.github.io/free-htl-guide-site/",
-        "logo": "https://withnati.github.io/free-htl-guide-site/assets/og-home.png"
-      },
-      {
-        "@type": "Course",
-        "name": "Module 1 — Fixation",
-        "url": "https://withnati.github.io/free-htl-guide-site/modules/fixation-pro.html",
-        "description": "Mechanisms, pre-analytics, artifacts, QC, retrieval playbook.",
-        "provider": { "@type": "Organization", "name": "Free HTL Guide", "url": "https://withnati.github.io/free-htl-guide-site/" }
-      },
-      {
-        "@type": "Course",
-        "name": "Module 2 — Processing & Decalcification",
-        "url": "https://withnati.github.io/free-htl-guide-site/modules/processing-pro-v2.html",
-        "description": "Dehydration → clearing → infiltration; schedules; decalc endpoints & impacts.",
-        "provider": { "@type": "Organization", "name": "Free HTL Guide", "url": "https://withnati.github.io/free-htl-guide-site/" }
-      },
-      {
-        "@type": "Course",
-        "name": "Module 3 — Embedding & Microtomy",
-        "url": "https://withnati.github.io/free-htl-guide-site/modules/embedding-pro.html",
-        "description": "Orientation rules, ribbon physics, artifact decision trees, HTL molecular prep.",
-        "provider": { "@type": "Organization", "name": "Free HTL Guide", "url": "https://withnati.github.io/free-htl-guide-site/" }
-      }
-    ]
-  }
+  {"@context":"https://schema.org","@graph":[
+    {"@type":"WebSite","name":"Free HTL Guide","url":"https://withnati.github.io/free-htl-guide-site/","inLanguage":"en"},
+    {"@type":"Organization","name":"Free HTL Guide","url":"https://withnati.github.io/free-htl-guide-site/","logo":"https://withnati.github.io/free-htl-guide-site/assets/og-home.png"},
+    {"@type":"Course","name":"Module 1 — Fixation","url":"https://withnati.github.io/free-htl-guide-site/modules/fixation-pro.html","description":"Mechanisms, pre-analytics, artifacts, QC, retrieval playbook.","provider":{"@type":"Organization","name":"Free HTL Guide","url":"https://withnati.github.io/free-htl-guide-site/"}},
+    {"@type":"Course","name":"Module 2 — Processing & Decalcification","url":"https://withnati.github.io/free-htl-guide-site/modules/processing-pro-v2.html","description":"Dehydration → clearing → infiltration; schedules; decalc endpoints & impacts.","provider":{"@type":"Organization","name":"Free HTL Guide","url":"https://withnati.github.io/free-htl-guide-site/"}},
+    {"@type":"Course","name":"Module 3 — Embedding & Microtomy","url":"https://withnati.github.io/free-htl-guide-site/modules/embedding-pro.html","description":"Orientation rules, ribbon physics, artifact decision trees, HTL molecular prep.","provider":{"@type":"Organization","name":"Free HTL Guide","url":"https://withnati.github.io/free-htl-guide-site/"}}
+  ]}
   </script>
 </head>
 
-<body class="text-[color:var(--text)] antialiased">
+<body class="antialiased">
   <a href="#modules" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 bg-white border px-3 py-2 rounded shadow">Skip to content</a>
 
   <!-- Header -->
-  <header class="sticky top-0 z-50 bg-white/80 backdrop-blur border-b border-slate-200">
-    <div class="container flex h-16 items-center justify-between">
-      <a href="index.html" class="flex items-center gap-2 font-bold text-xl text-[color:var(--brand)]">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path d="M7 3h10a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm1.5 4a.75.75 0 0 0 0 1.5H15a.75.75 0 0 0 0-1.5H8.5zm0 4a.75.75 0 0 0 0 1.5H15a.75.75 0 0 0 0-1.5H8.5zm0 4a.75.75 0 0 0 0 1.5H13a.75.75 0 0 1 0-1.5H8.5z"/></svg>
-        Free HTL Guide
-      </a>
+  <header class="sticky top-0 z-50 border-b border-slate-200 bg-white/80 backdrop-blur">
+    <div class="max-w-6xl mx-auto h-16 px-4 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 font-bold text-xl text-[color:var(--brand)]">Free HTL Guide</a>
       <nav class="hidden md:flex items-center gap-6 text-sm">
-        <a href="#modules" class="hover:text-[color:var(--brand)]">Modules</a>
+        <a href="#modules" aria-current="page" class="hover:text-[color:var(--brand)]">Modules</a>
         <a href="#why" class="hover:text-[color:var(--brand)]">Why this works</a>
         <a href="#starter" class="hover:text-[color:var(--brand)]">Free starter kit</a>
         <a href="faq.html" class="hover:text-[color:var(--brand)]">FAQ</a>
         <a href="about.html" class="hover:text-[color:var(--brand)]">About</a>
-        <a href="#contact" class="hover:text-[color:var(--brand)]">Contact</a>
       </nav>
-      <div class="hidden md:block">
+      <div class="flex items-center gap-2">
+        <button id="themeBtn" class="btn btn-ghost text-sm" aria-label="Toggle dark mode">🌙</button>
         <a href="#starter" class="btn btn-primary">Start Free</a>
       </div>
     </div>
   </header>
 
-  <!-- Hero (gradient + blob + refined type) -->
-  <section class="relative border-b">
+  <!-- HERO -->
+  <section class="relative overflow-hidden border-b">
+    <!-- Animated gradient backdrop -->
     <div class="absolute inset-0 -z-10 bg-gradient-to-b from-slate-50 via-white to-white"></div>
-    <div class="pointer-events-none absolute right-[-10%] top-[-20%] h-[38rem] w-[38rem] rounded-full blur-3xl opacity-20"
-         style="background:radial-gradient(closest-side,#0F4C81 0%,#74a3c7 35%,transparent 70%);"></div>
+    <div class="absolute right-[-8%] top-[-22%] h-[42rem] w-[42rem] rounded-full blur-3xl opacity-30 blob"
+         style="background:radial-gradient(closest-side,var(--brand) 0%, var(--brand-2) 40%, transparent 70%);"></div>
 
-    <div class="container px-4 py-10 grid md:grid-cols-[1.15fr,0.85fr] md:items-center gap-8">
-      <div>
+    <div class="max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-[1.15fr,0.85fr] md:items-center gap-10">
+      <div class="reveal">
         <p class="uppercase tracking-wide text-[11px] text-slate-500">HT/HTL Exam Prep</p>
         <h1 class="max-w-[22ch] leading-tight text-4xl md:text-5xl font-extrabold mt-1">
           Pass the ASCP HT/HTL exam with a structured, expert-led study plan
         </h1>
         <p class="max-w-[60ch] mt-3 text-slate-600 md:text-lg">
-          Short lessons, worked examples, quizzes, and print-ready checklists—organized by the official content areas.
+          Short lessons, worked examples, practice quizzes, and print-ready checklists — organized by the official content areas.
         </p>
         <div class="mt-4 flex flex-wrap items-center gap-2 text-[11px] font-medium text-slate-700">
-          <span class="pill">Fixation</span><span class="pill">Processing</span>
-          <span class="pill">Embedding & Microtomy</span><span class="pill">Staining</span><span class="pill">Lab Ops</span>
+          <span class="pill">Fixation</span><span class="pill">Processing</span><span class="pill">Embedding & Microtomy</span><span class="pill">Staining</span>
         </div>
         <div class="mt-6 flex flex-wrap gap-3">
           <a href="#starter" class="btn btn-primary">Join the waitlist</a>
@@ -150,42 +128,53 @@
         </div>
         <p class="mt-2 text-xs text-slate-500">Aligned to ASCP BOC content. Not affiliated with ASCP.</p>
       </div>
-      <div class="hidden md:block">
-        <img src="assets/microtome.jpg" alt="Rotary microtome cutting paraffin sections in a histology lab."
-             class="w-full h-auto max-h-[360px] object-contain" loading="eager" decoding="async"
-             onerror="this.style.display='none'">
+
+      <!-- Image with soft mask -->
+      <div class="hidden md:block reveal">
+        <div class="relative w-full max-h-[380px]">
+          <div class="rounded-[28px] border border-slate-200 shine hover-card transition-transform duration-300">
+            <div class="bg-white/70" style="
+                -webkit-mask-image: radial-gradient(140% 100% at 100% 0%, black 60%, transparent 70%);
+                mask-image: radial-gradient(140% 100% at 100% 0%, black 60%, transparent 70%);
+              ">
+              <img src="assets/microtome.jpg" alt="Rotary microtome cutting paraffin sections in a histology lab."
+                   class="w-full h-auto object-contain max-h-[380px]" loading="eager" decoding="async"
+                   onerror="this.style.display='none'">
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- Why this works -->
-  <section id="why" class="container px-4 py-10">
+  <section id="why" class="max-w-6xl mx-auto px-4 py-12">
     <div class="grid md:grid-cols-3 gap-6">
-      <div class="card p-6">
+      <div class="card p-6 reveal hover-card transition-transform duration-300">
         <h3 class="font-bold text-lg">Structured syllabus</h3>
         <p class="text-sm text-slate-600 mt-1">Each module mirrors the BOC outline so you never wonder what to study next.</p>
       </div>
-      <div class="card p-6">
+      <div class="card p-6 reveal hover-card transition-transform duration-300">
         <h3 class="font-bold text-lg">Learn → apply → check</h3>
         <p class="text-sm text-slate-600 mt-1">Concise explanations, worked examples, and targeted quizzes with instant feedback.</p>
       </div>
-      <div class="card p-6">
+      <div class="card p-6 reveal hover-card transition-transform duration-300">
         <h3 class="font-bold text-lg">Bench-ready</h3>
         <p class="text-sm text-slate-600 mt-1">Printable quick cards, logs, and checklists you can actually use at work.</p>
       </div>
     </div>
   </section>
 
-  <!-- Modules (Syllabus) -->
-  <section id="modules" class="container px-4 py-10 border-t">
+  <!-- Modules -->
+  <section id="modules" class="max-w-6xl mx-auto px-4 py-12 border-t">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-2xl font-extrabold">Modules (Syllabus)</h2>
-     <a class="text-sm text-slate-600 hover:underline" href="#modules">View all</a>
+      <a class="text-sm text-slate-600 hover:underline" href="#modules">View all</a>
     </div>
 
     <div class="grid gap-6 md:grid-cols-3">
       <!-- Fixation -->
-      <article class="card p-6">
+      <article class="card p-6 shine reveal hover-card transition-transform duration-300">
         <div class="flex items-center justify-between">
           <h3 class="font-bold text-xl">Fixation</h3>
           <span class="text-xs px-2 py-1 rounded-full bg-indigo-50 text-indigo-700">Available</span>
@@ -197,8 +186,8 @@
         </div>
       </article>
 
-      <!-- Processing & Decalc -->
-      <article class="card p-6">
+      <!-- Processing -->
+      <article class="card p-6 shine reveal hover-card transition-transform duration-300">
         <div class="flex items-center justify-between">
           <h3 class="font-bold text-xl">Processing & Decalcification</h3>
           <span class="text-xs px-2 py-1 rounded-full bg-indigo-50 text-indigo-700">Available</span>
@@ -210,7 +199,7 @@
       </article>
 
       <!-- Embedding & Microtomy -->
-      <article class="card p-6">
+      <article class="card p-6 shine reveal hover-card transition-transform duration-300">
         <div class="flex items-center justify-between">
           <h3 class="font-bold text-xl">Embedding & Microtomy</h3>
           <span class="text-xs px-2 py-1 rounded-full bg-indigo-50 text-indigo-700">Available</span>
@@ -224,8 +213,8 @@
   </section>
 
   <!-- Free starter kit -->
-  <section id="starter" class="container px-4 py-10">
-    <div class="card p-6 grid md:grid-cols-[1.3fr,0.7fr] gap-6 items-center">
+  <section id="starter" class="max-w-6xl mx-auto px-4 py-12">
+    <div class="card p-6 grid md:grid-cols-[1.3fr,0.7fr] gap-6 items-center reveal hover-card transition-transform duration-300">
       <div>
         <h2 class="text-2xl font-extrabold">Get the free starter kit</h2>
         <p class="text-sm text-slate-600 mt-1">Fixation Quick Card + Artifact Poster + Logs you can print now.</p>
@@ -236,55 +225,42 @@
         <p class="mt-2 text-xs text-slate-500">No spam. Unsubscribe anytime.</p>
       </div>
       <div class="grid grid-cols-2 gap-3">
-        <a class="card p-3 text-sm" href="assets/Orientation_Quick_Cards.pdf">Orientation Quick Cards (PDF)</a>
-        <a class="card p-3 text-sm" href="assets/Artifact_Poster.pdf">Artifact Poster (PDF)</a>
-        <a class="card p-3 text-sm" href="assets/Bath_Oven_Temp_Log.pdf">Bath &amp; Oven Log (PDF)</a>
-        <a class="card p-3 text-sm" href="assets/Thickness_Verification.pdf">Thickness Verification (PDF)</a>
-        <a class="card p-3 text-sm col-span-2" href="assets/Cryostat_Decon_Checklist.pdf">Cryostat Decon Checklist (PDF)</a>
+        <a class="card p-3 text-sm flex items-center justify-between" href="assets/Orientation_Quick_Cards.pdf" download>
+          <span>Orientation Quick Cards</span><span class="text-xs text-slate-500">PDF</span>
+        </a>
+        <a class="card p-3 text-sm flex items-center justify-between" href="assets/Artifact_Poster.pdf" download>
+          <span>Artifact Poster</span><span class="text-xs text-slate-500">PDF</span>
+        </a>
+        <a class="card p-3 text-sm flex items-center justify-between" href="assets/Bath_Oven_Temp_Log.pdf" download>
+          <span>Bath &amp; Oven Temp Log</span><span class="text-xs text-slate-500">PDF</span>
+        </a>
+        <a class="card p-3 text-sm flex items-center justify-between" href="assets/Thickness_Verification.pdf" download>
+          <span>Thickness Verification</span><span class="text-xs text-slate-500">PDF</span>
+        </a>
+        <a class="card p-3 text-sm flex items-center justify-between col-span-2" href="assets/Cryostat_Decon_Checklist.pdf" download>
+          <span>Cryostat Decon Checklist</span><span class="text-xs text-slate-500">PDF</span>
+        </a>
       </div>
     </div>
   </section>
 
-  <!-- Trust band -->
-  <section class="py-10 border-y border-slate-200 bg-white" aria-label="Trust features">
-    <div class="container grid md:grid-cols-3 gap-6 text-sm">
-      <div class="flex items-start gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7l-8 10L4 12"/></svg><p><strong>Blueprint-aligned</strong><br>Mapped to the ASCP HT/HTL content areas.</p></div>
-      <div class="flex items-start gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p><strong>Efficient lessons</strong><br>Short explanations, examples, and quizzes.</p></div>
-      <div class="flex items-start gap-3"><svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 flex-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18M3 12h18M3 17h18"/></svg><p><strong>Study plans</strong><br>Track weak areas and follow weekly plans.</p></div>
+  <!-- Testimonials (auto-rolling) -->
+  <section class="max-w-6xl mx-auto px-4 py-12 border-y">
+    <div class="grid md:grid-cols-2 gap-6 items-stretch">
+      <figure class="card p-6 reveal">
+        <blockquote class="text-lg leading-relaxed">“Concise and focused on what’s tested — I finally understand when to use which fixative.”</blockquote>
+        <figcaption class="mt-3 text-sm text-slate-600">HTL candidate, 2025</figcaption>
+      </figure>
+      <figure class="card p-6 reveal">
+        <blockquote class="text-lg leading-relaxed">“Microtomy troubleshooting helped at work <em>and</em> on practice exams.”</blockquote>
+        <figcaption class="mt-3 text-sm text-slate-600">HT, 2024</figcaption>
+      </figure>
     </div>
   </section>
 
-  <!-- What you get -->
-  <section class="container px-4 py-12 md:py-16">
-    <div class="text-center mb-10"><h2 class="text-2xl md:text-3xl font-bold">What you’ll get</h2></div>
-    <div class="grid md:grid-cols-4 gap-6">
-      <div class="p-6 rounded-2xl border border-slate-200"><h3 class="font-semibold">5 core modules</h3><p class="text-slate-700 mt-1">Fixation, Processing, Embedding/Microtomy, Staining, Lab Operations.</p></div>
-      <div class="p-6 rounded-2xl border border-slate-200"><h3 class="font-semibold">Downloadables</h3><p class="text-slate-700 mt-1">Stain tables, fixative cards, troubleshooting guides.</p></div>
-      <div class="p-6 rounded-2xl border border-slate-200"><h3 class="font-semibold">Live reviews</h3><p class="text-slate-700 mt-1">Weekly Q&amp;A and timed practice blocks.</p></div>
-      <div class="p-6 rounded-2xl border border-slate-200"><h3 class="font-semibold">Community</h3><p class="text-slate-700 mt-1">Private Q&amp;A for tricky cases.</p></div>
-    </div>
-  </section>
-
-  <!-- FAQ preview (with FAQPage JSON-LD for rich results) -->
-  <section id="faq" class="container px-4 py-10">
-    <h2 class="text-2xl font-extrabold">FAQ</h2>
-    <div class="mt-4 grid md:grid-cols-3 gap-4">
-      <details class="card p-4"><summary class="font-semibold cursor-pointer">HT vs HTL—what’s the difference?</summary>
-        <p class="text-sm text-slate-600 mt-2">HT emphasizes core bench skills; HTL adds validation, troubleshooting depth, and molecular-adjacent skills.</p>
-      </details>
-      <details class="card p-4"><summary class="font-semibold cursor-pointer">Do I need lab access?</summary>
-        <p class="text-sm text-slate-600 mt-2">No. Modules include practice and printable drills; bench drills are optional.</p>
-      </details>
-      <details class="card p-4"><summary class="font-semibold cursor-pointer">How long is a module?</summary>
-        <p class="text-sm text-slate-600 mt-2">30–60 minutes of focused study, plus practice drill time.</p>
-      </details>
-    </div>
-    <p class="mt-4"><a class="text-sm text-slate-600 hover:underline" href="faq.html">See all questions →</a></p>
-  </section>
-
-  <!-- About / Instructor (short) -->
-  <section class="container px-4 py-10 border-t">
-    <div class="card p-6 grid md:grid-cols-[0.25fr,1fr] gap-5 items-center">
+  <!-- Instructor -->
+  <section class="max-w-6xl mx-auto px-4 py-12">
+    <div class="card p-6 grid md:grid-cols-[0.25fr,1fr] gap-5 items-center reveal hover-card transition-transform duration-300">
       <img src="assets/instructor.jpg" alt="Instructor headshot" class="w-24 h-24 rounded-full object-cover border" onerror="this.style.display='none'">
       <div>
         <h2 class="text-lg font-bold">Your instructor</h2>
@@ -296,125 +272,76 @@
     </div>
   </section>
 
-  <!-- Social proof -->
-  <section class="container px-4 py-10">
-    <div class="grid md:grid-cols-2 gap-6">
-      <blockquote class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm"><p class="text-lg">“Concise and focused on what’s tested—I finally understand when to use which fixative.”</p><footer class="mt-3 text-sm text-slate-600">— HTL candidate, 2025</footer></blockquote>
-      <blockquote class="p-6 rounded-2xl border border-slate-200 bg-white shadow-sm"><p class="text-lg">“Microtomy troubleshooting helped at work <em>and</em> on practice exams.”</p><footer class="mt-3 text-sm text-slate-600">— HT, 2024</footer></blockquote>
-    </div>
-  </section>
-
-  <!-- Contact -->
-  <section id="contact" class="container px-4 py-10 border-t">
-    <div class="grid md:grid-cols-2 gap-8 items-start">
-      <div>
-        <h2 class="text-2xl font-extrabold">Contact</h2>
-        <p class="mt-2 text-slate-700">Send a message and we’ll reply within 1–2 business days.</p>
-        <form action="https://formspree.io/f/mnnzlgrw" method="POST" class="mt-6 grid gap-4">
-          <input type="text" name="name" placeholder="Full name" required class="rounded-xl border border-slate-300 px-4 py-3">
-          <input type="email" name="email" placeholder="Email" required class="rounded-xl border border-slate-300 px-4 py-3">
-          <textarea name="message" rows="5" placeholder="How can we help?" required class="rounded-xl border border-slate-300 px-4 py-3"></textarea>
-          <!-- Honeypot for spam -->
-          <input type="text" name="_gotcha" style="display:none">
-          <button class="btn btn-primary w-fit">Send</button>
-        </form>
-        <p class="text-xs text-slate-500 mt-3">We respect your privacy. See our <a href="privacy.html" class="underline">Privacy Policy</a>.</p>
-      </div>
-      <aside class="p-5 rounded-2xl border border-slate-200 bg-slate-50">
-        <h3 class="font-semibold">Direct email</h3>
-        <p class="mt-1 text-slate-700"><a href="mailto:support@yourdomain.com" class="text-[color:var(--brand)] underline">support@yourdomain.com</a></p>
-        <h3 class="font-semibold mt-6">Social</h3>
-        <p class="mt-1 text-slate-700">Add links here (YouTube, LinkedIn, etc.).</p>
-      </aside>
-    </div>
-  </section>
-
   <!-- Footer -->
   <footer class="border-t">
-    <div class="container px-4 py-8 text-sm text-slate-600 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+    <div class="max-w-6xl mx-auto px-4 py-8 text-sm text-slate-600 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
       <div>© <span id="y"></span> Free HTL Guide — Not affiliated with ASCP.</div>
       <div class="flex items-center gap-4">
-        <a class="hover:underline" href="syllabus.html">Syllabus</a>
+        <a class="hover:underline" href="#modules">Modules</a>
         <a class="hover:underline" href="faq.html">FAQ</a>
-        <a class="hover:underline" href="contact.html">Contact</a>
+        <a class="hover:underline" href="#starter">Starter kit</a>
         <a class="hover:underline" href="privacy.html">Privacy</a>
-        <a class="hover:underline" href="terms.html">Terms</a>
       </div>
     </div>
   </footer>
 
-  <!-- Year -->
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
+  <!-- Scripts: year, reveal-on-scroll, CTA scroll+focus, dark mode toggle, simple testimonial auto-roll -->
+  <script>
+    // Year
+    document.getElementById('y').textContent = new Date().getFullYear();
 
-  <!-- FAQPage JSON-LD (kept for rich results) -->
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@type":"FAQPage",
-    "mainEntity":[
-      {"@type":"Question","name":"HT vs HTL—what’s the difference?","acceptedAnswer":{"@type":"Answer","text":"HT emphasizes core bench skills; HTL adds validation, troubleshooting depth, and molecular-adjacent skills."}},
-      {"@type":"Question","name":"Do I need lab access?","acceptedAnswer":{"@type":"Answer","text":"No. Modules include practice and printable drills; bench drills are optional."}},
-      {"@type":"Question","name":"How long is a module?","acceptedAnswer":{"@type":"Answer","text":"30–60 minutes of focused study, plus practice drill time."}}
-    ]
-  }
+    // Reveal on scroll (prefers-reduced-motion aware)
+    (function(){
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const els = document.querySelectorAll('.reveal');
+      if (prefersReduced){ els.forEach(el=>el.classList.add('in')); return; }
+      const io = new IntersectionObserver((entries)=>{
+        entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+      }, {threshold: 0.12});
+      els.forEach(el=>io.observe(el));
+    })();
+
+    // CTA → focus email (smooth scroll already via CSS)
+    (function(){
+      const email = document.querySelector('#starter input[name="email"]');
+      function go(e){ if(!email) return; e.preventDefault(); document.querySelector('#starter').scrollIntoView({behavior:'smooth'}); setTimeout(()=>email.focus(), 420); }
+      document.querySelectorAll('a[href="#starter"]').forEach(a=>a.addEventListener('click', go));
+    })();
+
+    // Dark mode toggle (persist)
+    (function(){
+      const btn = document.getElementById('themeBtn');
+      const key = 'htl-theme';
+      const root = document.documentElement;
+      const set = v => { localStorage.setItem(key,v); root.classList.toggle('dark', v==='dark'); btn.textContent = v==='dark'?'☀️':'🌙'; }
+      const saved = localStorage.getItem(key) || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      set(saved);
+      btn.addEventListener('click', ()=> set(root.classList.contains('dark') ? 'light' : 'dark'));
+    })();
+
+    // Simple testimonial auto-roll (optional, gentle)
+    (function(){
+      const cards = document.querySelectorAll('section.border-y figure.card');
+      if(cards.length<2) return;
+      let i = 0;
+      setInterval(()=>{
+        cards.forEach((c,idx)=> c.style.opacity = (idx===i? '1':'0.55'));
+        i = (i+1) % cards.length;
+      }, 4200);
+    })();
   </script>
 
-  <!-- Tiny privacy-friendly analytics (OFF by default). Flip to true when ready. -->
+  <!-- Tiny privacy-friendly analytics (OFF by default) -->
   <script>
-    window.__analyticsOn = false; // set to true when you have an endpoint
+    window.__analyticsOn = false; // set true when ready with endpoint
     (function(){
       if (!window.__analyticsOn) return;
       if (navigator.doNotTrack === "1" || window.doNotTrack === "1") return;
-      const endpoint = "https://example.com/collect"; // TODO: replace with your endpoint
-      function send(evt, data) {
-        try {
-          const payload = JSON.stringify({evt, path: location.pathname, ts: Date.now(), ref: document.referrer || null, ...data});
-          navigator.sendBeacon(endpoint, new Blob([payload], {type: "application/json"}));
-        } catch (e) {}
-      }
-      window.addEventListener("load", () => send("pageview", {}));
-      document.addEventListener("click", e => {
-        const a = e.target.closest("a"); if (a && a.href) send("click", { href: a.href });
-      });
+      const endpoint = "https://example.com/collect"; // replace later
+      const send = (evt,data)=>{ try{ navigator.sendBeacon(endpoint, new Blob([JSON.stringify({evt, path:location.pathname, ts:Date.now(), ref:document.referrer||null, ...data})],{type:"application/json"})); }catch(e){} };
+      window.addEventListener("load",()=>send("pageview",{}));
+      document.addEventListener("click",e=>{ const a=e.target.closest("a"); if(a&&a.href) send("click",{href:a.href}); });
     })();
   </script>
-  <script>
-  (function(){
-    const target = document.querySelector('#starter') || document.body;
-    const email = document.querySelector('#starter input[name="email"]');
-    function go(e){
-      e.preventDefault();
-      target.scrollIntoView({behavior:'smooth', block:'start'});
-      setTimeout(()=> email && email.focus(), 400);
-    }
-    document.querySelectorAll('a[href="#starter"], a[href="#"], a[href="#waitlist"]')
-      .forEach(a => a.addEventListener('click', go));
-    // Also upgrade any “Start Free” / “Join the waitlist” buttons by id/class if needed:
-    ['Start Free','Join the waitlist'].forEach(txt=>{
-      [...document.querySelectorAll('a,button')].forEach(el=>{
-        if(el.textContent.trim().includes(txt)) el.addEventListener('click', go);
-      });
-    });
-  })();
-</script>
-<script>
-  (function(){
-    const target = document.querySelector('#starter') || document.body;
-    const email = document.querySelector('#starter input[name="email"]');
-    function go(e){
-      e.preventDefault();
-      target.scrollIntoView({behavior:'smooth', block:'start'});
-      setTimeout(()=> email && email.focus(), 400);
-    }
-    document.querySelectorAll('a[href="#starter"], a[href="#"], a[href="#waitlist"]')
-      .forEach(a => a.addEventListener('click', go));
-    // Also upgrade any “Start Free” / “Join the waitlist” buttons by id/class if needed:
-    ['Start Free','Join the waitlist'].forEach(txt=>{
-      [...document.querySelectorAll('a,button')].forEach(el=>{
-        if(el.textContent.trim().includes(txt)) el.addEventListener('click', go);
-      });
-    });
-  })();
-</script>
 </body>
 </html>
