@@ -93,7 +93,7 @@
         <a href="#modules" aria-current="page" class="hover:text-[color:var(--brand)]">Modules</a>
         <a href="#why" class="hover:text-[color:var(--brand)]">Why this works</a>
         <a href="#starter" class="hover:text-[color:var(--brand)]">Free starter kit</a>
-        <a href="faq.html" class="hover:text-[color:var(--brand)]">FAQ</a>
+        <a href="#faq" class="hover:text-[color:var(--brand)]">FAQ</a>
         <a href="about.html" class="hover:text-[color:var(--brand)]">About</a>
       </nav>
       <div class="flex items-center gap-2">
@@ -243,6 +243,34 @@
       </div>
     </div>
   </section>
+  
+<!-- FAQ (front-page slice) -->
+<section id="faq" class="max-w-6xl mx-auto px-4 py-16 border-t">
+  <h2 class="text-2xl md:text-3xl font-extrabold">FAQ</h2>
+  <div class="mt-5 grid md:grid-cols-3 gap-4">
+    <details class="card p-5">
+      <summary class="font-semibold cursor-pointer">HT vs HTL — what’s the difference?</summary>
+      <p class="text-sm text-slate-600 mt-2">
+        HT emphasizes core bench skills. HTL adds validation, troubleshooting depth, and molecular-adjacent workflows.
+      </p>
+    </details>
+    <details class="card p-5">
+      <summary class="font-semibold cursor-pointer">Do I need lab access?</summary>
+      <p class="text-sm text-slate-600 mt-2">
+        No. You can study with the lessons, quizzes, and printables. Bench drills are optional if you have access.
+      </p>
+    </details>
+    <details class="card p-5">
+      <summary class="font-semibold cursor-pointer">How long does a module take?</summary>
+      <p class="text-sm text-slate-600 mt-2">
+        About 30–60 minutes focused time, plus practice drill time depending on your pace.
+      </p>
+    </details>
+  </div>
+  <p class="mt-4">
+    <a class="text-sm text-slate-600 hover:underline" href="faq.html">See all questions →</a>
+  </p>
+</section>
 
   <!-- Testimonials (auto-rolling) -->
   <section class="max-w-6xl mx-auto px-4 py-12 border-y">
@@ -258,19 +286,40 @@
     </div>
   </section>
 
-  <!-- Instructor -->
-  <section class="max-w-6xl mx-auto px-4 py-12">
-    <div class="card p-6 grid md:grid-cols-[0.25fr,1fr] gap-5 items-center reveal hover-card transition-transform duration-300">
-      <img src="assets/instructor.jpg" alt="Instructor headshot" class="w-24 h-24 rounded-full object-cover border" onerror="this.style.display='none'">
-      <div>
-        <h2 class="text-lg font-bold">Your instructor</h2>
-        <p class="text-sm text-slate-600 mt-1">
-          Natnale Mengesha, HTL(ASCP)<span class="align-top text-[10px]">cm</span> — M.S. Pathology (Boston University) — currently in molecular pathology (bench & validation).
-        </p>
-        <p class="text-xs text-slate-500 mt-1">Teaching focus: exam-relevant practice and clean, printable reference cards.</p>
+ <!-- Instructor (enhanced) -->
+<section class="max-w-6xl mx-auto px-4 py-16">
+  <div class="card p-8 grid md:grid-cols-[0.35fr,1fr] md:items-center gap-8 reveal hover-card transition-transform duration-300">
+    <div class="flex flex-col items-center text-center">
+      <img src="assets/instructor.jpg"
+           alt="Natnale Mengesha — HTL(ASCP)cm, M.S. Pathology"
+           class="w-40 h-40 md:w-48 md:h-48 rounded-full object-cover border border-slate-200 shadow-sm"
+           onerror="this.style.display='none'">
+      <div class="mt-4 flex flex-wrap justify-center gap-2 text-[11px] font-medium text-slate-700">
+        <span class="pill">HTL(ASCP)<span class="align-top text-[9px]">cm</span></span>
+        <span class="pill">M.S. Pathology (BU)</span>
+        <span class="pill">Molecular pathology</span>
       </div>
     </div>
-  </section>
+
+    <div>
+      <p class="uppercase tracking-wide text-[11px] text-slate-500">Your instructor</p>
+      <h2 class="text-2xl md:text-3xl font-extrabold mt-1">Natnale Mengesha</h2>
+      <p class="text-sm md:text-base text-slate-700 mt-3 leading-relaxed">
+        I teach HT/HTL candidates with a focus on <strong>what’s tested</strong> and <strong>what works at the bench</strong>.
+        Expect structured modules, quick reference cards, and targeted practice that turns weak areas into points.
+      </p>
+      <ul class="mt-4 text-sm text-slate-700 list-disc pl-5 space-y-1">
+        <li>Aligned to the ASCP BOC outline; clear objectives and checklists</li>
+        <li>Bench-ready tips: fixation, processing, microtomy troubleshooting</li>
+        <li>Printables you can use immediately (logs, quick-cards, checklists)</li>
+      </ul>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="#why" class="btn btn-ghost">Why this works</a>
+        <a href="#starter" class="btn btn-primary">Start free</a>
+      </div>
+    </div>
+  </div>
+</section>
 
   <!-- Footer -->
   <footer class="border-t">
