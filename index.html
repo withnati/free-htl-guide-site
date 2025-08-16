@@ -52,7 +52,12 @@
     .card{ border:1px solid #e5e7eb; background:#fff; border-radius:1.25rem; box-shadow:0 2px 12px rgba(2,6,23,.04) }
     .sr-only{ position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0 }
   </style>
-
+  
+<link rel="prefetch" href="modules/fixation-core-v2.html" as="document">
+<link rel="prefetch" href="modules/fixation-pro.html" as="document">
+<link rel="prefetch" href="modules/processing-pro-v2.html" as="document">
+<link rel="prefetch" href="modules/embedding-pro.html" as="document">
+  
   <!-- JSON-LD (WebSite + Organization + Courses) -->
   <script type="application/ld+json">
   {
@@ -175,7 +180,7 @@
   <section id="modules" class="container px-4 py-10 border-t">
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-2xl font-extrabold">Modules (Syllabus)</h2>
-      <a class="text-sm text-slate-600 hover:underline" href="syllabus.html">View all</a>
+     <a class="text-sm text-slate-600 hover:underline" href="#modules">View all</a>
     </div>
 
     <div class="grid gap-6 md:grid-cols-3">
@@ -373,5 +378,43 @@
       });
     })();
   </script>
+  <script>
+  (function(){
+    const target = document.querySelector('#starter') || document.body;
+    const email = document.querySelector('#starter input[name="email"]');
+    function go(e){
+      e.preventDefault();
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+      setTimeout(()=> email && email.focus(), 400);
+    }
+    document.querySelectorAll('a[href="#starter"], a[href="#"], a[href="#waitlist"]')
+      .forEach(a => a.addEventListener('click', go));
+    // Also upgrade any “Start Free” / “Join the waitlist” buttons by id/class if needed:
+    ['Start Free','Join the waitlist'].forEach(txt=>{
+      [...document.querySelectorAll('a,button')].forEach(el=>{
+        if(el.textContent.trim().includes(txt)) el.addEventListener('click', go);
+      });
+    });
+  })();
+</script>
+<script>
+  (function(){
+    const target = document.querySelector('#starter') || document.body;
+    const email = document.querySelector('#starter input[name="email"]');
+    function go(e){
+      e.preventDefault();
+      target.scrollIntoView({behavior:'smooth', block:'start'});
+      setTimeout(()=> email && email.focus(), 400);
+    }
+    document.querySelectorAll('a[href="#starter"], a[href="#"], a[href="#waitlist"]')
+      .forEach(a => a.addEventListener('click', go));
+    // Also upgrade any “Start Free” / “Join the waitlist” buttons by id/class if needed:
+    ['Start Free','Join the waitlist'].forEach(txt=>{
+      [...document.querySelectorAll('a,button')].forEach(el=>{
+        if(el.textContent.trim().includes(txt)) el.addEventListener('click', go);
+      });
+    });
+  })();
+</script>
 </body>
 </html>
