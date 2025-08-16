@@ -1,0 +1,462 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About Us — HT/HTL Master Prep | Free HTL Guide</title>
+  <meta name="description" content="Built by histotechs, for histotechs. An exam‑aligned, stain‑smart platform for ASCP HT & HTL success with practical labs, stain atlases, quizzes, and mock exams." />
+  <meta property="og:title" content="About Us — HT/HTL Master Prep" />
+  <meta property="og:description" content="We turn real bench practice into exam‑day wins for ASCP HT & HTL." />
+  <meta property="og:image" content="assets/og-home.png" />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="icon" href="assets/favicon.svg" />
+
+  <!-- Tailwind (CDN) to match existing site setup -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: '#0ea5e9',
+            brand2: '#22d3ee'
+          },
+          boxShadow: {
+            soft: '0 8px 30px rgba(2, 8, 23, 0.06)'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .pill { @apply inline-flex items-center gap-1 rounded-full border border-slate-300/70 bg-white/70 px-2 py-0.5 text-xs text-slate-700 shadow-sm; }
+    .card { @apply rounded-2xl border border-slate-200 bg-white/90 shadow-soft backdrop-blur; }
+    .sect { @apply py-16 md:py-20; }
+    .subnav a { @apply text-slate-600 hover:text-slate-900; }
+    .subnav a[aria-current="true"] { @apply text-slate-900 font-semibold; }
+    .kbd { @apply inline-block rounded border border-slate-300 bg-white px-1.5 py-0.5 text-[10px] font-mono text-slate-700; }
+    .faq details { @apply border border-slate-200 rounded-xl p-4 bg-white/80; }
+    .faq summary { @apply cursor-pointer select-none font-medium text-slate-900; }
+    .faq p { @apply text-slate-700 mt-3; }
+    .logo-shelf img { @apply h-8 w-auto opacity-70 hover:opacity-100 transition; }
+    .blob { background: radial-gradient(closest-side, rgba(14,165,233,.20) 0%, rgba(34,211,238,.15) 45%, transparent 70%); }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900">
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-2 font-extrabold tracking-tight">
+        <span class="h-6 w-6 rounded bg-sky-500"></span>
+        Free HTL Guide
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="modules/fixation-core-v2.html" class="hover:text-slate-900">Fixation</a>
+        <a href="modules/processing-pro-v2.html" class="hover:text-slate-900">Processing</a>
+        <a href="modules/embedding-pro.html" class="hover:text-slate-900">Embedding</a>
+        <a href="#faq" class="hover:text-slate-900">FAQ</a>
+      </nav>
+      <a href="#cta" class="text-sm bg-sky-600 text-white px-3 py-1.5 rounded-lg shadow hover:bg-sky-700">Join Waitlist</a>
+    </div>
+  </header>
+
+  <!-- Hero -->
+  <section class="relative overflow-hidden border-b border-slate-200">
+    <div class="absolute right-[-12%] top-[-20%] h-[40rem] w-[40rem] rounded-full blur-3xl opacity-50 blob pointer-events-none -z-10"></div>
+    <div class="max-w-6xl mx-auto px-4 py-14 grid md:grid-cols-[1.2fr,0.8fr] md:items-center gap-10">
+      <div>
+        <p class="uppercase tracking-wide text-xs text-slate-500">About Us — HT/HTL Master Prep</p>
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight mt-2">Master the Bench. Ace the Exam.</h1>
+        <p class="mt-4 text-slate-700 text-lg">An adaptive, stain‑smart learning platform aligned to the ASCP HT/HTL outline with practical labs, stain atlases, and mock exams.</p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="modules/fixation-core-v2.html" class="px-4 py-2 rounded-xl bg-sky-600 text-white shadow hover:bg-sky-700">Start Free Lesson</a>
+          <a href="#what-we-do" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-white">See Syllabus</a>
+          <a href="#cta" class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-white">Take Diagnostic</a>
+        </div>
+        <!-- Trust markers -->
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <span class="pill"><span class="font-semibold" id="stat-learners" data-target="1200">1,200+</span> learners trained</span>
+          <span class="pill"><span class="font-semibold" id="stat-above" data-target="86">86%</span> scored above target</span>
+          <span class="pill"><span class="font-semibold" id="stat-labs" data-target="35">35</span> labs & programs</span>
+        </div>
+      </div>
+      <div class="card p-5">
+        <div class="text-sm text-slate-500 mb-2">Built by histotechs, for histotechs</div>
+        <div class="grid grid-cols-2 gap-3">
+          <div class="rounded-xl border border-slate-200 p-4 bg-gradient-to-b from-white to-slate-50">
+            <div class="text-xs text-slate-500">Modules</div>
+            <div class="font-semibold">Fixation → Processing → Embedding</div>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-4 bg-gradient-to-b from-white to-slate-50">
+            <div class="text-xs text-slate-500">Practice</div>
+            <div class="font-semibold">CAT‑style & full mocks</div>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-4 bg-gradient-to-b from-white to-slate-50">
+            <div class="text-xs text-slate-500">Bench tools</div>
+            <div class="font-semibold">Calculators & quick cards</div>
+          </div>
+          <div class="rounded-xl border border-slate-200 p-4 bg-gradient-to-b from-white to-slate-50">
+            <div class="text-xs text-slate-500">HTL depth</div>
+            <div class="font-semibold">IHC/ISH & validation</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sticky Sub‑nav -->
+  <div class="sticky top-[3.25rem] z-30 bg-white/90 backdrop-blur border-b border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+      <nav id="subnav" class="subnav flex gap-5 overflow-x-auto py-3 text-sm" aria-label="Section">
+        <a href="#mission" class="whitespace-nowrap">Mission</a>
+        <a href="#story" class="whitespace-nowrap">Story</a>
+        <a href="#what-we-do" class="whitespace-nowrap">What we do</a>
+        <a href="#results" class="whitespace-nowrap">Results</a>
+        <a href="#approach" class="whitespace-nowrap">Approach</a>
+        <a href="#team" class="whitespace-nowrap">Team</a>
+        <a href="#reviews" class="whitespace-nowrap">Reviews</a>
+        <a href="#partners" class="whitespace-nowrap">Partners</a>
+        <a href="#faq" class="whitespace-nowrap">FAQ</a>
+        <a href="#contact" class="whitespace-nowrap">Contact</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Mission -->
+  <section id="mission" class="sect">
+    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+      <div class="md:col-span-1">
+        <h2 class="text-2xl font-bold">Our mission</h2>
+        <p class="mt-2 text-slate-600">Built by histotechs, for histotechs.</p>
+      </div>
+      <div class="md:col-span-2">
+        <p class="text-slate-700">Help histology professionals and students build <span class="font-semibold">durable bench skills</span> while achieving top scores on the <span class="font-semibold">ASCP HT and HTL</span> exams.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Story -->
+  <section id="story" class="sect border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+      <div class="md:col-span-1">
+        <h2 class="text-2xl font-bold">Our story</h2>
+      </div>
+      <div class="md:col-span-2 space-y-4">
+        <p>We’re instructors and working histotechs who needed prep that matched <span class="font-semibold">real lab life</span>. We built a curriculum that maps 1:1 to the ASCP outline and wrapped it in stain‑centric visuals, calculators, and adaptive practice.</p>
+        <p>It started as a few lessons for our cohort—and became a full platform as more techs asked for the same training.</p>
+        <p class="text-xs text-slate-500">Not affiliated with or endorsed by ASCP BOC. We align to their publicly available content outlines to help you prepare effectively.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- What we do -->
+  <section id="what-we-do" class="sect border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-2xl font-bold">What we do (in plain terms)</h2>
+      <div class="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="card p-5">
+          <h3 class="font-semibold">Exam‑aligned modules</h3>
+          <p class="text-slate-700 mt-2">Fixation, Processing/Decalc, Embedding/Microtomy, Staining, Lab Ops.</p>
+        </div>
+        <div class="card p-5">
+          <h3 class="font-semibold">Stain Atlas</h3>
+          <p class="text-slate-700 mt-2">Purpose → reagents → controls → results → pitfalls.</p>
+        </div>
+        <div class="card p-5">
+          <h3 class="font-semibold">Adaptive practice</h3>
+          <p class="text-slate-700 mt-2">CAT‑style quizzes, full‑length mocks, analytics, remediation.</p>
+        </div>
+        <div class="card p-5">
+          <h3 class="font-semibold">Bench tools</h3>
+          <p class="text-slate-700 mt-2">Dilution/normality calculators, protocol cards, troubleshooting trees.</p>
+        </div>
+        <div class="card p-5">
+          <h3 class="font-semibold">HTL depth</h3>
+          <p class="text-slate-700 mt-2">IHC/IF, ISH, enzyme histochemistry, validation & regulatory.</p>
+        </div>
+        <div class="card p-5">
+          <h3 class="font-semibold">Team training</h3>
+          <p class="text-slate-700 mt-2">Cohort analytics, progress exports, assignment dates.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results & standards -->
+  <section id="results" class="sect border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-3 gap-8">
+      <div class="md:col-span-1"><h2 class="text-2xl font-bold">Results & standards</h2></div>
+      <div class="md:col-span-2 space-y-4">
+        <ul class="list-disc pl-5 space-y-2">
+          <li><span class="font-semibold">Mastery gates</span>: ≥80% in weak areas before advancing; ≥85–90% by capstone.</li>
+          <li><span class="font-semibold">Artifact troubleshooting</span>: target ≥90% accuracy on case sets.</li>
+          <li><span class="font-semibold">Completion</span>: lesson progress tracking & printable certificates (on request).</li>
+        </ul>
+        <p class="text-sm text-slate-500">If you train a team: cohort analytics, progress exports, and assignment dates are available.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Approach -->
+  <section id="approach" class="sect border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-2xl font-bold">Our approach</h2>
+      <p class="text-slate-700 mt-2">Learn → Do → Check → Coach</p>
+      <div class="mt-6 grid md:grid-cols-4 gap-6">
+        <div class="card p-5">
+          <div class="text-xs text-slate-500">1</div>
+          <h3 class="font-semibold">Learn</h3>
+          <p class="text-slate-700 mt-2">Concise visuals and stain‑centric narratives.</p>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-slate-500">2</div>
+          <h3 class="font-semibold">Do</h3>
+          <p class="text-slate-700 mt-2">Lab‑realistic drills and protocol cards.</p>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-slate-500">3</div>
+          <h3 class="font-semibold">Check</h3>
+          <p class="text-slate-700 mt-2">Mixed‑topic timed quizzes and targeted refresh.</p>
+        </div>
+        <div class="card p-5">
+          <div class="text-xs text-slate-500">4</div>
+          <h3 class="font-semibold">Coach</h3>
+          <p class="text-slate-700 mt-2">Feedback, study plans, and weak‑area sprints.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section id="team" class="sect border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-2xl font-bold">Meet the team</h2>
+      <p class="text-slate-600 mt-2">Add 2–3 line bios + headshots; link LinkedIn if desired.</p>
+      <div class="mt-6 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Card 1 -->
+        <article class="card p-5">
+          <div class="h-24 w-24 rounded-full bg-gradient-to-br from-sky-400 to-cyan-300"></div>
+          <h3 class="mt-4 font-semibold">Founder/Lead Instructor</h3>
+          <p class="text-sm text-slate-600">HT(ASCP)CM / HTL(ASCP)CM — curriculum & question bank lead.</p>
+        </article>
+        <!-- Card 2 -->
+        <article class="card p-5">
+          <div class="h-24 w-24 rounded-full bg-gradient-to-br from-sky-400 to-cyan-300"></div>
+          <h3 class="mt-4 font-semibold">Instructor</h3>
+          <p class="text-sm text-slate-600">HT(ASCP) — bench drills & microtomy labs.</p>
+        </article>
+        <!-- Card 3 -->
+        <article class="card p-5">
+          <div class="h-24 w-24 rounded-full bg-gradient-to-br from-sky-400 to-cyan-300"></div>
+          <h3 class="mt-4 font-semibold">Advisor</h3>
+          <p class="text-sm text-slate-600">MD/PhD — clinical integration & tissue selection.</p>
+        </article>
+        <!-- Card 4 -->
+        <article class="card p-5">
+          <div class="h-24 w-24 rounded-full bg-gradient-to-br from-sky-400 to-cyan-300"></div>
+          <h3 class="mt-4 font-semibold">QA/Regulatory</h3>
+          <p class="text-sm text-slate-600">MBA, HTL(ASCP) — validation, documentation, audits.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews -->
+  <section id="reviews" class="sect border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-2xl font-bold">Learner reviews</h2>
+      <div class="mt-6 card p-5">
+        <div id="quote" class="text-lg">“Exactly what I needed to connect stains to outcomes on the bench.” — <span class="font-medium">HT(ASCP)</span></div>
+        <div class="mt-4 text-sm text-slate-500">Rotates 3–6 quotes; link to full Reviews page.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partners -->
+  <section id="partners" class="sect border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-2xl font-bold">Partners & affiliations</h2>
+      <p class="text-slate-600 mt-2">Logos: labs/colleges using the program (with permission). Add CE/provider approvals if applicable.</p>
+      <div class="logo-shelf mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+        <img src="assets/logo-placeholder.svg" alt="Partner logo" />
+        <img src="assets/logo-placeholder.svg" alt="Partner logo" />
+        <img src="assets/logo-placeholder.svg" alt="Partner logo" />
+        <img src="assets/logo-placeholder.svg" alt="Partner logo" />
+        <img src="assets/logo-placeholder.svg" alt="Partner logo" />
+        <img src="assets/logo-placeholder.svg" alt="Partner logo" />
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="sect border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-2xl font-bold">Frequently asked questions</h2>
+      <div class="faq mt-6 grid md:grid-cols-2 gap-4">
+        <details>
+          <summary>Are you affiliated with ASCP?</summary>
+          <p>No. We are independent educators who align to the ASCP BOC HT/HTL content outline.</p>
+        </details>
+        <details>
+          <summary>How long is the program?</summary>
+          <p>Standard <strong>8 weeks</strong> (or 12‑week paced). You can go faster/slower; progress saves.</p>
+        </details>
+        <details>
+          <summary>What’s included?</summary>
+          <p>Modules 1–5, Stain Atlas, calculators, quizzes/mocks, downloads, and updates.</p>
+        </details>
+        <details>
+          <summary>Do you offer HT vs HTL tracks?</summary>
+          <p>Yes. HTL content layers additional depth (IHC/ISH/enzymes, validation, regulatory).</p>
+        </details>
+        <details>
+          <summary>Team training?</summary>
+          <p>Yes — group dashboards, assignment dates, and completion reporting.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section id="values" class="sect border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-2xl font-bold">Values</h2>
+      <ul class="mt-4 grid md:grid-cols-3 gap-4">
+        <li class="card p-5"><span class="font-semibold">Accuracy over hype</span> — we cite references and keep materials current.</li>
+        <li class="card p-5"><span class="font-semibold">Safety first</span> — chemical hygiene and biosafety are non‑negotiable.</li>
+        <li class="card p-5"><span class="font-semibold">Practical clarity</span> — fewer buzzwords, more bench‑useful steps.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta" class="sect border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-2xl font-bold">Call to action</h2>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <div class="card p-5">
+          <h3 class="font-semibold">New to HT/HTL?</h3>
+          <p class="text-slate-700 mt-2">Start Module 1: <span class="font-semibold">Fixation</span> free.</p>
+          <a class="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-xl bg-sky-600 text-white hover:bg-sky-700" href="modules/fixation-core-v2.html">Get Started</a>
+        </div>
+        <div class="card p-5">
+          <h3 class="font-semibold">Already in a lab?</h3>
+          <p class="text-slate-700 mt-2">Take the <span class="font-semibold">Diagnostic</span> to see your weak areas.</p>
+          <a class="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-slate-300 hover:bg-white" href="#">Begin Diagnostic</a>
+        </div>
+        <div class="card p-5">
+          <h3 class="font-semibold">Manager/Educator?</h3>
+          <p class="text-slate-700 mt-2">Book a <span class="font-semibold">program walkthrough</span>.</p>
+          <a class="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-slate-300 hover:bg-white" href="#contact">Request Demo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Compliance & disclaimer -->
+  <section id="compliance" class="sect border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4">
+      <h2 class="text-2xl font-bold">Compliance & disclaimer</h2>
+      <ul class="mt-4 list-disc pl-5 space-y-2 text-slate-700">
+        <li>Not affiliated with ASCP or any certifying body.</li>
+        <li>Educational content; follow your lab’s SOPs and regulatory requirements.</li>
+        <li>Safety data sheets (SDS) and instrument manuals supersede our guidance.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" class="sect border-t border-slate-200">
+    <div class="max-w-6xl mx-auto px-4 grid md:grid-cols-2 gap-8">
+      <div>
+        <h2 class="text-2xl font-bold">Contact</h2>
+        <p class="text-slate-700 mt-2">Email <a class="text-sky-700 underline" href="mailto:support@yourbrand.com">support@yourbrand.com</a> or use the form.</p>
+        <p class="text-sm text-slate-500 mt-4">Business: <span class="font-medium">Your Company, Inc.</span> · City, State</p>
+      </div>
+      <form class="card p-5" action="https://formspree.io/f/mnnzlgrw" method="POST">
+        <div class="grid sm:grid-cols-2 gap-3">
+          <label class="block text-sm">Name<input required name="name" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2" /></label>
+          <label class="block text-sm">Email<input required type="email" name="email" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2" /></label>
+        </div>
+        <label class="block text-sm mt-3">Message<textarea required name="message" rows="4" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2"></textarea></label>
+        <input type="hidden" name="subject" value="About page contact" />
+        <button class="mt-4 px-4 py-2 rounded-xl bg-sky-600 text-white hover:bg-sky-700" type="submit">Send</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 py-8 text-sm">
+    <div class="max-w-6xl mx-auto px-4 flex flex-wrap items-center justify-between gap-4">
+      <div class="text-slate-500">© <span id="year"></span> Free HTL Guide</div>
+      <nav class="flex gap-4">
+        <a class="hover:underline" href="index.html">Home</a>
+        <a class="hover:underline" href="#faq">FAQ</a>
+        <a class="hover:underline" href="#contact">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <!-- JSON‑LD (FAQ) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {"@type": "Question","name": "Are you affiliated with ASCP?","acceptedAnswer": {"@type": "Answer","text": "No. We are independent educators who align to the ASCP BOC HT/HTL content outline."}},
+      {"@type": "Question","name": "How long is the program?","acceptedAnswer": {"@type": "Answer","text": "Standard 8 weeks (or 12‑week paced). You can go faster/slower; progress saves."}},
+      {"@type": "Question","name": "What’s included?","acceptedAnswer": {"@type": "Answer","text": "Modules 1–5, Stain Atlas, calculators, quizzes/mocks, downloads, and updates."}},
+      {"@type": "Question","name": "Do you offer HT vs HTL tracks?","acceptedAnswer": {"@type": "Answer","text": "Yes. HTL content layers additional depth (IHC/ISH/enzymes, validation, regulatory)."}},
+      {"@type": "Question","name": "Team training?","acceptedAnswer": {"@type": "Answer","text": "Yes — group dashboards, assignment dates, and completion reporting."}}
+    ]
+  }
+  </script>
+
+  <!-- Minimal JS: stats counter, quote rotator, scroll‑spy, year -->
+  <script>
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Counters (simple, replace data-targets as you get real stats)
+    const counters = ['stat-learners','stat-above','stat-labs'].map(id => document.getElementById(id));
+    const runCounters = () => counters.forEach(el => {
+      if (!el) return;
+      const target = Number(el.dataset.target || 0);
+      const start = 0; const duration = 800; const startTime = performance.now();
+      const step = (t) => {
+        const p = Math.min(1, (t - startTime) / duration);
+        const val = Math.floor(start + (target - start) * p);
+        el.textContent = el.id === 'stat-above' ? val + '%' : val.toLocaleString();
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { runCounters(); io.disconnect(); } });
+    }, { threshold: 0.4 });
+    const hero = document.querySelector('section'); if (hero) io.observe(hero);
+
+    // Quote rotator (placeholder quotes)
+    const quotes = [
+      '“Exactly what I needed to connect stains to outcomes on the bench.” — HT(ASCP)',
+      '“The decision trees saved me days in microtomy troubleshooting.” — HT candidate',
+      '“Clear, exam‑aligned, and practical for the lab.” — HTL(ASCP)'
+    ];
+    let qi = 0; const qEl = document.getElementById('quote');
+    setInterval(() => { qi = (qi + 1) % quotes.length; if(qEl) qEl.textContent = quotes[qi]; }, 4500);
+
+    // Scroll‑spy for sub‑nav
+    const sections = ['mission','story','what-we-do','results','approach','team','reviews','partners','faq','contact'].map(id => document.getElementById(id));
+    const links = Array.from(document.querySelectorAll('#subnav a'));
+    const spy = new IntersectionObserver((ents) => {
+      ents.forEach(ent => {
+        if (ent.isIntersecting) {
+          const id = ent.target.id;
+          links.forEach(a => a.setAttribute('aria-current', a.getAttribute('href') === '#' + id ? 'true' : 'false'));
+        }
+      });
+    }, { threshold: 0.6 });
+    sections.forEach(s => s && spy.observe(s));
+  </script>
+</body>
+</html>
