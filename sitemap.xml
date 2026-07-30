@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://withnati.github.io/free-htl-guide-site/</loc></url>
+  <url><loc>https://withnati.github.io/free-htl-guide-site/about.html</loc></url>
+  <url><loc>https://withnati.github.io/free-htl-guide-site/faq.html</loc></url>
   <url><loc>https://withnati.github.io/free-htl-guide-site/privacy.html</loc></url>
-  <url><loc>https://withnati.github.io/free-htl-guide-site/terms.html</loc></url>
-  <url><loc>https://withnati.github.io/free-htl-guide-site/modules/staining.html</loc></url>
-  <url><loc>https://withnati.github.io/free-htl-guide-site/modules/fixation.html</loc></url>
+  <url><loc>https://withnati.github.io/free-htl-guide-site/modules/fixation-core-v2.html</loc></url>
+  <url><loc>https://withnati.github.io/free-htl-guide-site/modules/fixation-pro.html</loc></url>
   <url><loc>https://withnati.github.io/free-htl-guide-site/modules/processing.html</loc></url>
+  <url><loc>https://withnati.github.io/free-htl-guide-site/modules/embedding-pro.html</loc></url>
+  <url><loc>https://withnati.github.io/free-htl-guide-site/modules/staining-he-pro.html</loc></url>
 </urlset>
