@@ -15,7 +15,6 @@
   const scrollMilestones = new Set();
 
   let config = null;
-  let configured = false;
   let tagLoaded = false;
   let consentStatus = 'unset';
 
@@ -55,8 +54,10 @@
   }
 
   function safeUrl(value, includeOrigin = true) {
+    const raw = String(value || '').trim();
+    if (!raw) return '';
     try {
-      const url = new URL(String(value || ''), window.location.href);
+      const url = new URL(raw, window.location.href);
       if (!['http:', 'https:'].includes(url.protocol)) return '';
       return includeOrigin ? `${url.origin}${url.pathname}` : url.pathname;
     } catch {
@@ -251,13 +252,14 @@
 
     const dialog = document.createElement('dialog');
     dialog.className = 'analytics-dialog';
+    dialog.setAttribute('aria-labelledby', 'analytics-dialog-title');
     dialog.dataset.analyticsDialog = 'true';
     dialog.innerHTML = `
       <form method="dialog" class="analytics-dialog-card">
         <div class="analytics-dialog-heading">
           <div>
             <p class="eyebrow">Optional measurement</p>
-            <h2>Privacy choices</h2>
+            <h2 id="analytics-dialog-title">Privacy choices</h2>
           </div>
           <button class="btn analytics-close" value="close" aria-label="Close privacy choices">Close</button>
         </div>
@@ -528,7 +530,6 @@
     })
     .then((loadedConfig) => {
       config = loadedConfig;
-      configured = true;
       consentStatus = config.consentRequired ? loadConsentRecord() : 'granted';
       setConsentDefaults();
       buildPrivacyControls();
@@ -537,7 +538,6 @@
       if (analyticsConfigured() && consentStatus === 'granted') loadGoogleTag();
     })
     .catch((error) => {
-      configured = false;
       document.body.dataset.analyticsConfigured = 'false';
       if (new URLSearchParams(window.location.search).get('analytics_debug') === '1') {
         console.warn('[Free HTL Analytics] Configuration unavailable', error);
