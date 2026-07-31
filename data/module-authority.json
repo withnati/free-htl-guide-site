@@ -1,0 +1,179 @@
+{
+  "schemaVersion": 1,
+  "editorialReviewDate": "2026-07-31",
+  "examGuideline": {
+    "title": "ASCP BOC HT/HTL Examination Content Guideline",
+    "revised": "2025-12-05",
+    "url": "https://ascpcontentwebsite.blob.core.windows.net/boccontent/docs/default-source/explore-credentials/content-guidelines/ascp_ascpi_ht_htl_content_guidelinedc27d6ac-5eba-4d8d-a600-23d8d03e24d4.pdf?sfvrsn=26a0fa18_1",
+    "credentialPage": "https://www.ascp.org/boc/explore-credentials/view-all-credentials/HTL",
+    "readingList": "https://www.ascp.org/boc/explore-credentials/view-all-credentials/reading-lists/ht-htl"
+  },
+  "difficultyDefinitions": {
+    "Foundational": "Recall or explain a core fact, sequence, reagent, structure, or principle.",
+    "Application": "Apply a principle to select a method, control, reagent, or next step.",
+    "Troubleshooting": "Interpret a failure pattern and choose the most appropriate corrective action."
+  },
+  "modules": {
+    "fixation-v3": {
+      "path": "modules/fixation-guide-v3.html",
+      "title": "Fixation",
+      "version": "1.1.0",
+      "reviewed": "2026-07-31",
+      "primaryArea": "Fixation",
+      "examWeight": "15–25%",
+      "secondaryAreas": ["Processing", "Staining"],
+      "outlineTopics": [
+        "Tissue morphology, anatomy, preservation, pathology, and HTL biochemistry",
+        "Fixation procedures for routine, frozen, special-stain, IHC, IF, cytology, and ISH workflows",
+        "Specimen size, fixative volume, time, temperature, pH, reagents, artifacts, instrumentation, and quality control"
+      ],
+      "htlEmphasis": "Pathology, biochemistry and chemistry principles, and the effect of fixation on advanced staining and molecular targets.",
+      "questionDifficulties": ["Foundational", "Troubleshooting", "Foundational", "Application", "Application", "Foundational", "Application", "Troubleshooting", "Application", "Troubleshooting"],
+      "references": [
+        "ASCP BOC HT/HTL Examination Content Guideline, revised December 5, 2025.",
+        "ASCP BOC HT/HTL Suggested Reading for Examination Preparation.",
+        "Carson FL, Cappellano CH. Histotechnology: A Self-Instructional Text. 5th ed. ASCP Press; 2020.",
+        "Brown RW, ed. Histologic Preparations: Common Problems and Their Solutions. College of American Pathologists; 2009.",
+        "Bancroft JD, Gamble M, eds. Theory and Practice of Histological Techniques. 8th ed."
+      ]
+    },
+    "processing-v3": {
+      "path": "modules/processing-guide-v3.html",
+      "title": "Processing and Decalcification",
+      "version": "1.1.0",
+      "reviewed": "2026-07-31",
+      "primaryArea": "Processing",
+      "examWeight": "10–20%",
+      "secondaryAreas": ["Fixation", "Embedding/Microtomy"],
+      "outlineTopics": [
+        "Tissue morphology and component preservation during reagent exchange",
+        "Routine, frozen, enzyme, calcified/decalcified, IHC, IF, cytology, and ISH processing procedures",
+        "Processor components, use, maintenance, troubleshooting, reagent chemistry, and quality control"
+      ],
+      "htlEmphasis": "Chemistry principles, preservation for advanced assays, and selection of processing and decalcification methods.",
+      "questionDifficulties": ["Foundational", "Troubleshooting", "Application", "Troubleshooting", "Application", "Application", "Troubleshooting", "Application", "Troubleshooting", "Troubleshooting"],
+      "references": [
+        "ASCP BOC HT/HTL Examination Content Guideline, revised December 5, 2025.",
+        "ASCP BOC HT/HTL Suggested Reading for Examination Preparation.",
+        "Carson FL, Cappellano CH. Histotechnology: A Self-Instructional Text. 5th ed. ASCP Press; 2020.",
+        "Bancroft JD, Gamble M, eds. Theory and Practice of Histological Techniques. 8th ed.",
+        "Brown RW, ed. Histologic Preparations: Common Problems and Their Solutions. College of American Pathologists; 2009."
+      ]
+    },
+    "embedding-v3": {
+      "path": "modules/embedding-guide-v3.html",
+      "title": "Embedding and Microtomy",
+      "version": "1.1.0",
+      "reviewed": "2026-07-31",
+      "primaryArea": "Embedding/Microtomy",
+      "examWeight": "15–25%",
+      "secondaryAreas": ["Processing", "Staining"],
+      "outlineTopics": [
+        "Tissue morphology, anatomy, orientation, and component demonstration",
+        "Paraffin, frozen-section, gelatin/adhesive, and quality-control procedures",
+        "Microtome, water-bath, cryostat, maintenance, troubleshooting, and HTL molecular-testing preparation"
+      ],
+      "htlEmphasis": "Preparation of sections for molecular testing, including RNA-aware handling, scrolls, and specialized sampling concepts.",
+      "questionDifficulties": ["Foundational", "Application", "Foundational", "Troubleshooting", "Application", "Troubleshooting", "Application", "Troubleshooting", "Application", "Troubleshooting"],
+      "references": [
+        "ASCP BOC HT/HTL Examination Content Guideline, revised December 5, 2025.",
+        "ASCP BOC HT/HTL Suggested Reading for Examination Preparation.",
+        "Carson FL, Cappellano CH. Histotechnology: A Self-Instructional Text. 5th ed. ASCP Press; 2020.",
+        "Bancroft JD, Gamble M, eds. Theory and Practice of Histological Techniques. 8th ed.",
+        "Brown RW, ed. Histologic Preparations: Common Problems and Their Solutions. College of American Pathologists; 2009."
+      ]
+    },
+    "he-guide": {
+      "path": "modules/staining-he-guide.html",
+      "title": "Routine H&E Staining",
+      "version": "1.1.0",
+      "reviewed": "2026-07-31",
+      "primaryArea": "Staining",
+      "examWeight": "30–40%",
+      "secondaryAreas": ["Fixation", "Processing"],
+      "outlineTopics": [
+        "Nuclear and cytoplasmic morphology, anatomy, function, pathology, and HTL biochemistry",
+        "Hematoxylin and eosin procedures, reagent and dye properties, instrumentation, mounting, and quality control",
+        "Troubleshooting differentiation, bluing, eosin balance, dehydration, clearing, and coverslipping"
+      ],
+      "htlEmphasis": "Biochemistry and chemistry principles, pathology correlation, and quality-system decisions affecting stain performance.",
+      "questionDifficulties": ["Foundational", "Foundational", "Application", "Troubleshooting", "Application", "Troubleshooting", "Application", "Troubleshooting", "Troubleshooting", "Application"],
+      "references": [
+        "ASCP BOC HT/HTL Examination Content Guideline, revised December 5, 2025.",
+        "ASCP BOC HT/HTL Suggested Reading for Examination Preparation.",
+        "Carson FL, Cappellano CH. Histotechnology: A Self-Instructional Text. 5th ed. ASCP Press; 2020.",
+        "Bancroft JD, Gamble M, eds. Theory and Practice of Histological Techniques. 8th ed.",
+        "Brown RW, ed. Histologic Preparations: Common Problems and Their Solutions. College of American Pathologists; 2009."
+      ]
+    },
+    "special-stains": {
+      "path": "modules/special-stains-guide.html",
+      "title": "Special Stains",
+      "version": "1.1.0",
+      "reviewed": "2026-07-31",
+      "primaryArea": "Staining",
+      "examWeight": "30–40%",
+      "secondaryAreas": ["Fixation", "Laboratory Operations"],
+      "outlineTopics": [
+        "Carbohydrates, connective/supporting tissue, lipids, microorganisms, nerve, pigments, minerals, granules, fibrin, and mast cells",
+        "Target chemistry, expected colors, control selection, preliminary screening, and quality control",
+        "Reagent and dye properties, instrumentation, differentiation, mounting, artifacts, and troubleshooting"
+      ],
+      "htlEmphasis": "Pathology and biochemistry correlation, enzyme histochemistry, preliminary screening, and higher-level control selection.",
+      "questionDifficulties": ["Foundational", "Foundational", "Application", "Application", "Troubleshooting", "Application", "Troubleshooting", "Application", "Troubleshooting", "Troubleshooting"],
+      "references": [
+        "ASCP BOC HT/HTL Examination Content Guideline, revised December 5, 2025, including the HT/HTL Summary of Stains.",
+        "ASCP BOC HT/HTL Suggested Reading for Examination Preparation.",
+        "Carson FL, Cappellano CH. Histotechnology: A Self-Instructional Text. 5th ed. ASCP Press; 2020.",
+        "Bancroft JD, Gamble M, eds. Theory and Practice of Histological Techniques. 8th ed.",
+        "Brown RW, ed. Histologic Preparations: Common Problems and Their Solutions. College of American Pathologists; 2009."
+      ]
+    },
+    "lab-operations": {
+      "path": "modules/lab-operations-guide.html",
+      "title": "Laboratory Operations",
+      "version": "1.1.0",
+      "reviewed": "2026-07-31",
+      "primaryArea": "Laboratory Operations",
+      "examWeight": "10–15%",
+      "secondaryAreas": ["All technical content areas"],
+      "outlineTopics": [
+        "Safety, chemical storage, disposal, hazards, procedures, regulations, and quality control",
+        "Metric, percent-solution, dilution, and molar-solution calculations",
+        "Ancillary equipment, maintenance, troubleshooting, management, education, federal regulation, and accrediting agencies"
+      ],
+      "htlEmphasis": "Management, education, regulatory systems, quality improvement, validation, investigation, and corrective action.",
+      "questionDifficulties": ["Foundational", "Foundational", "Application", "Application", "Troubleshooting", "Application", "Troubleshooting", "Troubleshooting", "Application", "Troubleshooting"],
+      "references": [
+        "ASCP BOC HT/HTL Examination Content Guideline, revised December 5, 2025.",
+        "ASCP BOC HT/HTL Suggested Reading for Examination Preparation.",
+        "Carson FL, Cappellano CH. Histotechnology: A Self-Instructional Text. 5th ed. ASCP Press; 2020.",
+        "OSHA 29 CFR 1910.1048, Formaldehyde.",
+        "OSHA 29 CFR 1910.1450, Occupational Exposure to Hazardous Chemicals in Laboratories."
+      ]
+    },
+    "ihc-ish": {
+      "path": "modules/ihc-ish-guide.html",
+      "title": "IHC and ISH Fundamentals",
+      "version": "1.1.0",
+      "reviewed": "2026-07-31",
+      "primaryArea": "Staining",
+      "examWeight": "30–40%",
+      "secondaryAreas": ["Fixation", "Processing", "Embedding/Microtomy"],
+      "outlineTopics": [
+        "IHC principles, retrieval, controls, antibody preparation, detection, instrumentation, quality control, and troubleshooting",
+        "In situ hybridization, including FISH and CISH, and preservation across fixation and processing",
+        "HTL-level assay validation, control selection, chemistry, pathology correlation, and preparation for molecular testing"
+      ],
+      "htlEmphasis": "Detailed immunostaining principles, control selection, antibody preparation, ISH, validation, lot bridging, and molecular preservation.",
+      "questionDifficulties": ["Foundational", "Application", "Application", "Foundational", "Troubleshooting", "Application", "Troubleshooting", "Application", "Troubleshooting", "Troubleshooting"],
+      "references": [
+        "ASCP BOC HT/HTL Examination Content Guideline, revised December 5, 2025.",
+        "ASCP BOC HT/HTL Suggested Reading for Examination Preparation.",
+        "Carson FL, Cappellano CH. Histotechnology: A Self-Instructional Text. 5th ed. ASCP Press; 2020.",
+        "Dabbs DJ. Diagnostic Immunohistochemistry: Theranostic and Genomic Applications. 6th ed.; 2021.",
+        "Local validated assay procedures, manufacturer instructions for use, and laboratory quality requirements."
+      ]
+    }
+  }
+}
