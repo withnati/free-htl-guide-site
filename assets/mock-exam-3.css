@@ -1,0 +1,146 @@
+.exam-choice input {
+  margin-top: .32rem;
+}
+
+.exam-question-actions {
+  margin-top: auto;
+  padding-top: 1rem;
+}
+
+.exam-question-actions [data-submit-exam] {
+  margin-left: auto;
+}
+
+.result-hero {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: center;
+  padding: 1rem 0 1.5rem;
+}
+
+.score-ring {
+  width: 132px;
+  aspect-ratio: 1;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  border-radius: 50%;
+  border: 12px solid #dbeafe;
+  background: #fff;
+}
+
+.score-ring span {
+  font-size: 2rem;
+  line-height: 1;
+  font-weight: 900;
+  color: var(--brand);
+}
+
+.score-ring small {
+  margin-top: .3rem;
+  color: var(--muted);
+}
+
+.domain-results {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .7rem;
+}
+
+.domain-result {
+  min-width: 0;
+  padding: .85rem;
+  border: 1px solid var(--line);
+  border-radius: .85rem;
+  background: var(--soft);
+}
+
+.domain-result strong,
+.domain-result span {
+  display: block;
+  overflow-wrap: anywhere;
+}
+
+.domain-result span {
+  margin-top: .35rem;
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.review-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.review-heading h3 {
+  margin: 0;
+}
+
+.exam-review {
+  display: grid;
+  gap: .85rem;
+}
+
+.review-card {
+  border: 1px solid var(--line);
+  border-left: 5px solid var(--bad);
+  border-radius: .85rem;
+  padding: 1rem;
+}
+
+.review-card.flag-only {
+  border-left-color: #d97706;
+}
+
+.review-card h4 {
+  margin: .35rem 0 .7rem;
+  font-size: 1rem;
+}
+
+.review-card p {
+  margin: .35rem 0;
+}
+
+.review-answer {
+  padding: .65rem .75rem;
+  border-radius: .7rem;
+  background: var(--soft);
+}
+
+.history-score {
+  font-weight: 900;
+}
+
+.dark .mode-option:has(input:checked),
+.dark .exam-choice:has(input:checked) {
+  background: #172554;
+}
+
+.dark .exam-metrics > span,
+.dark .domain-result,
+.dark .review-answer {
+  background: #111827;
+  border-color: #334155;
+}
+
+.dark .question-grid button {
+  background: #0f172a;
+  border-color: #334155;
+  color: #e5e7eb;
+}
+
+.dark .question-grid button.answered {
+  background: #172554;
+  border-color: #3b82f6;
+}
+
+.dark .score-ring {
+  background: #0f172a;
+  border-color: #1e3a8a;
+}
