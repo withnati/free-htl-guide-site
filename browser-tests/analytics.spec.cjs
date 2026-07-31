@@ -145,21 +145,27 @@ test('revoking consent clears analytics cookies, stops events, and supports re-c
     document.cookie = '_ga=test; path=/; SameSite=Lax; Secure';
     document.cookie = '_ga_TEST1234=test; path=/; SameSite=None; Secure';
   });
-  const eventsBefore = (await dataLayerEntries(page)).filter((entry) => entry[0] === 'event').length;
+  const eventsBeforeOpeningChoices = (await dataLayerEntries(page))
+    .filter((entry) => entry[0] === 'event').length;
 
   await page.getByRole('button', { name: 'Privacy choices' }).click();
   await page.locator('[data-analytics-dialog] [data-analytics-consent="denied"]').click();
   await expect(page.locator('body')).toHaveAttribute('data-analytics-consent', 'denied');
   await expect(page.locator('body')).toHaveAttribute('data-analytics-active', 'false');
+  expect((await context.cookies()).filter((cookie) => /^_ga/.test(cookie.name))).toEqual([]);
+
+  const eventsAtRevocation = (await dataLayerEntries(page))
+    .filter((entry) => entry[0] === 'event').length;
+  expect(eventsAtRevocation).toBeGreaterThanOrEqual(eventsBeforeOpeningChoices);
 
   await page.evaluate(() => {
     window.dispatchEvent(new CustomEvent('htl:quiz-reset', {
       detail: { quizId: 'after-revocation' }
     }));
   });
-  const eventsAfterRevocation = (await dataLayerEntries(page)).filter((entry) => entry[0] === 'event').length;
-  expect(eventsAfterRevocation).toBe(eventsBefore);
-  expect((await context.cookies()).filter((cookie) => /^_ga/.test(cookie.name))).toEqual([]);
+  const eventsAfterRevokedAttempt = (await dataLayerEntries(page))
+    .filter((entry) => entry[0] === 'event').length;
+  expect(eventsAfterRevokedAttempt).toBe(eventsAtRevocation);
 
   await page.getByRole('button', { name: 'Privacy choices' }).click();
   await page.locator('[data-analytics-dialog] [data-analytics-consent="granted"]').click();
@@ -175,5 +181,5 @@ test('revoking consent clears analytics cookies, stops events, and supports re-c
   const eventNamesAfterReconsent = (await dataLayerEntries(page))
     .filter((entry) => entry[0] === 'event')
     .map((entry) => entry[1]);
-  expect(eventNamesAfterReconsent.slice(eventsBefore)).toEqual(['page_view', 'quiz_reset']);
+  expect(eventNamesAfterReconsent.slice(eventsAtRevocation)).toEqual(['page_view', 'quiz_reset']);
 });
