@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "enabled": false,
+  "provider": "google-analytics-4",
+  "measurementId": "",
+  "consentRequired": true,
+  "consentVersion": "2026-07-31",
+  "storageKey": "free-htl-analytics-consent",
+  "privacyUrl": "privacy.html",
+  "retentionMonths": 14,
+  "debugParameter": "analytics_debug",
+  "eventSchemaVersion": 1,
+  "allowedEvents": {
+    "page_view": [
+      "page_title",
+      "page_location",
+      "page_referrer"
+    ],
+    "scroll_depth": [
+      "scroll_percent"
+    ],
+    "module_open": [
+      "module_path",
+      "link_text"
+    ],
+    "file_download": [
+      "file_name",
+      "file_extension",
+      "link_text",
+      "link_url"
+    ],
+    "outbound_click": [
+      "link_domain",
+      "link_text",
+      "link_url"
+    ],
+    "email_signup_start": [
+      "form_id",
+      "signup_source"
+    ],
+    "email_signup_success": [
+      "form_id",
+      "signup_source",
+      "transport_type"
+    ],
+    "email_signup_error": [
+      "form_id",
+      "signup_source",
+      "error_type"
+    ],
+    "quiz_start": [
+      "quiz_id"
+    ],
+    "quiz_complete": [
+      "quiz_id",
+      "score",
+      "total_questions",
+      "score_percent",
+      "score_band",
+      "target_met"
+    ],
+    "quiz_reset": [
+      "quiz_id"
+    ],
+    "study_task_toggle": [
+      "task_id",
+      "checked"
+    ],
+    "share": [
+      "share_method",
+      "share_page",
+      "share_url"
+    ]
+  },
+  "prohibitedFields": [
+    "email",
+    "email_address",
+    "personal_name",
+    "full_name",
+    "personal_note",
+    "note_text",
+    "quiz_answer",
+    "answer_text",
+    "question_response",
+    "response_text",
+    "user_id",
+    "client_id",
+    "phone",
+    "address",
+    "patient",
+    "employer"
+  ]
+}
