@@ -134,15 +134,16 @@ test('granting analytics loads one tag and sends only allowlisted sanitized even
   );
 });
 
-test('revoking consent clears analytics cookies and stops later events', async ({ page, context }) => {
-  await mockEnabledAnalytics(page);
+test('revoking consent clears analytics cookies, stops events, and supports re-consent', async ({ page, context }) => {
+  const googleRequests = await mockEnabledAnalytics(page);
   await page.goto('/', { waitUntil: 'networkidle' });
   await page.locator('[data-analytics-banner] [data-analytics-consent="granted"]').click();
   await expect(page.locator('body')).toHaveAttribute('data-analytics-active', 'true');
+  expect(googleRequests).toHaveLength(1);
 
   await page.evaluate(() => {
-    document.cookie = '_ga=test; path=/; SameSite=Lax';
-    document.cookie = '_ga_TEST1234=test; path=/; SameSite=Lax';
+    document.cookie = '_ga=test; path=/; SameSite=Lax; Secure';
+    document.cookie = '_ga_TEST1234=test; path=/; SameSite=None; Secure';
   });
   const eventsBefore = (await dataLayerEntries(page)).filter((entry) => entry[0] === 'event').length;
 
@@ -156,7 +157,23 @@ test('revoking consent clears analytics cookies and stops later events', async (
       detail: { quizId: 'after-revocation' }
     }));
   });
-  const eventsAfter = (await dataLayerEntries(page)).filter((entry) => entry[0] === 'event').length;
-  expect(eventsAfter).toBe(eventsBefore);
+  const eventsAfterRevocation = (await dataLayerEntries(page)).filter((entry) => entry[0] === 'event').length;
+  expect(eventsAfterRevocation).toBe(eventsBefore);
   expect((await context.cookies()).filter((cookie) => /^_ga/.test(cookie.name))).toEqual([]);
+
+  await page.getByRole('button', { name: 'Privacy choices' }).click();
+  await page.locator('[data-analytics-dialog] [data-analytics-consent="granted"]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-analytics-consent', 'granted');
+  await expect(page.locator('body')).toHaveAttribute('data-analytics-active', 'true');
+  expect(googleRequests).toHaveLength(1);
+
+  await page.evaluate(() => {
+    window.dispatchEvent(new CustomEvent('htl:quiz-reset', {
+      detail: { quizId: 'after-reconsent' }
+    }));
+  });
+  const eventNamesAfterReconsent = (await dataLayerEntries(page))
+    .filter((entry) => entry[0] === 'event')
+    .map((entry) => entry[1]);
+  expect(eventNamesAfterReconsent.slice(eventsBefore)).toEqual(['page_view', 'quiz_reset']);
 });
