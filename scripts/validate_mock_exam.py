@@ -210,7 +210,7 @@ def validate(root: Path) -> list[Issue]:
         issues.append(Issue("data/mock-exam-blueprint.json", f"Blueprint percentages total {percent_sum}, expected 100"))
     complete_count = sum(available.values())
     if complete_count != 150:
-        issues.append(Issue("data/mock-exam-blueprint.json", f"Complete reviewed bank contains {complete_count} questions, expected 150"))
+        issues.append(Issue("data/mock-exam-blueprint.json", f"Complete development bank contains {complete_count} records, expected 150"))
 
     page = page_path.read_text(encoding="utf-8")
     required = [
@@ -236,7 +236,7 @@ def main() -> int:
     if issues:
         print(f"Mock exam validation failed with {len(issues)} issue(s).")
         return 1
-    print("Mock exam integrity passed: 50-question blueprint, five domains, 150 reviewed questions.")
+    print("Mock exam integrity passed: 50-question blueprint, five domains, and 150 development records (70 reviewed base questions plus 80 alternate scenarios).")
     return 0
 
 
