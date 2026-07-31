@@ -39,6 +39,10 @@
   gap: .55rem;
 }
 
+.analytics-choice-actions[hidden] {
+  display: none !important;
+}
+
 .analytics-dialog {
   width: min(620px, calc(100% - 2rem));
   max-height: calc(100vh - 2rem);
