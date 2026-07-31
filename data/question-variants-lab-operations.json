@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "lab-operations",
+  "variants": [
+    {"id":"lov-001","sourceQuestionId":"lab-operations-1","difficulty":"Application","stem":"A technologist examines a control slide before releasing the day's H&E work. This activity is primarily:","explanation":"Reviewing a control for a specific run is quality control because it evaluates whether the process performed acceptably at the time of use."},
+    {"id":"lov-002","sourceQuestionId":"lab-operations-2","difficulty":"Application","stem":"A laboratory can install local exhaust to reduce formaldehyde vapor. Which listed control should be preferred before relying only on PPE?","explanation":"Engineering controls reduce exposure at the source and generally take priority over PPE when feasible."},
+    {"id":"lov-003","sourceQuestionId":"lab-operations-3","difficulty":"Foundational","stem":"A thermometer reading is compared with a traceable reference standard. This activity is:","explanation":"Calibration establishes the relationship between an instrument indication and a traceable reference."},
+    {"id":"lov-004","sourceQuestionId":"lab-operations-4","difficulty":"Application","stem":"Several obsolete procedures remain at workstations after a revision. Which listed document-control objective has failed?","explanation":"Document control ensures that only the approved current procedure is available for use and obsolete versions are removed."},
+    {"id":"lov-005","sourceQuestionId":"lab-operations-5","difficulty":"Troubleshooting","stem":"A serious staining failure may affect released cases. Which listed action should occur before the full investigation is complete?","explanation":"Containment identifies and protects potentially affected material while the scope and root cause are assessed."},
+    {"id":"lov-006","sourceQuestionId":"lab-operations-6","difficulty":"Application","stem":"A laboratory is replacing its automated stainer with a new platform. Before routine use, it should:","explanation":"A new platform must be validated or verified for the intended use according to the applicable quality system."},
+    {"id":"lov-007","sourceQuestionId":"lab-operations-7","difficulty":"Foundational","stem":"Scheduled service performed before equipment failure is known as:","explanation":"Preventive maintenance is planned work intended to reduce the chance of breakdown or unacceptable performance."},
+    {"id":"lov-008","sourceQuestionId":"lab-operations-8","difficulty":"Application","stem":"A corrective action is implemented after recurring floaters. Which listed element is required to show that the action worked?","explanation":"An effectiveness check uses evidence over time to confirm that corrective and preventive actions solved the problem without creating new issues."}
+  ]
+}
