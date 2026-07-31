@@ -1,0 +1,118 @@
+.privacy-choice-button {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: .18em;
+  cursor: pointer;
+}
+
+.analytics-banner {
+  position: fixed;
+  z-index: 1000;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 980px;
+  margin: auto;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: 0 18px 50px rgba(15, 23, 42, .22);
+}
+
+.analytics-banner p {
+  margin: .25rem 0 0;
+}
+
+.analytics-banner-actions,
+.analytics-choice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+}
+
+.analytics-choice-actions[hidden] {
+  display: none !important;
+}
+
+.analytics-dialog {
+  width: min(620px, calc(100% - 2rem));
+  max-height: calc(100vh - 2rem);
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  background: var(--card);
+  color: var(--text);
+  box-shadow: 0 24px 80px rgba(15, 23, 42, .35);
+}
+
+.analytics-dialog::backdrop {
+  background: rgba(15, 23, 42, .62);
+}
+
+.analytics-dialog-card {
+  padding: 1.25rem;
+}
+
+.analytics-dialog-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.analytics-dialog-heading h2 {
+  margin-top: 0;
+}
+
+.analytics-debug {
+  position: fixed;
+  z-index: 1100;
+  right: .75rem;
+  bottom: .75rem;
+  left: .75rem;
+  max-height: 30vh;
+  overflow: auto;
+  padding: .75rem;
+  border-radius: 10px;
+  background: #111827;
+  color: #f8fafc;
+  font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  word-break: break-word;
+  pointer-events: none;
+}
+
+.dark .analytics-banner,
+.dark .analytics-dialog {
+  border-color: #334155;
+}
+
+@media (max-width: 720px) {
+  .analytics-banner {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .analytics-banner-actions .btn,
+  .analytics-choice-actions .btn {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}
+
+@media print {
+  .analytics-banner,
+  .analytics-dialog,
+  .privacy-choice-button,
+  .analytics-debug {
+    display: none !important;
+  }
+}
