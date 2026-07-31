@@ -35,21 +35,24 @@ async function dataLayerEntries(page) {
   return page.evaluate(() => (window.dataLayer || []).map((entry) => Array.from(entry)));
 }
 
-test('analytics remains off by default and exposes transparent privacy controls', async ({ page }) => {
+test('activated analytics remains blocked before consent and exposes equal choices', async ({ page }) => {
   const googleRequests = [];
   page.on('request', (request) => {
     if (/google(?:tagmanager|-analytics)\.com/.test(request.url())) googleRequests.push(request.url());
   });
 
   await page.goto('/?analytics_debug=1', { waitUntil: 'networkidle' });
-  await expect(page.locator('body')).toHaveAttribute('data-analytics-configured', 'false');
+  await expect(page.locator('body')).toHaveAttribute('data-analytics-configured', 'true');
+  await expect(page.locator('body')).toHaveAttribute('data-analytics-consent', 'unset');
   await expect(page.getByRole('button', { name: 'Privacy choices' })).toBeVisible();
-  await expect(page.locator('[data-analytics-banner]')).toHaveCount(0);
+  await expect(page.locator('[data-analytics-banner]')).toBeVisible();
+  await expect(page.locator('[data-analytics-banner] [data-analytics-consent="granted"]')).toBeVisible();
+  await expect(page.locator('[data-analytics-banner] [data-analytics-consent="denied"]')).toBeVisible();
 
   await page.getByRole('button', { name: 'Privacy choices' }).click();
   await expect(page.locator('[data-analytics-dialog]')).toBeVisible();
-  await expect(page.locator('[data-analytics-state]')).toHaveText('Analytics is currently off.');
-  await expect(page.locator('[data-analytics-actions]')).toBeHidden();
+  await expect(page.locator('[data-analytics-state]')).toHaveText('No analytics choice has been saved on this device.');
+  await expect(page.locator('[data-analytics-actions]')).toBeVisible();
   await expect(page.locator('[data-analytics-debug]')).toContainText('Analytics debug · unset');
 
   const debugEvents = await page.evaluate(() => window.FreeHTLAnalytics.debugEvents);
