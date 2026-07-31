@@ -27,11 +27,11 @@ class TargetedPracticeContractTests(unittest.TestCase):
         issues = MODULE.validate_config(broken)
         self.assertTrue(any("questionCounts" in issue for issue in issues))
 
-    def test_source_modes_require_weak_and_missed_practice(self):
+    def test_source_modes_require_weak_missed_and_flagged_practice(self):
         broken = json.loads(json.dumps(self.config))
         broken["sourceModes"] = [{"id": "custom"}]
         issues = MODULE.validate_config(broken)
-        self.assertTrue(any("custom, weak, and missed" in issue for issue in issues))
+        self.assertTrue(any("custom, weak, missed, and flagged" in issue for issue in issues))
 
     def test_feature_cannot_claim_secure_enforcement(self):
         broken = json.loads(json.dumps(self.config))
@@ -45,6 +45,7 @@ class TargetedPracticeContractTests(unittest.TestCase):
             (root / "data").mkdir()
             (root / "targeted-practice.html").write_text(
                 '<h1>Targeted practice</h1>'
+                '<p>70 authority-reviewed base questions and 80 alternate scenarios</p>'
                 '<link rel="canonical" href="https://withnati.github.io/free-htl-guide-site/targeted-practice.html">'
                 + ''.join(f'<script src="{src}"></script>' for src in [
                     "assets/mock-exam-bank.js", "assets/mock-exam-bank-dom.js",
@@ -62,6 +63,31 @@ class TargetedPracticeContractTests(unittest.TestCase):
             issues = MODULE.validate_page(root)
             self.assertTrue(any("must remain noindex" in issue for issue in issues))
 
+    def test_page_rejects_claim_that_all_150_records_are_reviewed(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "data").mkdir()
+            (root / "targeted-practice.html").write_text(
+                '<meta name="robots" content="noindex,nofollow">'
+                '<h1>Targeted practice</h1>'
+                '<p>same reviewed 150-question bank</p>'
+                '<link rel="canonical" href="https://withnati.github.io/free-htl-guide-site/targeted-practice.html">'
+                + ''.join(f'<script src="{src}"></script>' for src in [
+                    "assets/mock-exam-bank.js", "assets/mock-exam-bank-dom.js",
+                    "assets/mock-exam-bank-modules.js", "assets/mock-exam-bank-load.js",
+                    "assets/progress-service.js", "assets/guide.js",
+                    "assets/targeted-practice-state.js", "assets/targeted-practice.js",
+                ])
+                + '<div data-start-practice data-resume-practice data-pool-count data-practice-grid '
+                  'data-question-mount data-check-answer data-submit-practice data-practice-domain-results '
+                  'data-practice-review data-practice-history-body></div>',
+                encoding="utf-8",
+            )
+            (root / "sitemap.xml").write_text("<urlset></urlset>", encoding="utf-8")
+            (root / "data" / "site-seo.json").write_text('{"pages":{}}', encoding="utf-8")
+            issues = MODULE.validate_page(root)
+            self.assertTrue(any("must not describe all 150" in issue for issue in issues))
+
     def test_runtime_forbids_parallel_local_storage(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -78,7 +104,8 @@ class TargetedPracticeContractTests(unittest.TestCase):
                 path.write_text("", encoding="utf-8")
             (root / "data" / "targeted-practice-config.json").write_text("{}", encoding="utf-8")
             (root / "assets" / "targeted-practice-state.js").write_text(
-                "createAttempt hydrateAttempt weakDomains missedQuestionIds resolvePool htl:targeted-state",
+                "createAttempt hydrateAttempt weakDomains missedQuestionIds flaggedQuestionIds resolvePool "
+                "Choose at least one exam domain Choose at least one difficulty level htl:targeted-state",
                 encoding="utf-8",
             )
             (root / "assets" / "targeted-practice.js").write_text(
