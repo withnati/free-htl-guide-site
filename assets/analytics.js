@@ -53,6 +53,16 @@
     document.head.appendChild(tag);
   }
 
+  const analyticsScript = document.currentScript
+    || [...document.scripts].find((script) => /\/analytics\.js(?:\?|$)/.test(script.src));
+  if (analyticsScript?.src && !document.querySelector('script[data-free-htl-signup]')) {
+    const signupScript = document.createElement('script');
+    signupScript.src = new URL('signup.js', analyticsScript.src).href;
+    signupScript.async = true;
+    signupScript.dataset.freeHtlSignup = 'true';
+    document.head.appendChild(signupScript);
+  }
+
   document.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : event.target?.parentElement;
     const link = target?.closest('a[href]');
@@ -92,15 +102,30 @@
     }
   });
 
-  document.addEventListener('submit', (event) => {
-    const form = event.target;
-    if (!(form instanceof HTMLFormElement)) return;
+  window.addEventListener('htl:email-signup-start', (event) => {
+    const detail = event.detail || {};
+    track('email_signup_start', {
+      form_id: cleanText(detail.formId),
+      signup_source: cleanText(detail.source)
+    });
+  });
 
-    if (form.querySelector('input[type="email"]')) {
-      track('email_signup_submit', {
-        form_action: form.action || window.location.href
-      });
-    }
+  window.addEventListener('htl:email-signup-success', (event) => {
+    const detail = event.detail || {};
+    track('email_signup_success', {
+      form_id: cleanText(detail.formId),
+      signup_source: cleanText(detail.source),
+      transport_type: 'beacon'
+    });
+  });
+
+  window.addEventListener('htl:email-signup-error', (event) => {
+    const detail = event.detail || {};
+    track('email_signup_error', {
+      form_id: cleanText(detail.formId),
+      signup_source: cleanText(detail.source),
+      error_type: cleanText(detail.errorType)
+    });
   });
 
   window.addEventListener('htl:quiz-graded', (event) => {
