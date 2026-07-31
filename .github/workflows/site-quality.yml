@@ -47,6 +47,9 @@ jobs:
       - name: Validate privacy-first analytics contract
         run: python scripts/validate_analytics.py --root "$GITHUB_WORKSPACE"
 
+      - name: Validate account-ready progress and access metadata
+        run: python scripts/validate_progress.py --root "$GITHUB_WORKSPACE"
+
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
