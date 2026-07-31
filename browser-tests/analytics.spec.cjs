@@ -56,7 +56,7 @@ test('activated analytics remains blocked before consent and exposes equal choic
   await expect(page.locator('[data-analytics-debug]')).toContainText('Analytics debug · unset');
 
   const debugEvents = await page.evaluate(() => window.FreeHTLAnalytics.debugEvents);
-  expect(debugEvents.some((entry) => entry.eventName === 'page_view')).toBeTruthy();
+  expect(debugEvents.some((entry) => entry.eventName === 'page_view')).toBeFalsy();
   expect(googleRequests).toEqual([]);
 });
 
