@@ -2,53 +2,52 @@
 
 ## Scope
 
-Layer 8 converts the original disabled analytics placeholder into a controlled measurement system while keeping analytics inactive on `main`.
+Layer 8 replaced the original analytics placeholder with a controlled measurement system. It was merged with analytics disabled by default, then activated through a separate reviewed branch using the production GA4 web-stream Measurement ID.
 
-It adds:
+It provides:
 
-- one machine-readable configuration source;
+- one machine-readable activation source;
 - an explicit opt-in consent flow;
 - a permanent Privacy choices control;
 - consent revocation and analytics-cookie cleanup;
 - an allowlisted event taxonomy;
 - URL and parameter sanitization;
 - aggregate quiz measurement without answer collection;
-- local debug evidence that works while analytics is disabled;
+- local debug evidence;
 - static validation, regression tests, and browser tests;
-- a documented activation and reporting plan.
+- a documented reporting plan.
 
 ## Files
 
 - `data/analytics-config.json` — activation, consent, retention, event, and prohibited-field contract.
 - `assets/analytics.js` — shared-feature loader, consent controller, sanitizer, event collector, and GA4 loader.
 - `assets/analytics-consent.css` — responsive banner, dialog, footer control, and debug styling.
-- `privacy.html` — transparent current and future analytics disclosures.
+- `privacy.html` — transparent analytics and consent disclosures.
 - `scripts/validate_analytics.py` — dependency-free analytics contract validator.
-- `tests/test_validate_analytics.py` — validator regression suite.
-- `browser-tests/analytics.spec.cjs` — disabled, decline, grant, sanitization, persistence, and revocation coverage.
+- `tests/test_validate_analytics.py` — disabled-state and enabled-state validator regression suite.
+- `browser-tests/analytics.spec.cjs` — pre-consent blocking, decline, grant, sanitization, persistence, revocation, and re-consent coverage.
 - `docs/ANALYTICS_MEASUREMENT_PLAN.md` — event dictionary, indicators, custom definitions, and reporting cadence.
 
-## Default behavior
+## Current activation state
 
-The committed configuration is intentionally:
+The controlled production configuration is:
 
 ```json
 {
-  "enabled": false,
-  "measurementId": ""
+  "enabled": true,
+  "measurementId": "G-BTGBBLRFB3",
+  "consentRequired": true
 }
 ```
 
-Therefore:
+Activation does **not** mean automatic tracking. Before a visitor chooses **Allow analytics**:
 
 - no Google analytics script is requested;
-- no analytics event is transmitted;
-- the footer Privacy choices control reports that analytics is off;
-- `?analytics_debug=1` can display sanitized local event evidence without activating Google Analytics.
+- no analytics event is transmitted to Google;
+- an equal-choice banner presents Allow analytics and Decline analytics;
+- `?analytics_debug=1` may display sanitized local event evidence without transmitting it.
 
-## Consent behavior after a future activation
-
-When a valid GA4 Measurement ID and `enabled: true` are committed together:
+## Consent behavior
 
 1. The site reads the versioned consent record from local storage.
 2. With no current choice, an equal-choice banner displays **Allow analytics**, **Decline analytics**, and **Details**.
@@ -56,25 +55,23 @@ When a valid GA4 Measurement ID and `enabled: true` are committed together:
 4. Allowing stores the decision, grants analytics storage, loads one GA4 tag, and sends the current page view.
 5. Reopening Privacy choices allows the visitor to change the decision.
 6. Revoking consent denies analytics storage, removes visible `_ga` cookies for the site paths, and stops later events.
+7. Re-consent reuses the existing tag and resumes with one new page view.
 
 The tag is blocked before consent rather than relying on cookieless denied-consent pings.
 
-## Activation checklist
+## Activation record
 
-Activation must be a separate pull request.
+The production activation change:
 
-1. Create a GA4 property and web data stream for the production GitHub Pages URL.
-2. Confirm the property has no advertising use, Google Signals, or ad-personalization requirement.
-3. Set event-data retention to 14 months or lower.
-4. Enter the production `G-...` Measurement ID in `data/analytics-config.json`.
-5. Set `enabled` to `true` in the same change.
-6. Update `consentVersion` when the disclosure or choice materially changes.
-7. Update `privacy.html` so it no longer says analytics is currently disabled.
-8. Run the Python, JavaScript, and Playwright suites.
-9. Test Allow, Decline, persistence, revocation, cookie cleanup, and no pre-consent Google requests.
-10. Verify Realtime and DebugView with only the documented events and parameters.
-11. Register only the custom dimensions and metrics listed in the measurement plan.
-12. Merge only after the protected checks pass.
+1. Uses the GA4 Measurement ID supplied from the Free HTL Guide web data stream.
+2. Sets `enabled` and the Measurement ID together.
+3. Keeps `consentRequired: true`.
+4. Updates the privacy policy to describe the active but consent-gated state.
+5. Updates browser coverage so the committed production configuration must make zero Google requests before consent.
+6. Adds validator coverage for both disabled and enabled policy states.
+7. Preserves Google Signals and advertising-personalization safeguards.
+
+Future Measurement ID, consent-version, retention, event-taxonomy, or disclosure changes require another reviewed pull request.
 
 ## Local validation
 
@@ -85,7 +82,7 @@ node --check assets/analytics.js
 npm run test:browser
 ```
 
-For local event inspection without a Measurement ID:
+For local event inspection:
 
 ```text
 http://127.0.0.1:4173/?analytics_debug=1
@@ -95,7 +92,7 @@ The debug panel is session-only and does not persist event payloads.
 
 ## CI contract
 
-`Validate static site` now also rejects:
+`Validate static site` rejects:
 
 - an enabled configuration without a valid GA4 Measurement ID;
 - a disabled configuration that retains an ID;
@@ -105,23 +102,24 @@ The debug panel is session-only and does not persist event payloads.
 - a hardcoded Measurement ID in JavaScript;
 - a static third-party analytics script in HTML;
 - missing consent, sanitization, revocation, or privacy-control implementation markers;
-- a privacy policy that does not match the disabled configuration.
+- a privacy policy that does not match the current activation state.
 
 `Browser smoke tests` verifies:
 
-- the committed disabled state makes no Google requests;
-- transparent privacy controls remain accessible;
+- the activated configuration makes no Google requests before consent;
+- equal Allow and Decline controls remain accessible;
 - declining persists without loading a tag;
 - granting loads exactly one mocked tag;
 - page, quiz, and share events are allowlisted and sanitized;
 - query strings and fragments do not reach event payloads;
-- revocation removes test analytics cookies and stops later events.
+- revocation removes test analytics cookies and stops later events;
+- re-consent resumes without loading a duplicate tag.
 
 ## Security and privacy boundaries
 
-- No analytics secret is needed or committed.
-- No write permission is added to GitHub Actions.
+- A GA4 Measurement ID is a public routing identifier, not a secret.
+- No analytics secret or GitHub Actions write permission is added.
 - No email, note, answer, question-response, patient, employer, or user-ID field is allowed.
 - Analytics does not alter quiz scoring or local study progress.
-- The email form is still mocked in browser tests and is never submitted during quality checks.
-- This layer does not make claims about learner identity, readiness, certification results, or examination performance.
+- The email form remains mocked in browser tests and is never submitted during quality checks.
+- Behavioral indicators do not establish learner identity, examination readiness, or pass probability.

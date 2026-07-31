@@ -16,11 +16,13 @@ The plan does not measure individual question selections, personal notes, email 
 
 `data/analytics-config.json` is the only activation source.
 
-- `enabled` is `false` on `main`.
-- `measurementId` is blank on `main`.
-- No Google tag is requested in that state.
-- A future activation requires a separate reviewed pull request that changes both values and updates the privacy policy if its wording is no longer accurate.
-- Even after activation, the tag remains blocked until the visitor selects **Allow analytics**.
+- `enabled` is `true` for the production site.
+- The production GA4 Measurement ID is stored only in the controlled configuration.
+- `consentRequired` remains `true`.
+- No Google tag is requested and no analytics event is transmitted before the visitor selects **Allow analytics**.
+- Declining analytics is persisted locally and prevents the Google tag from loading.
+- Revocation removes visible analytics cookies and stops later custom events.
+- Any future Measurement ID, consent-version, retention, event, or disclosure change requires a separate reviewed pull request.
 
 ## Event dictionary
 
@@ -57,7 +59,7 @@ All event and parameter names are controlled by the configuration allowlist. Unk
 
 ## Recommended GA4 custom definitions
 
-Create these only after the property is activated and events are visible in DebugView.
+Create these only after events are visible in DebugView.
 
 ### Event-scoped dimensions
 
