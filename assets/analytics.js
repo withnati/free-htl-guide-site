@@ -104,9 +104,17 @@
       .map((item) => item.split('=')[0].trim())
       .filter((name) => /^_ga(?:_|$)/.test(name));
     const paths = ['/', PROJECT_PATH];
+    const securityVariants = ['', '; Secure'];
+    const sameSiteVariants = ['; SameSite=Lax', '; SameSite=None; Secure'];
+
     cookieNames.forEach((name) => {
       paths.forEach((path) => {
-        document.cookie = `${name}=; Max-Age=0; path=${path}; SameSite=Lax`;
+        securityVariants.forEach((security) => {
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; path=${path}${security}`;
+        });
+        sameSiteVariants.forEach((sameSite) => {
+          document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 GMT; Max-Age=0; path=${path}${sameSite}`;
+        });
       });
     });
   }
@@ -355,11 +363,18 @@
 
   function setConsent(status) {
     if (!['granted', 'denied'].includes(status)) return false;
+    const previousStatus = consentStatus;
     consentStatus = status;
     saveConsentRecord(status);
 
     if (status === 'granted') {
-      loadGoogleTag();
+      if (tagLoaded) {
+        updateGoogleConsent('granted');
+        document.body.dataset.analyticsActive = 'true';
+        if (previousStatus !== 'granted') sendPageView();
+      } else {
+        loadGoogleTag();
+      }
     } else {
       setConsentDefaults();
       updateGoogleConsent('denied');
