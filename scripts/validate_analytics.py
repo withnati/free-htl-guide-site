@@ -199,18 +199,27 @@ def validate_privacy(root: Path, data: dict, issues: list[Issue]) -> None:
     privacy = privacy_path.read_text(encoding="utf-8").lower()
     required_phrases = [
         "explicit consent",
-        "analytics is currently disabled",
         "email addresses",
         "personal notes",
         "quiz answers",
         "privacy choices",
         "14 months",
     ]
+    state_phrase = (
+        "analytics is available only after explicit consent"
+        if data.get("enabled") is True
+        else "analytics is currently disabled"
+    )
+    required_phrases.append(state_phrase)
+
     for phrase in required_phrases:
         if phrase not in privacy:
             issues.append(Issue("privacy.html", 1, f"Privacy policy must state: {phrase}"))
+
     if data.get("enabled") is True and "analytics is currently disabled" in privacy:
         issues.append(Issue("privacy.html", 1, "Privacy policy says analytics is disabled while configuration enables it"))
+    if data.get("enabled") is not True and "analytics is available only after explicit consent" in privacy:
+        issues.append(Issue("privacy.html", 1, "Privacy policy says analytics is available while configuration disables it"))
 
 
 def validate_no_static_tags(root: Path, issues: list[Issue]) -> None:
