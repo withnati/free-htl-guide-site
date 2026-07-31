@@ -50,6 +50,9 @@ jobs:
       - name: Validate account-ready progress and access metadata
         run: python scripts/validate_progress.py --root "$GITHUB_WORKSPACE"
 
+      - name: Validate targeted-practice filters and progress integration
+        run: python scripts/validate_targeted_practice.py --root "$GITHUB_WORKSPACE"
+
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:

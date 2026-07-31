@@ -5,7 +5,6 @@
   const accessUrl = new URL('../data/content-access.json', scriptUrl);
   const schemaUrl = new URL('../data/progress-schema.json', scriptUrl);
   const FALLBACK_STORAGE_KEY = 'free-htl-progress-v1';
-
   const clone = (value) => JSON.parse(JSON.stringify(value));
   const nowIso = () => new Date().toISOString();
   const uid = (prefix) => {
@@ -19,7 +18,6 @@
       this.storageKey = storageKey;
       this.name = 'local-browser';
     }
-
     async load() {
       try {
         const value = this.storage.getItem(this.storageKey);
@@ -28,12 +26,10 @@
         return null;
       }
     }
-
-    async save(record) {
-      this.storage.setItem(this.storageKey, JSON.stringify(record));
-      return clone(record);
+    async save(value) {
+      this.storage.setItem(this.storageKey, JSON.stringify(value));
+      return clone(value);
     }
-
     async clear() {
       this.storage.removeItem(this.storageKey);
     }
@@ -52,27 +48,16 @@
       recordId: uid('progress'),
       createdAt,
       updatedAt: createdAt,
-      owner: {
-        kind: 'anonymous',
-        anonymousId: uid('anon'),
-        accountId: null
-      },
-      entitlement: {
-        tier: 'public',
-        status: 'preview',
-        source: 'local-development',
-        updatedAt: createdAt
-      },
+      owner: { kind: 'anonymous', anonymousId: uid('anon'), accountId: null },
+      entitlement: { tier: 'public', status: 'preview', source: 'local-development', updatedAt: createdAt },
       modules: {},
       studyTasks: {},
       quizAttempts: [],
       mockExamAttempts: [],
+      targetedPracticeAttempts: [],
       activeSessions: {},
       activity: [],
-      migration: {
-        legacyVersion: 0,
-        completedAt: null
-      }
+      migration: { legacyVersion: 0, completedAt: null }
     };
   }
 
@@ -89,6 +74,7 @@
       studyTasks: value.studyTasks && typeof value.studyTasks === 'object' ? value.studyTasks : {},
       quizAttempts: Array.isArray(value.quizAttempts) ? value.quizAttempts : [],
       mockExamAttempts: Array.isArray(value.mockExamAttempts) ? value.mockExamAttempts : [],
+      targetedPracticeAttempts: Array.isArray(value.targetedPracticeAttempts) ? value.targetedPracticeAttempts : [],
       activeSessions: value.activeSessions && typeof value.activeSessions === 'object' ? value.activeSessions : {},
       activity: Array.isArray(value.activity) ? value.activity : [],
       migration: { ...base.migration, ...(value.migration || {}) }
@@ -127,6 +113,64 @@
     if (sectionId && !module.sectionsViewed.includes(sectionId)) module.sectionsViewed.push(sectionId);
   }
 
+  function sanitizeMockSession(value) {
+    return {
+      attemptId: value.attemptId || null,
+      examId: value.examId || 'free-htl-mock-50',
+      mode: value.mode || 'untimed',
+      startedAt: value.startedAt || null,
+      expiresAt: value.expiresAt || null,
+      currentIndex: Number(value.currentIndex || 0),
+      questionIds: Array.isArray(value.questionIds)
+        ? [...value.questionIds]
+        : Array.isArray(value.questions) ? value.questions.map((question) => question.id).filter(Boolean) : [],
+      responses: value.responses && typeof value.responses === 'object' ? clone(value.responses) : {},
+      flags: Array.isArray(value.flags) ? [...value.flags] : [],
+      updatedAt: nowIso()
+    };
+  }
+
+  function sanitizeTargetedSession(value) {
+    return {
+      attemptId: value.attemptId || null,
+      practiceId: value.practiceId || 'free-htl-targeted-practice',
+      mode: value.mode === 'exam' ? 'exam' : 'study',
+      sourceMode: value.sourceMode || 'custom',
+      selectedDomains: Array.isArray(value.selectedDomains) ? [...value.selectedDomains] : [],
+      selectedDifficulties: Array.isArray(value.selectedDifficulties) ? [...value.selectedDifficulties] : [],
+      requestedCount: Number(value.requestedCount || 10),
+      startedAt: Number(value.startedAt || Date.now()),
+      currentIndex: Number(value.currentIndex || 0),
+      questionIds: Array.isArray(value.questionIds) ? [...value.questionIds] : [],
+      responses: value.responses && typeof value.responses === 'object' ? clone(value.responses) : {},
+      flags: Array.isArray(value.flags) ? [...value.flags] : [],
+      checked: Array.isArray(value.checked) ? [...value.checked] : [],
+      updatedAt: nowIso()
+    };
+  }
+
+  function sanitizeQuestionResult(item) {
+    return {
+      questionId: item.questionId || null,
+      sourceQuestionId: item.sourceQuestionId || item.questionId || null,
+      moduleId: item.moduleId || null,
+      domain: item.domain || null,
+      difficulty: item.difficulty || null,
+      selectedOptionId: item.selectedOptionId || null,
+      correct: Boolean(item.correct),
+      flagged: Boolean(item.flagged)
+    };
+  }
+
+  function sanitizeDomains(items) {
+    return Array.isArray(items) ? items.map((item) => ({
+      domain: item.domain,
+      correct: Number(item.correct || 0),
+      total: Number(item.total || 0),
+      percent: Number(item.percent || 0)
+    })) : [];
+  }
+
   function migrateLegacy() {
     if (record.migration.legacyVersion >= 1) return false;
     const migratedAt = nowIso();
@@ -157,8 +201,8 @@
       }
     }
 
-    const storageKeys = Array.from({ length: localStorage.length }, (_, index) => localStorage.key(index)).filter(Boolean);
-    storageKeys.forEach((key) => {
+    const keys = Array.from({ length: localStorage.length }, (_, index) => localStorage.key(index)).filter(Boolean);
+    keys.forEach((key) => {
       if (!key.startsWith(schema.legacyKeys.quizScorePrefix)) return;
       const page = key.slice(schema.legacyKeys.quizScorePrefix.length);
       const percent = Number(localStorage.getItem(key));
@@ -208,7 +252,7 @@
     try {
       const active = JSON.parse(localStorage.getItem(schema.legacyKeys.mockActive) || 'null');
       if (active && !active.completed) {
-        record.activeSessions['mock-exam'] = sanitizeActiveSession(active);
+        record.activeSessions['mock-exam'] = sanitizeMockSession(active);
         imported += 1;
       }
     } catch {
@@ -218,35 +262,6 @@
     record.migration = { legacyVersion: 1, completedAt: migratedAt, importedRecords: imported };
     if (imported) addActivity('legacy-progress-imported', { importedRecords: imported }, migratedAt);
     return true;
-  }
-
-  function sanitizeActiveSession(value) {
-    return {
-      attemptId: value.attemptId || null,
-      examId: value.examId || 'free-htl-mock-50',
-      mode: value.mode || 'untimed',
-      startedAt: value.startedAt || null,
-      expiresAt: value.expiresAt || null,
-      currentIndex: Number(value.currentIndex || 0),
-      questionIds: Array.isArray(value.questionIds)
-        ? value.questionIds
-        : Array.isArray(value.questions) ? value.questions.map((question) => question.id).filter(Boolean) : [],
-      responses: value.responses && typeof value.responses === 'object' ? clone(value.responses) : {},
-      flags: Array.isArray(value.flags) ? [...value.flags] : [],
-      updatedAt: nowIso()
-    };
-  }
-
-  function sanitizeQuestionResult(item) {
-    return {
-      questionId: item.questionId || null,
-      sourceQuestionId: item.sourceQuestionId || item.questionId || null,
-      moduleId: item.moduleId || null,
-      domain: item.domain || null,
-      selectedOptionId: item.selectedOptionId || null,
-      correct: Boolean(item.correct),
-      flagged: Boolean(item.flagged)
-    };
   }
 
   async function persist() {
@@ -336,7 +351,7 @@
     await ready;
     if (!detail) return getSnapshot();
     if (detail.cleared) delete record.activeSessions['mock-exam'];
-    else record.activeSessions['mock-exam'] = sanitizeActiveSession(detail);
+    else record.activeSessions['mock-exam'] = sanitizeMockSession(detail);
     return persist();
   }
 
@@ -354,12 +369,7 @@
       percent: Number(detail.percent),
       timeUsedMs: Number(detail.timeUsedMs || 0),
       timeExpired: Boolean(detail.timeExpired),
-      domains: Array.isArray(detail.domains) ? detail.domains.map((item) => ({
-        domain: item.domain,
-        correct: Number(item.correct || 0),
-        total: Number(item.total || 0),
-        percent: Number(item.percent || 0)
-      })) : [],
+      domains: sanitizeDomains(detail.domains),
       questionResults: Array.isArray(detail.questionResults) ? detail.questionResults.map(sanitizeQuestionResult) : [],
       legacy: false
     };
@@ -370,10 +380,70 @@
     return persist();
   }
 
+  async function recordTargetedPracticeSession(detail) {
+    await ready;
+    if (!detail) return getSnapshot();
+    if (detail.cleared) delete record.activeSessions['targeted-practice'];
+    else record.activeSessions['targeted-practice'] = sanitizeTargetedSession(detail);
+    return persist();
+  }
+
+  async function recordTargetedPracticeAttempt(detail) {
+    await ready;
+    if (!detail || !Number.isFinite(Number(detail.percent))) return getSnapshot();
+    const completedAt = detail.completedAt || nowIso();
+    const attempt = {
+      id: detail.attemptId || uid('targeted'),
+      practiceId: detail.practiceId || 'free-htl-targeted-practice',
+      completedAt,
+      startedAt: Number(detail.startedAt || 0) || null,
+      mode: detail.mode === 'exam' ? 'exam' : 'study',
+      sourceMode: detail.sourceMode || 'custom',
+      selectedDomains: Array.isArray(detail.selectedDomains) ? [...detail.selectedDomains] : [],
+      selectedDifficulties: Array.isArray(detail.selectedDifficulties) ? [...detail.selectedDifficulties] : [],
+      score: Number(detail.score || 0),
+      total: Number(detail.total || 0),
+      percent: Number(detail.percent),
+      timeUsedMs: Number(detail.timeUsedMs || 0),
+      domains: sanitizeDomains(detail.domains),
+      questionResults: Array.isArray(detail.questionResults) ? detail.questionResults.map(sanitizeQuestionResult) : [],
+      legacy: false
+    };
+    record.targetedPracticeAttempts.unshift(attempt);
+    record.targetedPracticeAttempts = record.targetedPracticeAttempts.slice(0, schema.targetedAttemptLimit || 100);
+    delete record.activeSessions['targeted-practice'];
+    addActivity('targeted-practice-completed', {
+      practiceId: attempt.practiceId,
+      percent: attempt.percent,
+      mode: attempt.mode,
+      sourceMode: attempt.sourceMode
+    }, completedAt);
+    return persist();
+  }
+
   function bestQuizFor(page) {
     return record.quizAttempts
       .filter((attempt) => attempt.page === page)
       .reduce((best, attempt) => Math.max(best, Number(attempt.bestPercent ?? attempt.percent ?? 0)), 0);
+  }
+
+  function domainModel() {
+    const values = {};
+    [...record.mockExamAttempts, ...record.targetedPracticeAttempts].forEach((attempt) => {
+      (attempt.domains || []).forEach((item) => {
+        values[item.domain] ||= [];
+        values[item.domain].push(Number(item.percent || 0));
+      });
+    });
+    return schema.domains.map((domain) => {
+      const scores = values[domain] || [];
+      return {
+        domain,
+        attempts: scores.length,
+        average: scores.length ? Math.round(scores.reduce((sum, value) => sum + value, 0) / scores.length) : null,
+        latest: scores.length ? scores[0] : null
+      };
+    });
   }
 
   function dashboardModel() {
@@ -397,24 +467,9 @@
         };
       });
 
-    const domainValues = {};
-    record.mockExamAttempts.forEach((attempt) => {
-      attempt.domains.forEach((item) => {
-        domainValues[item.domain] ||= [];
-        domainValues[item.domain].push(Number(item.percent || 0));
-      });
-    });
-    const domains = schema.domains.map((domain) => {
-      const values = domainValues[domain] || [];
-      return {
-        domain,
-        attempts: values.length,
-        average: values.length ? Math.round(values.reduce((sum, value) => sum + value, 0) / values.length) : null,
-        latest: values.length ? values[0] : null
-      };
-    });
-
+    const domains = domainModel();
     const latestMock = record.mockExamAttempts[0] || null;
+    const latestTargeted = record.targetedPracticeAttempts[0] || null;
     const bestMock = record.mockExamAttempts.reduce((best, attempt) => Math.max(best, Number(attempt.percent || 0)), 0);
     const completedTasks = Object.values(record.studyTasks).filter((task) => task.checked).length;
     const quizPercents = record.quizAttempts.map((attempt) => Number(attempt.percent || 0));
@@ -428,7 +483,15 @@
       path: 'modules/fixation-guide-v3.html',
       accessTier: 'public'
     };
-    if (record.activeSessions['mock-exam']) {
+
+    if (record.activeSessions['targeted-practice']) {
+      recommendation = {
+        title: 'Resume your targeted practice set',
+        message: 'Your filters, question position, answers, flags, and Study-mode feedback are saved.',
+        path: 'targeted-practice.html#practiceWorkspace',
+        accessTier: 'premium'
+      };
+    } else if (record.activeSessions['mock-exam']) {
       recommendation = {
         title: 'Resume your unfinished mock exam',
         message: 'Your question position, selections, and flags are saved in this browser.',
@@ -439,12 +502,11 @@
       const measured = domains.filter((item) => item.average !== null).sort((left, right) => left.average - right.average);
       if (measured.length) {
         const weakest = measured[0];
-        const module = access.modules.find((item) => item.domain === weakest.domain);
         recommendation = {
-          title: `Review ${weakest.domain}`,
-          message: `Your average in this domain is ${weakest.average}%. Revisit the related lesson before another full exam.`,
-          path: module?.path || 'study-plan.html',
-          accessTier: module?.accessTier || 'premium'
+          title: `Practice ${weakest.domain}`,
+          message: `Your current average in this domain is ${weakest.average}%. Build a focused set before another full exam.`,
+          path: `targeted-practice.html?source=weak&domain=${encodeURIComponent(weakest.domain)}`,
+          accessTier: 'premium'
         };
       } else {
         const nextModule = moduleRows.find((item) => item.status !== 'Quiz target met');
@@ -462,7 +524,7 @@
     }
 
     let coverage = 'Starting';
-    if (modulesTargetMet >= 2 || latestMock) coverage = 'Building';
+    if (modulesTargetMet >= 2 || latestMock || latestTargeted) coverage = 'Building';
     if (modulesTargetMet >= 5 && bestMock >= 80) coverage = 'Broad coverage';
 
     return {
@@ -481,7 +543,9 @@
         quizAttempts: record.quizAttempts.length,
         averageQuiz,
         mockAttempts: record.mockExamAttempts.length,
+        targetedAttempts: record.targetedPracticeAttempts.length,
         latestMock,
+        latestTargeted,
         bestMock,
         coverage
       },
@@ -556,6 +620,8 @@
   window.addEventListener('htl:quiz-graded', (event) => { void recordQuizAttempt(event.detail); });
   window.addEventListener('htl:mock-state', (event) => { void recordActiveSession(event.detail); });
   window.addEventListener('htl:mock-completed', (event) => { void recordMockExamAttempt(event.detail); });
+  window.addEventListener('htl:targeted-state', (event) => { void recordTargetedPracticeSession(event.detail); });
+  window.addEventListener('htl:targeted-completed', (event) => { void recordTargetedPracticeAttempt(event.detail); });
 
   window.FreeHTLProgress = {
     ready,
@@ -566,6 +632,8 @@
     recordQuizAttempt,
     recordActiveSession,
     recordMockExamAttempt,
+    recordTargetedPracticeSession,
+    recordTargetedPracticeAttempt,
     exportProgress,
     resetProgress,
     useAdapter,

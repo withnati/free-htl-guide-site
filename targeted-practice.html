@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Targeted HT/HTL Practice | Free HTL Guide</title>
+  <meta name="description" content="Build a focused 10, 20, or 30-question HT and HTL practice set by domain, difficulty, weak areas, previously missed questions, or saved flags.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="canonical" href="https://withnati.github.io/free-htl-guide-site/targeted-practice.html">
+  <link rel="stylesheet" href="assets/guide.css">
+  <link rel="stylesheet" href="assets/targeted-practice.css">
+  <meta name="theme-color" content="#0F4C81">
+</head>
+<body data-page="targeted-practice">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="bar">
+    <a class="brand" href="index.html">Free HTL Guide</a>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html#modules">Modules</a>
+      <a href="study-plan.html">Study plan</a>
+      <a href="practice.html">Practice</a>
+      <a href="targeted-practice.html" aria-current="true">Targeted practice</a>
+      <a href="mock-exam.html">Mock exam</a>
+    </nav>
+    <div class="actions">
+      <button id="themeBtn" class="btn" type="button" aria-label="Toggle dark mode">🌙</button>
+      <button id="menuBtn" class="btn menu-btn" type="button" aria-expanded="false" aria-controls="mobileMenu">Menu</button>
+      <a class="btn btn-primary" href="#setup">Build a set</a>
+    </div>
+  </div>
+  <nav id="mobileMenu" class="mobile-menu" aria-label="Mobile">
+    <a href="index.html#modules">Modules</a>
+    <a href="study-plan.html">Study plan</a>
+    <a href="practice.html">Practice</a>
+    <a href="targeted-practice.html" aria-current="true">Targeted practice</a>
+    <a href="mock-exam.html">Mock exam</a>
+  </nav>
+</header>
+<div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
+
+<section class="hero"><div class="hero-inner"><div>
+  <p class="eyebrow">Personalized question practice</p>
+  <h1>Targeted HT/HTL practice</h1>
+  <p class="lead">Build a focused set from the 150-record development bank used by the mock exam: 70 authority-reviewed base questions and 80 alternate scenarios undergoing final editorial review.</p>
+  <div class="chips"><span class="chip">10, 20, or 30 questions</span><span class="chip">Study or exam mode</span><span class="chip">Account-ready progress</span></div>
+  <p style="margin-top:1.25rem"><a class="btn btn-primary" href="#setup">Choose your focus</a></p>
+</div><aside class="hero-card"><dl>
+  <div><dt>Question bank</dt><dd><span data-targeted-bank-total>150</span> development records</dd></div>
+  <div><dt>Editorial status</dt><dd>70 base + 80 scenarios in review</dd></div>
+  <div><dt>Filters</dt><dd>Domain, difficulty, weak, missed, or flagged</dd></div>
+  <div><dt>Feedback</dt><dd>Immediate or after submission</dd></div>
+  <div><dt>Access plan</dt><dd>Premium feature at launch</dd></div>
+</dl></aside></div></section>
+
+<main id="main" class="practice-main">
+  <section id="setup" class="section card practice-setup">
+    <div class="section-heading"><div><p class="eyebrow">Build your practice set</p><h2>Choose what to practice</h2></div><span class="status" data-practice-status>Loading…</span></div>
+    <div class="callout warn premium-preview"><strong>Premium-designated preview.</strong> Targeted practice is available during development. Final paid access will be enforced by an authenticated server, not browser storage or this page’s metadata.</div>
+    <div class="practice-setup-grid">
+      <form id="targetedSetupForm" class="practice-options">
+        <fieldset><legend>Question source</legend><div class="option-grid">
+          <label class="option-card"><input type="radio" name="sourceMode" value="custom" checked><span><strong>Selected domains</strong><small>Use the domains and difficulty levels chosen below.</small></span></label>
+          <label class="option-card"><input type="radio" name="sourceMode" value="weak"><span><strong>Weak domains</strong><small>Focus on the two lowest measured areas within the domains selected below.</small></span></label>
+          <label class="option-card"><input type="radio" name="sourceMode" value="missed"><span><strong>Previously missed</strong><small>Use the exact questions missed in prior mock or targeted attempts.</small></span></label>
+          <label class="option-card"><input type="radio" name="sourceMode" value="flagged"><span><strong>Flagged for review</strong><small>Return to exact questions flagged in completed mock or targeted attempts.</small></span></label>
+        </div></fieldset>
+
+        <fieldset><legend>Domains</legend><div class="check-grid">
+          <label class="check-option"><input type="checkbox" name="domains" value="Fixation" checked>Fixation</label>
+          <label class="check-option"><input type="checkbox" name="domains" value="Processing" checked>Processing</label>
+          <label class="check-option"><input type="checkbox" name="domains" value="Embedding/Microtomy" checked>Embedding/Microtomy</label>
+          <label class="check-option"><input type="checkbox" name="domains" value="Staining" checked>Staining</label>
+          <label class="check-option"><input type="checkbox" name="domains" value="Laboratory Operations" checked>Laboratory Operations</label>
+        </div></fieldset>
+
+        <fieldset><legend>Difficulty</legend><div class="check-grid">
+          <label class="check-option"><input type="checkbox" name="difficulties" value="Foundational" checked>Foundational</label>
+          <label class="check-option"><input type="checkbox" name="difficulties" value="Application" checked>Application</label>
+          <label class="check-option"><input type="checkbox" name="difficulties" value="Troubleshooting" checked>Troubleshooting</label>
+        </div></fieldset>
+
+        <fieldset><legend>Set size</legend><div class="option-grid">
+          <label class="option-card"><input type="radio" name="questionCount" value="10" checked><span><strong>10 questions</strong><small>Quick focused review.</small></span></label>
+          <label class="option-card"><input type="radio" name="questionCount" value="20"><span><strong>20 questions</strong><small>Balanced practice session.</small></span></label>
+          <label class="option-card"><input type="radio" name="questionCount" value="30"><span><strong>30 questions</strong><small>Extended targeted session.</small></span></label>
+        </div></fieldset>
+
+        <fieldset><legend>Feedback mode</legend><div class="option-grid">
+          <label class="option-card"><input type="radio" name="practiceMode" value="study" checked><span><strong>Study mode</strong><small>Check each answer immediately and read the explanation.</small></span></label>
+          <label class="option-card"><input type="radio" name="practiceMode" value="exam"><span><strong>Exam mode</strong><small>Receive feedback only after submitting the full set.</small></span></label>
+        </div></fieldset>
+
+        <div class="practice-start-actions">
+          <button class="btn btn-primary" type="submit" data-start-practice disabled>Start practice</button>
+          <button class="btn" type="button" data-resume-practice hidden>Resume saved set</button>
+        </div>
+        <p class="small" data-practice-error hidden role="alert" tabindex="-1"></p>
+      </form>
+
+      <aside class="card practice-summary-card">
+        <p class="eyebrow">Current filters</p>
+        <h3>Available question pool</h3>
+        <p data-pool-count>Loading question bank…</p>
+        <dl>
+          <div><dt>Study target</dt><dd>80%</dd></div>
+          <div><dt>Progress storage</dt><dd>Account-ready record</dd></div>
+          <div><dt>Current adapter</dt><dd>Anonymous browser</dd></div>
+          <div><dt>Answer privacy</dt><dd>Not sent to analytics</dd></div>
+        </dl>
+        <p class="small muted">Weak-domain, missed-question, and flagged-question modes become more useful after completing and reviewing mock exams or targeted sets.</p>
+      </aside>
+    </div>
+  </section>
+
+  <section id="practiceWorkspace" class="practice-workspace" hidden aria-labelledby="targetedQuestionHeading">
+    <div class="practice-toolbar card"><div><span class="eyebrow">Current set</span><strong>Targeted practice</strong></div><div class="practice-metrics" aria-live="polite">
+      <span><strong data-practice-position>1 of 10</strong><small>Question</small></span>
+      <span><strong data-practice-answered>0</strong><small>Answered</small></span>
+      <span><strong data-practice-flagged>0</strong><small>Flagged</small></span>
+    </div></div>
+    <div class="practice-progress" aria-hidden="true"><span data-practice-progress></span></div>
+    <div class="practice-grid-layout">
+      <aside class="card practice-navigator" aria-label="Question navigator">
+        <h2>Questions</h2>
+        <div class="practice-question-grid" data-practice-grid></div>
+        <div class="practice-key small muted"><span><i class="answered"></i>Answered</span><span><i class="flagged"></i>Flagged</span><span><i class="checked"></i>Feedback shown</span></div>
+      </aside>
+      <article class="card practice-question-card">
+        <div class="practice-question-meta">
+          <div class="chips"><span class="chip" data-practice-domain></span><span class="chip" data-practice-difficulty></span><span class="chip" data-practice-source></span></div>
+          <button class="btn" type="button" data-practice-flag aria-pressed="false">☆ Flag for review</button>
+        </div>
+        <form id="targetedQuestionForm"><div data-question-mount></div></form>
+        <p class="practice-question-status" data-question-status tabindex="-1">Your answer is saved automatically.</p>
+        <div class="practice-question-actions">
+          <button class="btn" type="button" data-practice-previous>Previous</button>
+          <button class="btn btn-primary" type="button" data-check-answer>Check answer</button>
+          <button class="btn" type="button" data-practice-next>Next</button>
+          <button class="btn btn-primary" type="button" data-submit-practice>Finish set</button>
+        </div>
+        <div class="callout warn" data-practice-warning hidden>
+          <p><strong><span data-practice-unanswered>0</span> questions are unanswered.</strong> Return to them or finish the set now.</p>
+          <button class="btn btn-primary" type="button" data-submit-practice-anyway>Finish anyway</button>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="practiceResults" class="section card practice-results" hidden aria-labelledby="practiceResultsHeading">
+    <div class="section-heading"><div><p class="eyebrow">Set complete</p><h2 id="practiceResultsHeading" tabindex="-1">Targeted practice results</h2></div><span class="status" data-practice-result-date></span></div>
+    <div class="practice-result-hero">
+      <div class="practice-score-ring"><span data-practice-result-percent>0%</span><small data-practice-result-score>0/10</small></div>
+      <div><h3 data-practice-result-heading></h3><p data-practice-result-summary></p><p class="small muted">This is a private study indicator, not an official ASCP score or pass prediction.</p></div>
+    </div>
+    <h3>Domain performance</h3><div class="practice-domain-results" data-practice-domain-results></div>
+    <div class="practice-start-actions"><button class="btn btn-primary" type="button" data-new-practice>Build another set</button><a class="btn" href="my-progress.html">View my progress</a></div>
+    <h3>Missed and flagged questions</h3>
+    <div class="practice-review" data-practice-review></div>
+  </section>
+
+  <section class="section card practice-history">
+    <div class="section-heading"><div><p class="eyebrow">Stored progress</p><h2>Recent targeted practice</h2></div><a class="btn" href="my-progress.html">Open dashboard</a></div>
+    <div data-practice-history-empty class="callout">No targeted practice attempts are saved yet.</div>
+    <div class="table-wrap" data-practice-history-wrap hidden><table class="table"><thead><tr><th>Date</th><th>Mode</th><th>Source</th><th>Score</th></tr></thead><tbody data-practice-history-body></tbody></table></div>
+  </section>
+
+  <noscript><section class="section card"><h2>JavaScript is required</h2><p>Targeted practice needs JavaScript to filter the question bank, save progress, and calculate results. Module quizzes remain available without this tool.</p></section></noscript>
+</main>
+
+<footer class="footer"><div class="footer-inner"><span>© <span data-year></span> Free HTL Guide</span><span><a href="editorial.html">Editorial standards</a> · <a href="privacy.html">Privacy</a></span></div></footer>
+<script src="assets/mock-exam-bank.js" defer></script>
+<script src="assets/mock-exam-bank-dom.js" defer></script>
+<script src="assets/mock-exam-bank-modules.js" defer></script>
+<script src="assets/mock-exam-bank-load.js" defer></script>
+<script src="assets/progress-service.js" defer></script>
+<script src="assets/guide.js" defer></script>
+<script src="assets/targeted-practice-state.js" defer></script>
+<script src="assets/targeted-practice.js" defer></script>
+</body>
+</html>

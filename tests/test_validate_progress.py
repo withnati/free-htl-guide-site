@@ -40,6 +40,23 @@ class ProgressContractTests(unittest.TestCase):
         self.assertTrue(any("notes must be excluded" in issue for issue in issues))
         self.assertTrue(any("emailAddress must be excluded" in issue for issue in issues))
 
+    def test_targeted_practice_is_syncable_and_resumable(self):
+        broken = json.loads(json.dumps(self.schema))
+        broken["syncableCollections"].remove("targetedPracticeAttempts")
+        broken["activeSessionTypes"].remove("targeted-practice")
+        issues = MODULE.validate_schema(broken)
+        self.assertTrue(any("targetedPracticeAttempts must be account-syncable" in issue for issue in issues))
+        self.assertTrue(any("activeSessionTypes" in issue for issue in issues))
+
+    def test_targeted_practice_is_premium_preview_not_client_authorization(self):
+        broken = json.loads(json.dumps(self.access))
+        feature = next(item for item in broken["features"] if item["id"] == "targeted-practice")
+        feature["accessTier"] = "public"
+        feature["previewAvailable"] = False
+        issues = MODULE.validate_access(broken, ROOT)
+        self.assertTrue(any("targeted-practice must be marked premium" in issue for issue in issues))
+        self.assertTrue(any("development preview" in issue for issue in issues))
+
     def test_dashboard_requires_noindex(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

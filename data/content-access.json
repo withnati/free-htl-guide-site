@@ -22,7 +22,7 @@
     {"id": "study-plan", "title": "Six-week study plan", "path": "study-plan.html", "accessTier": "premium"},
     {"id": "cumulative-practice", "title": "Cumulative practice", "path": "practice.html", "accessTier": "premium"},
     {"id": "mock-exam", "title": "50-question mock exam", "path": "mock-exam.html", "accessTier": "premium"},
-    {"id": "targeted-practice", "title": "Targeted practice", "path": null, "accessTier": "premium", "planned": true}
+    {"id": "targeted-practice", "title": "Targeted practice", "path": "targeted-practice.html", "accessTier": "premium", "previewAvailable": true}
   ],
   "accountPlan": {
     "currentAdapter": "local-browser",

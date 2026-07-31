@@ -21,6 +21,18 @@
     return ['Focused review recommended', 'Return to the core modules and work through explanations before repeating a full mock exam.'];
   }
 
+  function addTargetedPracticeAction(summary) {
+    const actions = ui.$('.result-actions');
+    if (!actions || actions.querySelector('[data-targeted-practice-link]')) return;
+    const weakest = [...summary.domains].sort((left, right) => left.percent - right.percent)[0];
+    const link = document.createElement('a');
+    link.className = 'btn';
+    link.dataset.targetedPracticeLink = 'true';
+    link.href = `targeted-practice.html?source=weak${weakest ? `&domain=${encodeURIComponent(weakest.domain)}` : ''}`;
+    link.textContent = weakest ? `Practice ${weakest.domain}` : 'Targeted practice';
+    actions.appendChild(link);
+  }
+
   function render(summary, attempt, completedAt) {
     const [heading, message] = interpretation(summary.percent);
     ui.refs.resultDate.textContent = new Date(completedAt).toLocaleString();
@@ -52,6 +64,7 @@
       ui.refs.review.appendChild(article);
     });
     if (!ui.refs.review.children.length) ui.refs.review.innerHTML = '<div class="callout safe">No missed or flagged questions in this attempt.</div>';
+    addTargetedPracticeAction(summary);
     ui.refs.exam.hidden = true;
     ui.refs.results.hidden = false;
     ui.refs.results.scrollIntoView({ behavior: 'smooth', block: 'start' });
