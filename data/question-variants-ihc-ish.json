@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "ihc-ish",
+  "variants": [
+    {"id":"ihv-001","sourceQuestionId":"ihc-ish-1","difficulty":"Troubleshooting","stem":"Both the test specimen and known external positive control lack signal. Which listed interpretation is appropriate?","explanation":"A failed positive control means the assay run has not demonstrated acceptable performance, so the test result is invalid."},
+    {"id":"ihv-002","sourceQuestionId":"ihc-ish-2","difficulty":"Application","stem":"A calcified specimen requires antigen detection and RNA localization. Which listed decalcification approach best protects both analytes?","explanation":"Validated EDTA chelation is generally preferred over strong acid when antigens and nucleic acids must be preserved."},
+    {"id":"ihv-003","sourceQuestionId":"ihc-ish-3","difficulty":"Troubleshooting","stem":"After retrieval time is increased, tissue detaches and nonspecific staining rises. Which listed effect best describes excessive heat retrieval?","explanation":"Excessive heat or retrieval duration can damage morphology, detach sections, and increase background."},
+    {"id":"ihv-004","sourceQuestionId":"ihc-ish-4","difficulty":"Application","stem":"A housekeeping-gene probe is included with an RNA ISH assay. Which listed function does it serve?","explanation":"An ISH positive-control probe evaluates analyte preservation and whether the assay steps worked in the specimen."},
+    {"id":"ihv-005","sourceQuestionId":"ihc-ish-5","difficulty":"Foundational","stem":"Which listed endogenous activity must commonly be blocked or controlled in an HRP/DAB method?","explanation":"Endogenous peroxidase can react with HRP chromogen systems and create nonspecific DAB deposition."},
+    {"id":"ihv-006","sourceQuestionId":"ihc-ish-6","difficulty":"Troubleshooting","stem":"A tyramide-amplified assay produces strong nonspecific signal. Which listed issue requires the closest attention?","explanation":"Tyramide improves sensitivity but also amplifies background when reagent specificity, blocking, or washing is inadequate."}
+  ]
+}
