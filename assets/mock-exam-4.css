@@ -1,0 +1,25 @@
+@media (max-width: 980px) {
+  .exam-setup-grid,
+  .exam-grid { grid-template-columns: minmax(0, 1fr); }
+  .exam-navigator { position: static; }
+  .question-grid { grid-template-columns: repeat(10, minmax(0, 1fr)); }
+  .domain-results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 680px) {
+  .section-heading,
+  .exam-toolbar,
+  .question-meta,
+  .review-heading { align-items: stretch; flex-direction: column; }
+  .exam-metrics {
+    justify-content: stretch;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .exam-metrics > span { min-width: 0; }
+  .question-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .exam-question { min-height: 0; }
+  .exam-question-actions [data-submit-exam] { width: 100%; margin-left: 0; }
+  .result-hero { grid-template-columns: minmax(0, 1fr); justify-items: start; }
+  .domain-results { grid-template-columns: minmax(0, 1fr); }
+}
