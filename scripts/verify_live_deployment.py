@@ -23,6 +23,9 @@ PUBLIC_EXTENSIONS = {
 EXCLUDED_PREFIXES = (
     ".git/", ".github/", "browser-tests/", "docs/", "scripts/", "tests/", "node_modules/",
 )
+EXCLUDED_FILES = {
+    "package.json", "package-lock.json", "playwright.config.cjs", "README.md", "LICENSE",
+}
 ALWAYS_CHECK = {"index.html", "sitemap.xml", "robots.txt"}
 
 
@@ -34,7 +37,7 @@ class ChangedPath:
 
 def is_public_path(path: str) -> bool:
     normalized = path.replace("\\", "/").lstrip("./")
-    if not normalized or normalized.startswith(EXCLUDED_PREFIXES):
+    if not normalized or normalized in EXCLUDED_FILES or normalized.startswith(EXCLUDED_PREFIXES):
         return False
     return Path(normalized).suffix.lower() in PUBLIC_EXTENSIONS
 
