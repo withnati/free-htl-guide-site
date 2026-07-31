@@ -35,195 +35,72 @@
   </nav>
 </header>
 <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
-
-<section class="hero">
-  <div class="hero-inner">
-    <div>
-      <p class="eyebrow">Exam-style mixed practice</p>
-      <h1>50-question HT/HTL mock exam</h1>
-      <p class="lead">Practice one question at a time, flag items for review, and finish with a domain-by-domain breakdown and explanations for missed questions.</p>
-      <div class="chips">
-        <span class="chip">50 randomized questions</span>
-        <span class="chip">75-minute or untimed</span>
-        <span class="chip">Saved locally</span>
-      </div>
-      <p style="margin-top:1.25rem"><a class="btn btn-primary" href="#setup">Set up an attempt</a></p>
-    </div>
-    <aside class="hero-card">
-      <dl>
-        <div><dt>Blueprint</dt><dd>Within the current official content ranges</dd></div>
-        <div><dt>Question source</dt><dd><span data-bank-total>70</span> reviewed questions available</dd></div>
-        <div><dt>Study target</dt><dd>80% — not an official passing score</dd></div>
-        <div><dt>Privacy</dt><dd>Answers and history stay in this browser</dd></div>
-      </dl>
-    </aside>
-  </div>
-</section>
-
+<section class="hero"><div class="hero-inner"><div>
+  <p class="eyebrow">Exam-style mixed practice</p>
+  <h1>50-question HT/HTL mock exam</h1>
+  <p class="lead">Practice one question at a time, flag items for review, and finish with a domain-by-domain breakdown and explanations for missed questions.</p>
+  <div class="chips"><span class="chip">50 randomized questions</span><span class="chip">75-minute or untimed</span><span class="chip">Saved locally</span></div>
+  <p style="margin-top:1.25rem"><a class="btn btn-primary" href="#setup">Set up an attempt</a></p>
+</div><aside class="hero-card"><dl>
+  <div><dt>Blueprint</dt><dd>Within the current official content ranges</dd></div>
+  <div><dt>Question source</dt><dd><span data-bank-total>70</span> reviewed questions available</dd></div>
+  <div><dt>Study target</dt><dd>80% — not an official passing score</dd></div>
+  <div><dt>Privacy</dt><dd>Answers and history stay in this browser</dd></div>
+</dl></aside></div></section>
 <main id="main" class="exam-main">
   <section id="setup" class="section card exam-setup">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Before you begin</p>
-        <h2>Choose your practice mode</h2>
-      </div>
-      <span class="status" data-exam-status>Loading question bank…</span>
-    </div>
-
-    <div class="callout warn">
-      <strong>Independent preparation tool.</strong>
-      This mock exam is not produced, endorsed, or scored by ASCP or the ASCP Board of Certification. The 80% target is a study goal, not an official passing score or prediction.
-    </div>
-
+    <div class="section-heading"><div><p class="eyebrow">Before you begin</p><h2>Choose your practice mode</h2></div><span class="status" data-exam-status>Loading question bank…</span></div>
+    <div class="callout warn"><strong>Independent preparation tool.</strong> This mock exam is not produced, endorsed, or scored by ASCP or the ASCP Board of Certification. The 80% target is a study goal, not an official passing score or prediction.</div>
     <div class="exam-setup-grid">
       <form id="examSetupForm" class="exam-mode" aria-describedby="modeHelp">
-        <fieldset>
-          <legend>Practice mode</legend>
-          <label class="mode-option">
-            <input type="radio" name="examMode" value="timed" checked>
-            <span><strong>Timed</strong><small>75 minutes for 50 questions. The attempt submits when time expires.</small></span>
-          </label>
-          <label class="mode-option">
-            <input type="radio" name="examMode" value="untimed">
-            <span><strong>Untimed</strong><small>Use the same exam format without a countdown.</small></span>
-          </label>
+        <fieldset><legend>Practice mode</legend>
+          <label class="mode-option"><input type="radio" name="examMode" value="timed" checked><span><strong>Timed</strong><small>75 minutes for 50 questions. The attempt submits when time expires.</small></span></label>
+          <label class="mode-option"><input type="radio" name="examMode" value="untimed"><span><strong>Untimed</strong><small>Use the same exam format without a countdown.</small></span></label>
         </fieldset>
         <p id="modeHelp" class="small muted">You may move between questions, change answers, and flag items until submitting.</p>
-        <div class="exam-start-actions">
-          <button class="btn btn-primary" type="submit" data-start-exam disabled>Start mock exam</button>
-          <button class="btn" type="button" data-resume-exam hidden>Resume saved attempt</button>
-        </div>
+        <div class="exam-start-actions"><button class="btn btn-primary" type="submit" data-start-exam disabled>Start mock exam</button><button class="btn" type="button" data-resume-exam hidden>Resume saved attempt</button></div>
         <p class="small" data-exam-error hidden role="alert"></p>
       </form>
-
-      <div>
-        <h3>50-question blueprint</h3>
-        <div class="table-wrap">
-          <table class="table exam-blueprint">
-            <thead><tr><th>Domain</th><th>Questions</th><th>Practice share</th><th>Official range</th></tr></thead>
-            <tbody data-blueprint-body></tbody>
-          </table>
-        </div>
-      </div>
+      <div><h3>50-question blueprint</h3><div class="table-wrap"><table class="table exam-blueprint"><thead><tr><th>Domain</th><th>Questions</th><th>Practice share</th><th>Official range</th></tr></thead><tbody data-blueprint-body></tbody></table></div></div>
     </div>
   </section>
-
   <section id="exam" class="exam-workspace" hidden aria-labelledby="examQuestionHeading">
-    <div class="exam-toolbar card">
-      <div>
-        <span class="eyebrow">Current attempt</span>
-        <strong data-exam-mode-label>Timed</strong>
-      </div>
-      <div class="exam-metrics" aria-live="polite">
-        <span><strong data-question-position>1 of 50</strong><small>Question</small></span>
-        <span><strong data-answered-count>0</strong><small>Answered</small></span>
-        <span><strong data-flagged-count>0</strong><small>Flagged</small></span>
-        <span class="exam-timer"><strong data-time-remaining>75:00</strong><small>Time left</small></span>
-      </div>
-    </div>
-
+    <div class="exam-toolbar card"><div><span class="eyebrow">Current attempt</span><strong data-exam-mode-label>Timed</strong></div><div class="exam-metrics" aria-live="polite">
+      <span><strong data-question-position>1 of 50</strong><small>Question</small></span><span><strong data-answered-count>0</strong><small>Answered</small></span><span><strong data-flagged-count>0</strong><small>Flagged</small></span><span class="exam-timer"><strong data-time-remaining>75:00</strong><small>Time left</small></span>
+    </div></div>
     <div class="exam-progress" aria-hidden="true"><span data-exam-progress></span></div>
-
     <div class="exam-grid">
-      <aside class="card exam-navigator" aria-label="Question navigator">
-        <div class="section-heading compact">
-          <h2>Questions</h2>
-          <button class="btn btn-small" type="button" data-show-unanswered>First unanswered</button>
-        </div>
-        <div class="question-grid" data-question-grid></div>
-        <div class="question-key small muted">
-          <span><i class="answered"></i> Answered</span>
-          <span><i class="flagged"></i> Flagged</span>
-        </div>
-      </aside>
-
+      <aside class="card exam-navigator" aria-label="Question navigator"><div class="section-heading compact"><h2>Questions</h2><button class="btn btn-small" type="button" data-show-unanswered>First unanswered</button></div><div class="question-grid" data-question-grid></div><div class="question-key small muted"><span><i class="answered"></i> Answered</span><span><i class="flagged"></i> Flagged</span></div></aside>
       <article class="card exam-question">
-        <div class="question-meta">
-          <div class="chips">
-            <span class="chip" data-question-domain></span>
-            <span class="chip" data-question-difficulty></span>
-          </div>
-          <button class="btn" type="button" data-toggle-flag aria-pressed="false">☆ Flag for review</button>
-        </div>
-
-        <form id="htl-mock-50">
-          <fieldset data-correct="dynamic">
-            <legend id="examQuestionHeading" data-question-stem></legend>
-            <div data-question-choices></div>
-          </fieldset>
-        </form>
-
-        <div class="exam-question-actions">
-          <button class="btn" type="button" data-previous-question>Previous</button>
-          <button class="btn" type="button" data-next-question>Next</button>
-          <button class="btn btn-primary" type="button" data-submit-exam>Submit exam</button>
-        </div>
-        <div class="callout warn" data-submit-warning hidden>
-          <p><strong><span data-unanswered-warning>0</span> questions are unanswered.</strong> You may return to them or submit the attempt now.</p>
-          <button class="btn btn-primary" type="button" data-submit-anyway>Submit anyway</button>
-        </div>
+        <div class="question-meta"><div class="chips"><span class="chip" data-question-domain></span><span class="chip" data-question-difficulty></span></div><button class="btn" type="button" data-toggle-flag aria-pressed="false">☆ Flag for review</button></div>
+        <form id="htl-mock-50"><fieldset data-correct="dynamic"><legend id="examQuestionHeading" data-question-stem>Question loading…</legend><div data-question-choices></div></fieldset></form>
+        <div class="exam-question-actions"><button class="btn" type="button" data-previous-question>Previous</button><button class="btn" type="button" data-next-question>Next</button><button class="btn btn-primary" type="button" data-submit-exam>Submit exam</button></div>
+        <div class="callout warn" data-submit-warning hidden><p><strong><span data-unanswered-warning>0</span> questions are unanswered.</strong> You may return to them or submit the attempt now.</p><button class="btn btn-primary" type="button" data-submit-anyway>Submit anyway</button></div>
       </article>
     </div>
   </section>
-
   <section id="results" class="section card exam-results" hidden aria-labelledby="resultsHeading">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Attempt complete</p>
-        <h2 id="resultsHeading" tabindex="-1">Your results</h2>
-      </div>
-      <span class="status" data-result-date></span>
-    </div>
-
-    <div class="result-hero">
-      <div class="score-ring" data-score-ring><span data-result-percent>0%</span><small data-result-score>0/50</small></div>
-      <div>
-        <h3 data-result-interpretation></h3>
-        <p data-result-summary></p>
-        <p class="small muted">This result is a private study indicator. It is not an official ASCP score or pass prediction.</p>
-      </div>
-    </div>
-
-    <h3>Domain performance</h3>
-    <div class="domain-results" data-domain-results></div>
-
-    <div class="result-actions">
-      <button class="btn btn-primary" type="button" data-new-exam>Start another exam</button>
-      <a class="btn" href="study-plan.html">Return to study plan</a>
-    </div>
-
-    <div class="review-heading">
-      <div>
-        <h3>Missed and flagged questions</h3>
-        <p class="small muted">Review the correct rule and return to the source module when needed.</p>
-      </div>
-      <button class="btn" type="button" data-toggle-review aria-expanded="true">Hide review</button>
-    </div>
+    <div class="section-heading"><div><p class="eyebrow">Attempt complete</p><h2 id="resultsHeading" tabindex="-1">Your results</h2></div><span class="status" data-result-date></span></div>
+    <div class="result-hero"><div class="score-ring" data-score-ring><span data-result-percent>0%</span><small data-result-score>0/50</small></div><div><h3 data-result-interpretation></h3><p data-result-summary></p><p class="small muted">This result is a private study indicator. It is not an official ASCP score or pass prediction.</p></div></div>
+    <h3>Domain performance</h3><div class="domain-results" data-domain-results></div>
+    <div class="result-actions"><button class="btn btn-primary" type="button" data-new-exam>Start another exam</button><a class="btn" href="study-plan.html">Return to study plan</a></div>
+    <div class="review-heading"><div><h3>Missed and flagged questions</h3><p class="small muted">Review the correct rule and return to the source module when needed.</p></div><button class="btn" type="button" data-toggle-review aria-expanded="true">Hide review</button></div>
     <div class="exam-review" data-exam-review></div>
   </section>
-
-  <section id="history" class="section card">
-    <div class="section-heading">
-      <div>
-        <p class="eyebrow">Saved on this device</p>
-        <h2>Attempt history</h2>
-      </div>
-      <button class="btn" type="button" data-clear-history>Clear history</button>
-    </div>
-    <div data-history-empty class="callout">No completed mock exams are saved yet.</div>
-    <div class="table-wrap" data-history-wrap hidden>
-      <table class="table">
-        <thead><tr><th>Date</th><th>Mode</th><th>Score</th><th>Time used</th></tr></thead>
-        <tbody data-history-body></tbody>
-      </table>
-    </div>
-  </section>
-
+  <section id="history" class="section card"><div class="section-heading"><div><p class="eyebrow">Saved on this device</p><h2>Attempt history</h2></div><button class="btn" type="button" data-clear-history>Clear history</button></div><div data-history-empty class="callout">No completed mock exams are saved yet.</div><div class="table-wrap" data-history-wrap hidden><table class="table"><thead><tr><th>Date</th><th>Mode</th><th>Score</th><th>Time used</th></tr></thead><tbody data-history-body></tbody></table></div></section>
   <noscript><section class="section card"><h2>JavaScript is required</h2><p>The mock exam needs JavaScript to randomize questions, save an attempt, and calculate results. The seven study-module quizzes remain available without this simulator.</p></section></noscript>
 </main>
-
 <footer class="footer"><div class="footer-inner"><span>© <span data-year></span> Free HTL Guide</span><span><a href="editorial.html">Editorial standards</a> · <a href="privacy.html">Privacy</a></span></div></footer>
+<script src="assets/mock-exam-bank.js" defer></script>
+<script src="assets/mock-exam-bank-dom.js" defer></script>
+<script src="assets/mock-exam-bank-modules.js" defer></script>
+<script src="assets/mock-exam-bank-load.js" defer></script>
+<script src="assets/mock-exam-state.js" defer></script>
+<script src="assets/mock-exam-bridge.js" defer></script>
 <script src="assets/guide.js" defer></script>
+<script src="assets/mock-exam-ui.js" defer></script>
+<script src="assets/mock-exam-results.js" defer></script>
+<script src="assets/mock-exam-controller.js" defer></script>
 <script src="assets/mock-exam.js" defer></script>
 </body>
 </html>
