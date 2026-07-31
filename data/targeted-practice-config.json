@@ -29,12 +29,17 @@
     {
       "id": "weak",
       "label": "Weak domains",
-      "description": "Use your stored domain results to focus on the two lowest measured areas."
+      "description": "Use stored domain results to focus on the two lowest measured areas within your selected domains."
     },
     {
       "id": "missed",
       "label": "Previously missed",
-      "description": "Practice questions you answered incorrectly in earlier mock or targeted attempts."
+      "description": "Practice the exact questions answered incorrectly in earlier mock or targeted attempts."
+    },
+    {
+      "id": "flagged",
+      "label": "Flagged for review",
+      "description": "Return to exact questions you flagged in completed mock or targeted attempts."
     }
   ],
   "difficulties": [
