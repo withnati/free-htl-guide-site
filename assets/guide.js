@@ -66,7 +66,6 @@
             name: 'Natnale Mengesha',
             honorificSuffix: 'HTL(ASCP)cm',
             url: `${siteUrl}about.html`,
-            worksFor: { '@id': organizationId },
             knowsAbout: ['Histotechnology', 'Molecular pathology', 'Immunohistochemistry', 'In situ hybridization', 'Digital pathology']
           },
           {
