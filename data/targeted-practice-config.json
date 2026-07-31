@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "practiceId": "free-htl-targeted-practice",
+  "accessTier": "premium",
+  "premiumEnforcement": "planned",
+  "questionCounts": [
+    10,
+    20,
+    30
+  ],
+  "modes": [
+    {
+      "id": "study",
+      "label": "Study mode",
+      "description": "Check each answer immediately and review the explanation before continuing."
+    },
+    {
+      "id": "exam",
+      "label": "Exam mode",
+      "description": "Move freely through the set and receive feedback only after submitting."
+    }
+  ],
+  "sourceModes": [
+    {
+      "id": "custom",
+      "label": "Selected domains",
+      "description": "Build a set from the domains and difficulty levels you choose."
+    },
+    {
+      "id": "weak",
+      "label": "Weak domains",
+      "description": "Use your stored domain results to focus on the two lowest measured areas."
+    },
+    {
+      "id": "missed",
+      "label": "Previously missed",
+      "description": "Practice questions you answered incorrectly in earlier mock or targeted attempts."
+    }
+  ],
+  "difficulties": [
+    "Foundational",
+    "Application",
+    "Troubleshooting"
+  ],
+  "domains": [
+    "Fixation",
+    "Processing",
+    "Embedding/Microtomy",
+    "Staining",
+    "Laboratory Operations"
+  ],
+  "studyTargetPercent": 80,
+  "attemptLimit": 100
+}
