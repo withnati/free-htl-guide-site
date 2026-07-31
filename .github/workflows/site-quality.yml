@@ -38,6 +38,9 @@ jobs:
       - name: Validate authority metadata and quiz integrity
         run: python scripts/validate_authority.py --root "$GITHUB_WORKSPACE"
 
+      - name: Validate search, sharing, and manifest metadata
+        run: python scripts/validate_seo.py --root "$GITHUB_WORKSPACE"
+
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:

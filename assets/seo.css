@@ -1,0 +1,56 @@
+.seo-share {
+  min-width: 0;
+}
+
+.seo-share h2 {
+  margin-bottom: .4rem;
+  font-size: 1.1rem;
+}
+
+.seo-share-actions,
+.seo-related-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+}
+
+.seo-share-status {
+  min-height: 1.35rem;
+  margin: .65rem 0 0;
+  color: var(--muted);
+}
+
+.seo-related {
+  border-top: 4px solid var(--brand);
+}
+
+.seo-related h2 {
+  margin-bottom: .8rem;
+}
+
+.seo-share-home {
+  max-width: 1180px;
+  width: calc(100% - 2rem);
+  margin: 2rem auto;
+}
+
+.dark .seo-related,
+.dark .seo-share {
+  border-color: #334155;
+}
+
+@media (max-width: 520px) {
+  .seo-share-actions .btn,
+  .seo-related-links .btn {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+@media print {
+  .seo-share,
+  .seo-related {
+    display: none;
+  }
+}
