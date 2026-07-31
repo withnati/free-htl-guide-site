@@ -41,7 +41,7 @@ jobs:
 
       - name: Upload browser report and failure evidence
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: browser-quality-report
           path: |
