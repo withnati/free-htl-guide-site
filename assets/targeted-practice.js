@@ -175,7 +175,7 @@
   }
 
   function resultInterpretation(percent) {
-    if (percent >= config.studyTargetPercent) return ['Study target met', 'Repeat with a different filter or protect the lowest domain shown below.'];
+    if (percent >= config.studyTargetPercent) return ['Study target met', 'Repeat with a different filter or practice the lowest domain shown below.'];
     if (percent >= 65) return ['Developing performance', 'Review missed questions, then build another focused set in the lowest domain.'];
     return ['Focused review recommended', 'Return to the source lessons and use Study mode before another exam-style set.'];
   }
