@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "enabled": false,
+  "enabled": true,
   "provider": "google-analytics-4",
-  "measurementId": "",
+  "measurementId": "G-BTGBBLRFB3",
   "consentRequired": true,
   "consentVersion": "2026-07-31",
   "storageKey": "free-htl-analytics-consent",
