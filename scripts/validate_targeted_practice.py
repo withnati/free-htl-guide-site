@@ -9,6 +9,7 @@ from pathlib import Path
 
 DOMAINS = ["Fixation", "Processing", "Embedding/Microtomy", "Staining", "Laboratory Operations"]
 DIFFICULTIES = ["Foundational", "Application", "Troubleshooting"]
+SOURCE_MODES = ["custom", "weak", "missed", "flagged"]
 
 
 class PracticeParser(HTMLParser):
@@ -63,8 +64,8 @@ def validate_config(data: dict) -> list[str]:
     if mode_ids != ["study", "exam"]:
         issues.append("targeted-practice modes must be study and exam")
     source_ids = [item.get("id") for item in data.get("sourceModes") or []]
-    if source_ids != ["custom", "weak", "missed"]:
-        issues.append("targeted-practice source modes must be custom, weak, and missed")
+    if source_ids != SOURCE_MODES:
+        issues.append("targeted-practice source modes must be custom, weak, missed, and flagged")
     return issues
 
 
@@ -73,8 +74,9 @@ def validate_page(root: Path) -> list[str]:
     path = root / "targeted-practice.html"
     if not path.is_file():
         return ["Missing targeted-practice.html"]
+    page_text = path.read_text(encoding="utf-8")
     parser = PracticeParser()
-    parser.feed(path.read_text(encoding="utf-8"))
+    parser.feed(page_text)
     if parser.h1_count != 1:
         issues.append("targeted-practice.html must have exactly one h1")
     if parser.canonical != "https://withnati.github.io/free-htl-guide-site/targeted-practice.html":
@@ -82,6 +84,10 @@ def validate_page(root: Path) -> list[str]:
     robots = (parser.robots or "").lower().replace(" ", "")
     if "noindex" not in robots:
         issues.append("targeted-practice.html must remain noindex until protected delivery exists")
+    if "70 authority-reviewed base questions" not in page_text or "80 alternate scenarios" not in page_text:
+        issues.append("targeted-practice must disclose the 70 reviewed base questions and 80 scenarios still in editorial review")
+    if "same reviewed 150-question bank" in page_text or "150 reviewed records" in page_text:
+        issues.append("targeted-practice must not describe all 150 development records as fully reviewed")
     expected_scripts = [
         "assets/mock-exam-bank.js",
         "assets/mock-exam-bank-dom.js",
@@ -131,7 +137,11 @@ def validate_runtime(root: Path) -> list[str]:
         return issues
 
     state = (root / "assets/targeted-practice-state.js").read_text(encoding="utf-8")
-    for token in ("createAttempt", "hydrateAttempt", "weakDomains", "missedQuestionIds", "resolvePool", "htl:targeted-state"):
+    for token in (
+        "createAttempt", "hydrateAttempt", "weakDomains", "missedQuestionIds",
+        "flaggedQuestionIds", "resolvePool", "Choose at least one exam domain",
+        "Choose at least one difficulty level", "htl:targeted-state",
+    ):
         if token not in state:
             issues.append(f"targeted-practice-state.js is missing token: {token}")
     controller = (root / "assets/targeted-practice.js").read_text(encoding="utf-8")
@@ -185,7 +195,7 @@ def main() -> int:
         for issue in issues:
             print(f"- {issue}")
         return 1
-    print("Targeted-practice validation passed: filters, modes, progress integration, noindex status, and premium metadata are intact.")
+    print("Targeted-practice validation passed: filters, modes, progress integration, editorial status, noindex status, and premium metadata are intact.")
     return 0
 
 
