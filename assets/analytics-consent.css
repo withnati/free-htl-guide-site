@@ -83,6 +83,7 @@
   color: #f8fafc;
   font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   word-break: break-word;
+  pointer-events: none;
 }
 
 .dark .analytics-banner,
