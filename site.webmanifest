@@ -1,0 +1,20 @@
+{
+  "id": "/free-htl-guide-site/",
+  "name": "Free HTL Guide",
+  "short_name": "HTL Guide",
+  "description": "Free practical HT and HTL study guides, quizzes, study planning, and histotechnology resources.",
+  "lang": "en-US",
+  "start_url": "/free-htl-guide-site/",
+  "scope": "/free-htl-guide-site/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f4c81",
+  "icons": [
+    {
+      "src": "/free-htl-guide-site/assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
