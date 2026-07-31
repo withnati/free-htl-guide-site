@@ -96,7 +96,18 @@
 }
 
 @media (max-width: 720px) {
+  body:has(.analytics-banner) main {
+    padding-top: 18rem;
+  }
+
   .analytics-banner {
+    z-index: 45;
+    top: 64px;
+    right: .5rem;
+    bottom: auto;
+    left: .5rem;
+    max-height: calc(100dvh - 72px);
+    overflow: auto;
     align-items: stretch;
     flex-direction: column;
   }
