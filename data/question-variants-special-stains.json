@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "special-stains",
+  "variants": [
+    {"id":"ssv-001","sourceQuestionId":"special-stains-1","difficulty":"Foundational","stem":"Basement membranes and fungal walls stained by PAS are expected to appear which listed color?","explanation":"Periodic-acid oxidation followed by Schiff reagent produces a magenta reaction in PAS-positive structures."},
+    {"id":"ssv-002","sourceQuestionId":"special-stains-2","difficulty":"Application","stem":"Paired PAS sections are run with and without enzyme digestion. Which listed target is evaluated by the comparison?","explanation":"Diastase removes glycogen, so loss of PAS reactivity in the digested section identifies glycogen."},
+    {"id":"ssv-003","sourceQuestionId":"special-stains-3","difficulty":"Application","stem":"A Congo-red-positive deposit is examined with aligned polarized light. Which listed finding supports amyloid?","explanation":"Amyloid classically demonstrates apple-green birefringence when stain quality, thickness, and polarization are appropriate."},
+    {"id":"ssv-004","sourceQuestionId":"special-stains-4","difficulty":"Foundational","stem":"Hemosiderin is suspected in tissue. Which listed substance is demonstrated by the Prussian blue reaction?","explanation":"Prussian blue demonstrates ferric iron, including iron stored as hemosiderin."},
+    {"id":"ssv-005","sourceQuestionId":"special-stains-5","difficulty":"Application","stem":"A silver method uses fibers that bind silver but require a separate reducer. Those fibers are described as:","explanation":"Reticulin fibers are argyrophilic: they bind silver but require an external reducing agent to produce visible metal."},
+    {"id":"ssv-006","sourceQuestionId":"special-stains-6","difficulty":"Application","stem":"Black organism walls are needed to highlight suspected fungal elements. Which listed target is associated with GMS?","explanation":"GMS is commonly used to demonstrate fungi through oxidation and silver reduction that produces black walls."}
+  ]
+}
