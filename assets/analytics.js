@@ -71,6 +71,14 @@
     document.head.appendChild(authorityScript);
   }
 
+  if (analyticsScript?.src && !document.querySelector('script[data-free-htl-seo]')) {
+    const seoScript = document.createElement('script');
+    seoScript.src = new URL('seo.js', analyticsScript.src).href;
+    seoScript.async = true;
+    seoScript.dataset.freeHtlSeo = 'true';
+    document.head.appendChild(seoScript);
+  }
+
   document.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : event.target?.parentElement;
     const link = target?.closest('a[href]');
@@ -159,6 +167,15 @@
     track('study_task_toggle', {
       task_id: cleanText(detail.taskId),
       checked: Boolean(detail.checked)
+    });
+  });
+
+  window.addEventListener('htl:share', (event) => {
+    const detail = event.detail || {};
+    track('share', {
+      share_method: cleanText(detail.method),
+      share_page: cleanText(detail.page),
+      share_url: cleanText(detail.url, 240)
     });
   });
 })();
