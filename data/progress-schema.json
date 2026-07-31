@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "storageKey": "free-htl-progress-v1",
+  "activityLimit": 100,
+  "quizAttemptLimit": 100,
+  "mockAttemptLimit": 50,
+  "activeSessionTypes": ["mock-exam"],
+  "domains": ["Fixation", "Processing", "Embedding/Microtomy", "Staining", "Laboratory Operations"],
+  "syncableCollections": ["modules", "studyTasks", "quizAttempts", "mockExamAttempts", "activeSessions", "activity"],
+  "excludedFromAccountSync": ["notes", "analyticsConsent", "theme", "emailAddress"],
+  "legacyKeys": {
+    "lastSectionPrefix": "last:",
+    "studyTaskPrefix": "check:",
+    "quizScorePrefix": "quiz:",
+    "quizBestPrefix": "best:",
+    "mockActive": "free-htl-mock-active-v1",
+    "mockHistory": "free-htl-mock-history-v1"
+  }
+}
