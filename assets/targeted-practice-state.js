@@ -73,6 +73,20 @@
     return missed;
   }
 
+  function flaggedQuestionIds(snapshot) {
+    const flagged = new Set();
+    const attempts = [
+      ...(snapshot?.mockExamAttempts || []),
+      ...(snapshot?.targetedPracticeAttempts || [])
+    ];
+    attempts.forEach((attempt) => {
+      (attempt.questionResults || []).forEach((item) => {
+        if (item.flagged && item.questionId) flagged.add(item.questionId);
+      });
+    });
+    return flagged;
+  }
+
   function resolvePool(bank, setup, snapshot, config) {
     if (!setup.domains.length) throw new Error('Choose at least one exam domain.');
     if (!setup.difficulties.length) throw new Error('Choose at least one difficulty level.');
@@ -91,6 +105,12 @@
       const missed = missedQuestionIds(snapshot);
       if (!missed.size) throw new Error('No previously missed questions are stored yet.');
       pool = pool.filter((question) => missed.has(question.id));
+    }
+
+    if (setup.sourceMode === 'flagged') {
+      const flagged = flaggedQuestionIds(snapshot);
+      if (!flagged.size) throw new Error('No flagged questions are stored yet.');
+      pool = pool.filter((question) => flagged.has(question.id));
     }
 
     return { pool, domains };
@@ -175,6 +195,7 @@
     domainScores,
     weakDomains,
     missedQuestionIds,
+    flaggedQuestionIds,
     resolvePool
   };
 })();
