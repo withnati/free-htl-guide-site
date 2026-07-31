@@ -54,11 +54,14 @@
   }
 
   document.addEventListener('click', (event) => {
-    const link = event.target.closest('a[href]');
+    const target = event.target instanceof Element ? event.target : event.target?.parentElement;
+    const link = target?.closest('a[href]');
     if (!link) return;
 
     const href = link.getAttribute('href') || '';
     const absoluteUrl = new URL(href, window.location.href);
+    if (!['http:', 'https:'].includes(absoluteUrl.protocol)) return;
+
     const label = cleanText(link.textContent || link.getAttribute('aria-label') || absoluteUrl.pathname);
     const extension = absoluteUrl.pathname.split('.').pop()?.toLowerCase();
 
