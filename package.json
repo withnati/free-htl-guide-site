@@ -2,7 +2,7 @@
   "name": "free-htl-guide-site",
   "private": true,
   "version": "1.0.0",
-  "description": "Static HT and HTL study guide with browser-level quality checks.",
+  "description": "Account-ready HT and HTL learning platform with automated static and browser quality checks.",
   "scripts": {
     "test:browser": "playwright test",
     "test:browser:headed": "playwright test --headed",
