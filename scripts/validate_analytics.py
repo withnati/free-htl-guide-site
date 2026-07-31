@@ -8,7 +8,9 @@ import json
 import re
 import sys
 from dataclasses import dataclass
+from html.parser import HTMLParser
 from pathlib import Path
+from urllib.parse import urlsplit
 
 REQUIRED_EVENTS = {
     "page_view",
@@ -43,10 +45,7 @@ REQUIRED_PROHIBITED_FIELDS = {
     "patient",
 }
 GA_ID = re.compile(r"^G-[A-Z0-9]{6,}$", re.IGNORECASE)
-STATIC_ANALYTICS_SRC = re.compile(
-    r"<script[^>]+src=[\"'][^\"']*(?:googletagmanager\.com|google-analytics\.com)[^\"']*[\"']",
-    re.IGNORECASE,
-)
+ANALYTICS_HOSTS = {"www.googletagmanager.com", "googletagmanager.com", "www.google-analytics.com", "google-analytics.com"}
 
 
 @dataclass(order=True, frozen=True)
@@ -54,6 +53,22 @@ class Issue:
     path: str
     line: int
     message: str
+
+
+class ScriptSourceParser(HTMLParser):
+    """Collect executable script sources while naturally ignoring HTML comments."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.sources: list[tuple[str, int]] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag.lower() != "script":
+            return
+        values = {name.lower(): value or "" for name, value in attrs}
+        source = values.get("src", "").strip()
+        if source:
+            self.sources.append((source, self.getpos()[0]))
 
 
 def load_json(path: Path, issues: list[Issue]) -> dict:
@@ -201,9 +216,17 @@ def validate_privacy(root: Path, data: dict, issues: list[Issue]) -> None:
 def validate_no_static_tags(root: Path, issues: list[Issue]) -> None:
     for path in sorted(root.rglob("*.html")):
         relative = path.relative_to(root).as_posix()
-        source = path.read_text(encoding="utf-8")
-        if STATIC_ANALYTICS_SRC.search(source):
-            issues.append(Issue(relative, 1, "Third-party analytics tags must not be statically embedded"))
+        parser = ScriptSourceParser()
+        try:
+            parser.feed(path.read_text(encoding="utf-8"))
+            parser.close()
+        except (OSError, UnicodeError) as exc:
+            issues.append(Issue(relative, 1, f"Could not inspect script sources: {exc}"))
+            continue
+        for source, line in parser.sources:
+            hostname = (urlsplit(source).hostname or "").lower()
+            if hostname in ANALYTICS_HOSTS:
+                issues.append(Issue(relative, line, "Third-party analytics tags must not be statically embedded"))
 
 
 def validate_analytics(root: Path) -> list[Issue]:
