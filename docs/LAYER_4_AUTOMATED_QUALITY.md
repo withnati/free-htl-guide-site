@@ -21,11 +21,13 @@ It does not deploy the site, modify repository content, access secrets, or submi
 
 ### Repository-owned site validator
 
-Run locally with:
+Run locally from the repository root on macOS or Linux with:
 
 ```bash
-python scripts/validate_site.py --root .
+python scripts/validate_site.py --root "$(pwd)"
 ```
+
+Using the absolute repository path also makes the success message report the validated HTML page count correctly.
 
 The validator checks:
 
@@ -112,6 +114,18 @@ For a utility page that should not appear in search results:
 1. Add `<meta name="robots" content="noindex,follow">`.
 2. Keep the page out of `sitemap.xml`.
 3. It may still have a canonical URL and internal links.
+
+## Legacy redirects
+
+Old public module URLs remain in the repository as direct redirects to the current reviewed modules. Each redirect includes:
+
+- a no-index directive
+- the current absolute canonical URL
+- a direct meta refresh
+- a JavaScript redirect that preserves the URL fragment
+- an accessible H1 and manual fallback link
+
+This prevents broken bookmarks without leaving outdated lesson copies publicly available.
 
 ## Current boundaries
 
