@@ -88,6 +88,45 @@ class TargetedPracticeContractTests(unittest.TestCase):
             issues = MODULE.validate_page(root)
             self.assertTrue(any("must not describe all 150" in issue for issue in issues))
 
+    def test_runtime_rejects_protect_typo(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "assets").mkdir()
+            (root / "data").mkdir()
+            (root / ".github" / "workflows").mkdir(parents=True)
+            for relative in (
+                "assets/targeted-practice.css", "browser-tests/targeted-practice.spec.cjs",
+                "docs/LAYER_12_TARGETED_PRACTICE.md",
+            ):
+                path = root / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text("", encoding="utf-8")
+            (root / "data" / "targeted-practice-config.json").write_text("{}", encoding="utf-8")
+            (root / "assets" / "targeted-practice-state.js").write_text(
+                "createAttempt hydrateAttempt weakDomains missedQuestionIds flaggedQuestionIds resolvePool "
+                "Choose at least one exam domain Choose at least one difficulty level htl:targeted-state",
+                encoding="utf-8",
+            )
+            (root / "assets" / "targeted-practice.js").write_text(
+                "recordTargetedPracticeSession recordTargetedPracticeAttempt selectedDomains selectedDifficulties "
+                "sourceQuestionId questionResults Study mode protect the lowest domain",
+                encoding="utf-8",
+            )
+            (root / "assets" / "progress-service.js").write_text(
+                "targetedPracticeAttempts recordTargetedPracticeSession recordTargetedPracticeAttempt targeted-practice-completed",
+                encoding="utf-8",
+            )
+            (root / "data" / "content-access.json").write_text(
+                '{"enforcementMode":"metadata-only","features":[{"id":"targeted-practice",'
+                '"path":"targeted-practice.html","accessTier":"premium"}]}',
+                encoding="utf-8",
+            )
+            (root / ".github" / "workflows" / "site-quality.yml").write_text(
+                "scripts/validate_targeted_practice.py", encoding="utf-8"
+            )
+            issues = MODULE.validate_runtime(root)
+            self.assertTrue(any("practice, not protect" in issue for issue in issues))
+
     def test_runtime_forbids_parallel_local_storage(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
