@@ -50,7 +50,7 @@ test('analytics remains off by default and exposes transparent privacy controls'
   await expect(page.locator('[data-analytics-dialog]')).toBeVisible();
   await expect(page.locator('[data-analytics-state]')).toHaveText('Analytics is currently off.');
   await expect(page.locator('[data-analytics-actions]')).toBeHidden();
-  await expect(page.locator('[data-analytics-debug]')).toContainText('page_view');
+  await expect(page.locator('[data-analytics-debug]')).toContainText('Analytics debug · unset');
 
   const debugEvents = await page.evaluate(() => window.FreeHTLAnalytics.debugEvents);
   expect(debugEvents.some((entry) => entry.eventName === 'page_view')).toBeTruthy();
