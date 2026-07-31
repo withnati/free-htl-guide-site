@@ -28,6 +28,7 @@
       'study-task-updated': `${item.checked ? 'Completed' : 'Reopened'} study task ${item.taskId || ''}`,
       'quiz-completed': `Completed ${item.page || 'module'} quiz at ${item.percent ?? 0}%`,
       'mock-exam-completed': `Completed a ${item.mode || ''} mock exam at ${item.percent ?? 0}%`,
+      'targeted-practice-completed': `Completed a ${item.mode || ''} targeted set at ${item.percent ?? 0}%`,
       'legacy-progress-imported': `Imported ${item.importedRecords || 0} existing browser progress records`,
       'progress-reset': 'Reset learning progress'
     };
@@ -53,7 +54,7 @@
         <strong>${escapeHtml(item.domain)}</strong>
         <div class="domain-track" aria-label="${escapeHtml(item.domain)} average ${item.average}%"><i style="width:${Math.max(0, Math.min(100, item.average))}%"></i></div>
         <span>${item.average}%</span>
-      </div>`).join('') : '<div class="empty-state">Complete a mock exam to generate five-domain performance trends.</div>';
+      </div>`).join('') : '<div class="empty-state">Complete a mock exam or targeted set to generate five-domain performance trends.</div>';
   }
 
   function renderActivity(model) {
