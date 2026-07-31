@@ -126,6 +126,15 @@ class AnalyticsValidatorTests(unittest.TestCase):
         messages = [issue.message for issue in validate_analytics(root)]
         self.assertIn("Third-party analytics tags must not be statically embedded", messages)
 
+    def test_commented_google_tag_is_ignored(self) -> None:
+        root = self.make_root()
+        (root / "index.html").write_text(
+            '<!doctype html><html><body><!-- <script src="https://www.googletagmanager.com/gtag/js?id=G-ABCDEF12"></script> --><script src="assets/guide.js"></script></body></html>',
+            encoding="utf-8",
+        )
+        messages = [issue.message for issue in validate_analytics(root)]
+        self.assertNotIn("Third-party analytics tags must not be statically embedded", messages)
+
     def test_privacy_policy_must_match_disabled_state(self) -> None:
         root = self.make_root()
         (root / "privacy.html").write_text(
