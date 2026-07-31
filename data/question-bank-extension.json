@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "version": "1.0.0",
+  "reviewed": "2026-07-31",
+  "questionCount": 80,
+  "model": "answer-key-free-source-variants",
+  "parts": [
+    "data/question-variants-fixation.json",
+    "data/question-variants-processing.json",
+    "data/question-variants-embedding.json",
+    "data/question-variants-he.json",
+    "data/question-variants-special-stains.json",
+    "data/question-variants-ihc-ish.json",
+    "data/question-variants-lab-operations.json"
+  ],
+  "moduleCounts": {
+    "fixation-v3": 20,
+    "processing-v3": 14,
+    "embedding-v3": 20,
+    "he-guide": 6,
+    "special-stains": 6,
+    "ihc-ish": 6,
+    "lab-operations": 8
+  },
+  "editorialStandard": "Every variant references one reviewed module question, preserves its four choices and grading key, and changes only the scenario wording, teaching explanation, or difficulty classification. Variants are independent preparation material and do not reproduce confidential examination content."
+}

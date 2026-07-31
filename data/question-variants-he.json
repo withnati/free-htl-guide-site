@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "moduleId": "he-guide",
+  "variants": [
+    {"id":"hev-001","sourceQuestionId":"he-guide-1","difficulty":"Foundational","stem":"Which listed description correctly defines a regressive hematoxylin technique?","explanation":"A regressive method intentionally overstains nuclei and then removes excess stain through controlled differentiation."},
+    {"id":"hev-002","sourceQuestionId":"he-guide-2","difficulty":"Application","stem":"Nuclei remain red-purple after hematoxylin. Which listed purpose describes the step most likely to correct them?","explanation":"Bluing uses an alkaline environment to convert the hematoxylin lake to a crisp blue form."},
+    {"id":"hev-003","sourceQuestionId":"he-guide-3","difficulty":"Troubleshooting","stem":"Nuclei become very pale immediately after acid-alcohol treatment. Which listed cause is most likely?","explanation":"Excessive differentiation removes too much hematoxylin and produces pale nuclear staining."},
+    {"id":"hev-004","sourceQuestionId":"he-guide-4","difficulty":"Troubleshooting","stem":"Eosin becomes weak after water is carried into the staining station. Which listed cause best explains the result?","explanation":"Water carryover dilutes eosin and interferes with its binding to cytoplasmic and extracellular proteins."},
+    {"id":"hev-005","sourceQuestionId":"he-guide-5","difficulty":"Application","stem":"A freshly mounted H&E slide appears cloudy beneath the coverslip. Which listed processing defect is most likely?","explanation":"Residual water from incomplete dehydration creates a milky appearance before nonaqueous mounting."},
+    {"id":"hev-006","sourceQuestionId":"he-guide-6","difficulty":"Troubleshooting","stem":"A section contains irregular clear patches that never contacted aqueous stain. Which listed upstream problem best fits?","explanation":"Residual paraffin blocks aqueous reagents and produces patchy unstained areas."}
+  ]
+}
