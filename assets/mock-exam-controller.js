@@ -88,16 +88,39 @@
     const summary = results.summarize(attempt, bank.blueprint);
     attempt.completed = true;
     const entry = {
+      attemptId: attempt.attemptId || null,
+      examId: attempt.examId,
       completedAt,
       mode: attempt.mode,
       score: summary.score,
       total: summary.total,
       percent: summary.percent,
       timeUsedMs: completedAt - attempt.startedAt,
-      timeExpired
+      timeExpired,
+      domains: summary.domains
     };
+    const questionResults = summary.fields.map((field) => {
+      const questionId = field.dataset.examQuestionId;
+      const question = attempt.questions.find((item) => item.id === questionId);
+      return {
+        questionId,
+        sourceQuestionId: question?.variantOf || questionId,
+        moduleId: question?.moduleId || null,
+        domain: question?.domain || null,
+        selectedOptionId: attempt.responses[questionId] || null,
+        correct: field.classList.contains('correct'),
+        flagged: attempt.flags.includes(questionId)
+      };
+    });
     state.addHistory(entry, bank.blueprint.historyLimit);
     state.clearAttempt();
+    window.dispatchEvent(new CustomEvent('htl:mock-completed', {
+      detail: {
+        ...entry,
+        completedAt: new Date(completedAt).toISOString(),
+        questionResults
+      }
+    }));
     results.render(summary, attempt, completedAt);
     ui.renderHistory(state.history(), state.formatDuration);
   }
