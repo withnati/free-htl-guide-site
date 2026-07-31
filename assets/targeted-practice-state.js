@@ -21,17 +21,34 @@
     ];
     attempts.forEach((attempt) => {
       (attempt.domains || []).forEach((item) => {
-        if (!Number.isFinite(Number(item.percent))) return;
-        values[item.domain] ||= [];
-        values[item.domain].push(Number(item.percent));
+        const percent = Number(item.percent);
+        const correct = Number(item.correct);
+        const total = Number(item.total);
+        if (!Number.isFinite(percent) && !(Number.isFinite(correct) && Number.isFinite(total) && total > 0)) return;
+        values[item.domain] ||= { attempts: 0, correct: 0, total: 0, fallbackPercents: [], latest: null };
+        const value = values[item.domain];
+        value.attempts += 1;
+        if (value.latest === null && Number.isFinite(percent)) value.latest = percent;
+        if (Number.isFinite(correct) && Number.isFinite(total) && total > 0) {
+          value.correct += correct;
+          value.total += total;
+        } else if (Number.isFinite(percent)) {
+          value.fallbackPercents.push(percent);
+        }
       });
     });
-    return Object.entries(values).map(([domain, scores]) => ({
-      domain,
-      attempts: scores.length,
-      average: Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length),
-      latest: scores[0]
-    })).sort((left, right) => left.average - right.average || left.domain.localeCompare(right.domain));
+    return Object.entries(values).map(([domain, value]) => {
+      const fallbackAverage = value.fallbackPercents.length
+        ? value.fallbackPercents.reduce((sum, score) => sum + score, 0) / value.fallbackPercents.length
+        : 0;
+      const average = value.total > 0 ? (value.correct / value.total) * 100 : fallbackAverage;
+      return {
+        domain,
+        attempts: value.attempts,
+        average: Math.round(average),
+        latest: value.latest
+      };
+    }).sort((left, right) => left.average - right.average || left.domain.localeCompare(right.domain));
   }
 
   function weakDomains(snapshot, allowedDomains) {
@@ -50,31 +67,30 @@
     ];
     attempts.forEach((attempt) => {
       (attempt.questionResults || []).forEach((item) => {
-        if (!item.correct) {
-          if (item.questionId) missed.add(item.questionId);
-          if (item.sourceQuestionId) missed.add(item.sourceQuestionId);
-        }
+        if (!item.correct && item.questionId) missed.add(item.questionId);
       });
     });
     return missed;
   }
 
   function resolvePool(bank, setup, snapshot, config) {
-    const configuredDomains = setup.domains.length ? setup.domains : [...config.domains];
-    let domains = configuredDomains;
+    if (!setup.domains.length) throw new Error('Choose at least one exam domain.');
+    if (!setup.difficulties.length) throw new Error('Choose at least one difficulty level.');
+
+    let domains = [...setup.domains];
     if (setup.sourceMode === 'weak') {
-      domains = weakDomains(snapshot, config.domains);
+      domains = weakDomains(snapshot, setup.domains);
       if (!domains.length) throw new Error('Complete a mock exam or targeted practice set before using weak-domain practice.');
     }
 
     const domainSet = new Set(domains);
-    const difficultySet = new Set(setup.difficulties.length ? setup.difficulties : config.difficulties);
+    const difficultySet = new Set(setup.difficulties);
     let pool = bank.questions.filter((question) => domainSet.has(question.domain) && difficultySet.has(question.difficulty));
 
     if (setup.sourceMode === 'missed') {
       const missed = missedQuestionIds(snapshot);
       if (!missed.size) throw new Error('No previously missed questions are stored yet.');
-      pool = pool.filter((question) => missed.has(question.id) || missed.has(question.variantOf || question.id));
+      pool = pool.filter((question) => missed.has(question.id));
     }
 
     return { pool, domains };
@@ -93,7 +109,7 @@
       mode: setup.mode,
       sourceMode: setup.sourceMode,
       selectedDomains: domains,
-      selectedDifficulties: setup.difficulties.length ? setup.difficulties : [...config.difficulties],
+      selectedDifficulties: [...setup.difficulties],
       requestedCount: count,
       startedAt: Date.now(),
       currentIndex: 0,
