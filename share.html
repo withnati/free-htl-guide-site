@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Free HTL Guide | Practical HT and HTL Exam Preparation</title>
+  <meta name="description" content="Open a free Free HTL Guide study module, practice resource, or six-week HT and HTL study plan.">
+  <meta name="robots" content="noindex,follow,max-image-preview:large">
+  <link rel="canonical" href="https://withnati.github.io/free-htl-guide-site/share.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Free HTL Guide">
+  <meta property="og:title" content="Free HTL Guide | Practical HT and HTL Exam Preparation">
+  <meta property="og:description" content="Free practical study guides, quizzes, and resources covering fixation through IHC and ISH.">
+  <meta property="og:url" content="https://withnati.github.io/free-htl-guide-site/share.html">
+  <meta property="og:image" content="https://withnati.github.io/free-htl-guide-site/assets/og-home.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Free HTL Guide — practical HT and HTL exam preparation">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Free HTL Guide | Practical HT and HTL Exam Preparation">
+  <meta name="twitter:description" content="Free practical study guides, quizzes, and resources covering fixation through IHC and ISH.">
+  <meta name="twitter:image" content="https://withnati.github.io/free-htl-guide-site/assets/og-home.png">
+  <meta name="twitter:image:alt" content="Free HTL Guide — practical HT and HTL exam preparation">
+  <meta name="theme-color" content="#0F4C81">
+  <link rel="icon" type="image/svg+xml" sizes="any" href="assets/app-icon.svg">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="stylesheet" href="assets/guide.css">
+</head>
+<body data-page="share">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="bar"><a class="brand" href="index.html">Free HTL Guide</a><nav class="nav" aria-label="Primary"><a href="index.html#modules">Modules</a><a href="study-plan.html">Study plan</a><a href="practice.html">Practice</a><a href="about.html">About</a></nav><div class="actions"><button id="themeBtn" class="btn" aria-label="Toggle dark mode">🌙</button><a class="btn btn-primary" href="index.html">Open guide</a></div></div></header>
+<main id="main" class="layout" style="max-width:900px;grid-template-columns:1fr;margin:auto">
+  <article class="content">
+    <section class="section card" style="text-align:center;padding:3rem 1.5rem">
+      <p class="eyebrow">Shared Free HTL Guide resource</p>
+      <h1 id="shareTitle">Opening your study resource</h1>
+      <p id="shareDescription" class="lead">This link points to a free HT or HTL study resource.</p>
+      <p><a id="continueLink" class="btn btn-primary" href="index.html">Continue to Free HTL Guide</a></p>
+      <p id="shareStatus" class="small muted" role="status" aria-live="polite">Checking the shared link…</p>
+    </section>
+  </article>
+</main>
+<footer class="footer"><div class="footer-inner"><span>© <span data-year></span> Free HTL Guide</span><span>Independent educational resource</span></div></footer>
+<script>
+(() => {
+  'use strict';
+  const key = new URLSearchParams(window.location.search).get('p') || '';
+  const status = document.getElementById('shareStatus');
+  const link = document.getElementById('continueLink');
+  const title = document.getElementById('shareTitle');
+  const description = document.getElementById('shareDescription');
+
+  fetch('data/site-seo.json', { credentials: 'same-origin' })
+    .then((response) => {
+      if (!response.ok) throw new Error(`Metadata request returned ${response.status}`);
+      return response.json();
+    })
+    .then((data) => {
+      const page = data.pages?.[key];
+      if (!page || !page.share) throw new Error('Unknown shared page');
+      const label = page.breadcrumbs?.at(-1)?.name || 'Free HTL Guide resource';
+      const target = new URL(page.path, data.site.url);
+      title.textContent = label;
+      description.textContent = `Continue to ${label} on Free HTL Guide.`;
+      link.href = target.href;
+      link.textContent = `Open ${label}`;
+      status.textContent = 'Redirecting to the shared resource…';
+      window.setTimeout(() => window.location.replace(target.href), 250);
+    })
+    .catch(() => {
+      status.textContent = 'The specific resource could not be identified. Open the main guide instead.';
+    });
+})();
+</script>
+<script src="assets/guide.js" defer></script>
+</body>
+</html>
