@@ -71,6 +71,17 @@ def validate_access(data: dict, root: Path) -> list[str]:
         if not path or not (root / path).is_file():
             issues.append(f"Missing module path for {module_id}: {path}")
 
+    features = {item.get("id"): item for item in data.get("features") or []}
+    targeted = features.get("targeted-practice") or {}
+    if targeted.get("path") != "targeted-practice.html":
+        issues.append("targeted-practice must point to targeted-practice.html")
+    if targeted.get("accessTier") != "premium":
+        issues.append("targeted-practice must be marked premium")
+    if targeted.get("planned") is True:
+        issues.append("targeted-practice must no longer be marked planned after Layer 12")
+    if targeted.get("previewAvailable") is not True:
+        issues.append("targeted-practice must remain an explicit development preview until secure enforcement exists")
+
     plan = data.get("accountPlan") or {}
     if plan.get("currentAdapter") != "local-browser":
         issues.append("current account-ready adapter must be local-browser")
@@ -87,12 +98,18 @@ def validate_access(data: dict, root: Path) -> list[str]:
 
 def validate_schema(data: dict) -> list[str]:
     issues: list[str] = []
-    if data.get("schemaVersion") != 1:
-        issues.append("progress schemaVersion must be 1")
+    if data.get("schemaVersion") != 2:
+        issues.append("progress schemaVersion must be 2")
     if data.get("storageKey") != "free-htl-progress-v1":
-        issues.append("progress storageKey must be free-htl-progress-v1")
+        issues.append("progress storageKey must remain free-htl-progress-v1 for in-place migration")
     if set(data.get("domains") or []) != REQUIRED_DOMAINS:
         issues.append("progress domains must match the five controlled exam domains")
+    if set(data.get("activeSessionTypes") or []) != {"mock-exam", "targeted-practice"}:
+        issues.append("activeSessionTypes must include mock-exam and targeted-practice")
+    if "targetedPracticeAttempts" not in set(data.get("syncableCollections") or []):
+        issues.append("targetedPracticeAttempts must be account-syncable")
+    if not isinstance(data.get("targetedAttemptLimit"), int) or data["targetedAttemptLimit"] < 50:
+        issues.append("targetedAttemptLimit must retain at least 50 attempts")
     excluded = set(data.get("excludedFromAccountSync") or [])
     for field in {"notes", "analyticsConsent", "theme", "emailAddress"}:
         if field not in excluded:
@@ -143,19 +160,21 @@ def validate_runtime(root: Path) -> list[str]:
     required_files = [
         "assets/progress-service.js", "assets/dashboard.js", "assets/dashboard.css",
         "assets/guide.js", "assets/mock-exam-state.js", "assets/mock-exam-controller.js",
+        "assets/targeted-practice-state.js", "assets/targeted-practice.js",
         "docs/LAYER_11_ACCOUNT_READY_PROGRESS.md",
     ]
     for relative in required_files:
         if not (root / relative).is_file():
-            issues.append(f"Missing required Layer 11 file: {relative}")
+            issues.append(f"Missing required progress file: {relative}")
     if issues:
         return issues
 
     service = (root / "assets/progress-service.js").read_text(encoding="utf-8")
     for token in (
         "class LocalProgressAdapter", "async function useAdapter", "migrateLegacy",
-        "recordMockExamAttempt", "exportProgress", "resetProgress",
-        "selectedOptionId",
+        "recordMockExamAttempt", "recordTargetedPracticeSession",
+        "recordTargetedPracticeAttempt", "targetedPracticeAttempts",
+        "exportProgress", "resetProgress", "selectedOptionId",
     ):
         if token not in service:
             issues.append(f"progress-service.js is missing contract token: {token}")
@@ -207,7 +226,7 @@ def main() -> int:
         for issue in issues:
             print(f"- {issue}")
         return 1
-    print("Account-ready progress validation passed: local adapter, migration, noindex dashboard, and future entitlement boundaries are intact.")
+    print("Account-ready progress validation passed: local adapter, migration, targeted practice, noindex dashboard, and future entitlement boundaries are intact.")
     return 0
 
 
