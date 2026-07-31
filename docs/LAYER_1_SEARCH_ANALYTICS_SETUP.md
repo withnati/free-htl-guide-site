@@ -13,7 +13,9 @@ The repository-side foundation is installed. Analytics remains disabled until a 
   - `quiz_complete`
   - `quiz_reset`
   - `study_task_toggle`
-  - `email_signup_submit`
+  - `email_signup_start`
+  - `email_signup_success`
+  - `email_signup_error`
   - `outbound_click`
 - Analytics debug mode works without sending data by adding `?analytics_debug=1` to a page URL and opening the browser console.
 
@@ -47,9 +49,11 @@ Then open the browser developer console and test:
 - submitting a quiz
 - resetting a quiz
 - checking a study-plan task
-- submitting the email form
+- completing or intentionally failing an email signup
 
 The console should show `[Free HTL Analytics]` event messages. No information is sent while the Measurement ID is blank.
+
+For email signup testing, confirm that the payload includes only the form ID, source page, and a generic error type. It must not contain the entered email address.
 
 ## Activate Google Search Console
 
@@ -83,9 +87,9 @@ Create simple explorations for:
 - downloads by file name
 - quiz completion rate and score percent
 - study-plan task interactions
-- email signup submissions
+- email signup starts, successes, and errors
 - landing pages and traffic sources
 
 ## Privacy note
 
-Do not place email addresses, names, quiz answers, notes, or other user-entered text inside analytics event parameters. The installed event layer records only page IDs, link/file information, task IDs, and numeric quiz results.
+Do not place email addresses, names, quiz answers, notes, or other user-entered text inside analytics event parameters. The installed event layer records only page IDs, link/file information, task IDs, numeric quiz results, form IDs, source pages, and generic signup outcomes.
