@@ -1,0 +1,147 @@
+.exam-main {
+  max-width: 1180px;
+  margin: auto;
+  padding: 2rem 1rem 4rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.section-heading.compact {
+  align-items: center;
+  margin-bottom: .75rem;
+}
+
+.section-heading h2,
+.section-heading h3 {
+  margin: 0;
+}
+
+.exam-setup-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, .8fr) minmax(0, 1.2fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.exam-mode fieldset,
+.exam-question fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.exam-mode legend {
+  font-weight: 800;
+  margin-bottom: .65rem;
+}
+
+.mode-option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .75rem;
+  align-items: start;
+  padding: .9rem;
+  margin: 0 0 .65rem;
+  border: 1px solid var(--line);
+  border-radius: .9rem;
+  cursor: pointer;
+}
+
+.mode-option:has(input:checked) {
+  border-color: var(--brand);
+  background: #eff6ff;
+  box-shadow: 0 0 0 1px var(--brand);
+}
+
+.mode-option input {
+  margin-top: .3rem;
+}
+
+.mode-option span {
+  display: grid;
+  gap: .15rem;
+}
+
+.mode-option small {
+  color: var(--muted);
+}
+
+.exam-start-actions,
+.result-actions,
+.exam-question-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .65rem;
+  margin-top: 1rem;
+}
+
+.exam-blueprint th:nth-child(n+2),
+.exam-blueprint td:nth-child(n+2) {
+  text-align: center;
+}
+
+.exam-workspace {
+  display: grid;
+  gap: 1rem;
+}
+
+.exam-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.exam-toolbar > div:first-child {
+  display: grid;
+}
+
+.exam-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: .65rem;
+}
+
+.exam-metrics > span {
+  min-width: 78px;
+  display: grid;
+  text-align: center;
+  padding: .45rem .65rem;
+  border: 1px solid var(--line);
+  border-radius: .75rem;
+  background: var(--soft);
+}
+
+.exam-metrics small {
+  font-size: .7rem;
+  color: var(--muted);
+}
+
+.exam-timer[data-warning="true"] {
+  border-color: #d97706;
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.exam-timer[data-expired="true"] {
+  border-color: var(--bad);
+  background: #fef2f2;
+  color: var(--bad);
+}
+
+.exam-progress {
+  height: .55rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e2e8f0;
+}

@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "examId": "htl-mock-50",
+  "title": "HT/HTL Mock Exam",
+  "questionCount": 50,
+  "practiceTimeMinutes": 75,
+  "studyTargetPercent": 80,
+  "historyLimit": 10,
+  "extensionBankPath": "data/question-bank-extension.json",
+  "disclaimer": "This independent practice exam is not produced, endorsed, or scored by ASCP or the ASCP Board of Certification. The 80% target is a study goal, not an official passing score or prediction.",
+  "sourceModules": [
+    {
+      "id": "fixation-v3",
+      "path": "modules/fixation-guide-v3.html",
+      "domain": "Fixation"
+    },
+    {
+      "id": "processing-v3",
+      "path": "modules/processing-guide-v3.html",
+      "domain": "Processing"
+    },
+    {
+      "id": "embedding-v3",
+      "path": "modules/embedding-guide-v3.html",
+      "domain": "Embedding/Microtomy"
+    },
+    {
+      "id": "he-guide",
+      "path": "modules/staining-he-guide.html",
+      "domain": "Staining"
+    },
+    {
+      "id": "special-stains",
+      "path": "modules/special-stains-guide.html",
+      "domain": "Staining"
+    },
+    {
+      "id": "ihc-ish",
+      "path": "modules/ihc-ish-guide.html",
+      "domain": "Staining"
+    },
+    {
+      "id": "lab-operations",
+      "path": "modules/lab-operations-guide.html",
+      "domain": "Laboratory Operations"
+    }
+  ],
+  "blueprint": [
+    {
+      "domain": "Fixation",
+      "count": 10,
+      "percent": 20,
+      "officialRange": "15–25%",
+      "moduleTargets": {
+        "fixation-v3": 10
+      }
+    },
+    {
+      "domain": "Processing",
+      "count": 8,
+      "percent": 16,
+      "officialRange": "10–20%",
+      "moduleTargets": {
+        "processing-v3": 8
+      }
+    },
+    {
+      "domain": "Embedding/Microtomy",
+      "count": 10,
+      "percent": 20,
+      "officialRange": "15–25%",
+      "moduleTargets": {
+        "embedding-v3": 10
+      }
+    },
+    {
+      "domain": "Staining",
+      "count": 16,
+      "percent": 32,
+      "officialRange": "30–40%",
+      "moduleTargets": {
+        "he-guide": 6,
+        "special-stains": 5,
+        "ihc-ish": 5
+      }
+    },
+    {
+      "domain": "Laboratory Operations",
+      "count": 6,
+      "percent": 12,
+      "officialRange": "10–15%",
+      "moduleTargets": {
+        "lab-operations": 6
+      }
+    }
+  ],
+  "minimumQuestionBankSize": 70
+}
