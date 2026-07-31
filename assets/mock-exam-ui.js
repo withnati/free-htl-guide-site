@@ -25,7 +25,7 @@
     refs.start.disabled = false;
   }
 
-  function fieldsetFrom(question) {
+  function fieldsetFrom(question, index) {
     const template = document.createElement('template');
     template.innerHTML = question.fieldsetHtml.trim();
     const fieldset = template.content.firstElementChild;
@@ -34,7 +34,11 @@
     fieldset.dataset.examModule = question.moduleId;
     fieldset.hidden = true;
     const legend = $('legend', fieldset);
-    if (legend) legend.textContent = legend.textContent.replace(/^\s*\d+\.\s*/, '');
+    if (legend) {
+      legend.textContent = legend.textContent.replace(/^\s*\d+\.\s*/, '');
+      legend.id = `exam-question-heading-${index}`;
+      legend.tabIndex = -1;
+    }
     $$('input[type="radio"]', fieldset).forEach((input) => { input.name = `exam-${question.id}`; });
     return fieldset;
   }
@@ -43,7 +47,7 @@
     refs.form.innerHTML = '';
     refs.grid.innerHTML = '';
     attempt.questions.forEach((question, index) => {
-      const fieldset = fieldsetFrom(question);
+      const fieldset = fieldsetFrom(question, index);
       const saved = attempt.responses[question.id];
       if (saved) fieldset.querySelector(`input[value="${CSS.escape(saved)}"]`)?.setAttribute('checked', '');
       refs.form.appendChild(fieldset);
@@ -65,6 +69,7 @@
     const index = attempt.currentIndex;
     const question = attempt.questions[index];
     $$('fieldset', refs.form).forEach((fieldset, itemIndex) => { fieldset.hidden = itemIndex !== index; });
+    refs.exam.setAttribute('aria-labelledby', `exam-question-heading-${index}`);
     refs.position.textContent = `${index + 1} of ${attempt.questions.length}`;
     refs.answered.textContent = String(Object.keys(attempt.responses).length);
     refs.flagged.textContent = String(attempt.flags.length);
@@ -82,7 +87,7 @@
       button.setAttribute('aria-current', itemIndex === index ? 'true' : 'false');
     });
     refs.warning.hidden = true;
-    refs.form.querySelector('fieldset:not([hidden]) legend')?.focus?.();
+    refs.form.querySelector('fieldset:not([hidden]) legend')?.focus();
   }
 
   function renderHistory(entries, formatDuration) {
