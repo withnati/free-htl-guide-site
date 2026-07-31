@@ -1,0 +1,141 @@
+.exam-progress span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--brand);
+  transition: width .2s ease;
+}
+
+.exam-grid {
+  display: grid;
+  grid-template-columns: 285px minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.exam-navigator {
+  position: sticky;
+  top: 90px;
+}
+
+.btn-small {
+  padding: .38rem .55rem;
+  font-size: .76rem;
+}
+
+.question-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: .42rem;
+}
+
+.question-grid button {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  border-radius: .65rem;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.question-grid button:hover {
+  border-color: var(--brand);
+}
+
+.question-grid button.current {
+  outline: 3px solid rgba(15, 76, 129, .28);
+  border-color: var(--brand);
+}
+
+.question-grid button.answered {
+  background: #dbeafe;
+  border-color: #60a5fa;
+}
+
+.question-grid button.flagged::after {
+  content: "";
+  position: absolute;
+  top: .22rem;
+  right: .22rem;
+  width: .48rem;
+  height: .48rem;
+  border-radius: 50%;
+  background: #d97706;
+}
+
+.question-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  margin-top: .85rem;
+}
+
+.question-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+}
+
+.question-key i {
+  width: .7rem;
+  height: .7rem;
+  border-radius: .2rem;
+  border: 1px solid var(--line);
+}
+
+.question-key i.answered {
+  background: #dbeafe;
+  border-color: #60a5fa;
+}
+
+.question-key i.flagged {
+  border-radius: 50%;
+  background: #d97706;
+  border-color: #d97706;
+}
+
+.exam-question {
+  min-height: 540px;
+  display: flex;
+  flex-direction: column;
+}
+
+.question-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.exam-question legend {
+  font-size: clamp(1.2rem, 2.5vw, 1.55rem);
+  line-height: 1.35;
+  font-weight: 800;
+  margin-bottom: 1.1rem;
+}
+
+.exam-choice {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: .75rem;
+  align-items: start;
+  padding: .9rem 1rem;
+  margin: 0 0 .7rem;
+  border: 1px solid var(--line);
+  border-radius: .9rem;
+  cursor: pointer;
+}
+
+.exam-choice:hover {
+  border-color: #94a3b8;
+}
+
+.exam-choice:has(input:checked) {
+  border-color: var(--brand);
+  background: #eff6ff;
+  box-shadow: 0 0 0 1px var(--brand);
+}
