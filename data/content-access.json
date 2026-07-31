@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "enforcementMode": "metadata-only",
+  "secureEnforcementRequired": true,
+  "publicHookModuleId": "fixation-v3",
+  "tiers": {
+    "public": {"rank": 0, "label": "Public"},
+    "registered": {"rank": 1, "label": "Registered"},
+    "premium": {"rank": 2, "label": "Premium"}
+  },
+  "modules": [
+    {"id": "fixation-v3", "title": "Fixation", "path": "modules/fixation-guide-v3.html", "domain": "Fixation", "accessTier": "public", "order": 1},
+    {"id": "processing-v3", "title": "Processing and Decalcification", "path": "modules/processing-guide-v3.html", "domain": "Processing", "accessTier": "premium", "order": 2},
+    {"id": "embedding-v3", "title": "Embedding and Microtomy", "path": "modules/embedding-guide-v3.html", "domain": "Embedding/Microtomy", "accessTier": "premium", "order": 3},
+    {"id": "he-guide", "title": "Routine H&E Staining", "path": "modules/staining-he-guide.html", "domain": "Staining", "accessTier": "premium", "order": 4},
+    {"id": "special-stains", "title": "Special Stains", "path": "modules/special-stains-guide.html", "domain": "Staining", "accessTier": "premium", "order": 5},
+    {"id": "lab-operations", "title": "Laboratory Operations", "path": "modules/lab-operations-guide.html", "domain": "Laboratory Operations", "accessTier": "premium", "order": 6},
+    {"id": "ihc-ish", "title": "IHC and ISH Fundamentals", "path": "modules/ihc-ish-guide.html", "domain": "Staining", "accessTier": "premium", "order": 7}
+  ],
+  "features": [
+    {"id": "progress-dashboard", "title": "Progress dashboard", "path": "my-progress.html", "accessTier": "registered", "previewAvailable": true},
+    {"id": "study-plan", "title": "Six-week study plan", "path": "study-plan.html", "accessTier": "premium"},
+    {"id": "cumulative-practice", "title": "Cumulative practice", "path": "practice.html", "accessTier": "premium"},
+    {"id": "mock-exam", "title": "50-question mock exam", "path": "mock-exam.html", "accessTier": "premium"},
+    {"id": "targeted-practice", "title": "Targeted practice", "path": null, "accessTier": "premium", "planned": true}
+  ],
+  "accountPlan": {
+    "currentAdapter": "local-browser",
+    "futureAdapter": "authenticated-cloud",
+    "anonymousMigrationSupported": true,
+    "notesSyncDefault": "excluded",
+    "paymentEntitlementSource": "server-verified",
+    "clientMetadataIsNotAuthorization": true
+  }
+}

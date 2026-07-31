@@ -7,8 +7,22 @@
   const root = document.documentElement;
   const themeKey = 'htl-theme';
 
+  function guideScriptElement() {
+    return [...document.scripts].find((script) => /\/guide\.js(?:\?|$)/.test(script.src));
+  }
+
+  function loadProgressService() {
+    const guideScript = guideScriptElement();
+    if (!guideScript || window.FreeHTLProgress || document.querySelector('script[data-free-htl-progress]')) return;
+    const progressScript = document.createElement('script');
+    progressScript.src = new URL('progress-service.js', guideScript.src).href;
+    progressScript.async = false;
+    progressScript.dataset.freeHtlProgress = 'true';
+    document.head.appendChild(progressScript);
+  }
+
   function loadAnalytics() {
-    const guideScript = [...document.scripts].find((script) => /\/guide\.js(?:\?|$)/.test(script.src));
+    const guideScript = guideScriptElement();
     if (!guideScript || document.querySelector('script[data-free-htl-analytics]')) return;
 
     const analyticsScript = document.createElement('script');
@@ -16,6 +30,21 @@
     analyticsScript.async = true;
     analyticsScript.dataset.freeHtlAnalytics = 'true';
     document.head.appendChild(analyticsScript);
+  }
+
+  function addProgressNavigation() {
+    const guideScript = guideScriptElement();
+    if (!guideScript) return;
+    const href = new URL('../my-progress.html', guideScript.src).href;
+    [$('.nav'), $('#mobileMenu')].filter(Boolean).forEach((nav) => {
+      const existing = [...nav.querySelectorAll('a')].find((link) => /my-progress\.html(?:$|#|\?)/.test(link.href));
+      if (existing) return;
+      const link = document.createElement('a');
+      link.href = href;
+      link.textContent = 'My progress';
+      if (page === 'my-progress') link.setAttribute('aria-current', 'page');
+      nav.appendChild(link);
+    });
   }
 
   function addJsonLd(id, data) {
@@ -149,6 +178,8 @@
     }
   }
 
+  loadProgressService();
+
   const themeButton = $('#themeBtn');
 
   function setTheme(value) {
@@ -168,6 +199,7 @@
 
   const menuButton = $('#menuBtn');
   const mobileMenu = $('#mobileMenu');
+  addProgressNavigation();
 
   menuButton?.addEventListener('click', () => {
     const open = mobileMenu.classList.toggle('open');
@@ -206,6 +238,9 @@
           link.classList.toggle('active', link.getAttribute('href') === `#${entry.target.id}`);
         });
         localStorage.setItem(`last:${page}`, entry.target.id);
+        window.dispatchEvent(new CustomEvent('htl:module-section', {
+          detail: { page, sectionId: entry.target.id }
+        }));
       });
     }, { rootMargin: '-38% 0px -54% 0px' });
 

@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>My Progress | Free HTL Guide</title>
+  <meta name="description" content="Private HT and HTL study progress dashboard for module activity, quiz performance, mock exams, and recommended next steps.">
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="canonical" href="https://withnati.github.io/free-htl-guide-site/my-progress.html">
+  <link rel="stylesheet" href="assets/guide.css"><link rel="stylesheet" href="assets/dashboard.css">
+  <meta name="theme-color" content="#0F4C81">
+</head>
+<body data-page="my-progress">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="bar"><a class="brand" href="index.html">Free HTL Guide</a><nav class="nav" aria-label="Primary"><a href="index.html#modules">Modules</a><a href="study-plan.html">Study plan</a><a href="practice.html">Practice</a><a href="my-progress.html" aria-current="page">My progress</a></nav><div class="actions"><button id="themeBtn" class="btn" aria-label="Toggle dark mode">🌙</button><button id="menuBtn" class="btn menu-btn" aria-expanded="false" aria-controls="mobileMenu">Menu</button><a class="btn btn-primary" href="modules/fixation-guide-v3.html">Continue studying</a></div></div><nav id="mobileMenu" class="mobile-menu"><a href="index.html#modules">Modules</a><a href="study-plan.html">Study plan</a><a href="practice.html">Practice</a><a href="my-progress.html" aria-current="page">My progress</a></nav></header>
+<main id="main" class="dashboard-shell">
+  <section class="card dashboard-banner"><div><p class="eyebrow">Account-ready progress preview</p><h1>My progress</h1><p class="lead">See your study activity in one place while the secure account and subscription system is being built.</p></div><div class="callout"><strong>Currently local:</strong> progress is saved in this browser. A later account layer will attach eligible progress to a verified account.</div></section>
+  <p class="callout warn" data-progress-status tabindex="-1">This dashboard does not create an account or enforce premium access yet. Access labels describe the intended final product.</p>
+  <section class="callout warn" data-dashboard-error hidden>Progress could not be loaded. Your existing browser data has not been deleted.</section>
+  <div data-dashboard-content>
+    <section class="dashboard-grid" aria-label="Progress summary">
+      <article class="card metric-card"><span class="module-meta">Modules started</span><strong data-summary-modules>0/7</strong><span>Across the complete course</span></article>
+      <article class="card metric-card"><span class="module-meta">Average quiz</span><strong data-summary-quiz>—</strong><span>Recorded module attempts</span></article>
+      <article class="card metric-card"><span class="module-meta">Latest mock exam</span><strong data-summary-mock>—</strong><span>Not an official pass prediction</span></article>
+      <article class="card metric-card"><span class="module-meta">Study tasks completed</span><strong data-summary-tasks>0</strong><span>Checklists across the site</span></article>
+    </section>
+    <section class="card dashboard-section next-step" data-next-step aria-live="polite"><div><h2>Loading your next step…</h2></div></section>
+    <div class="dashboard-layout">
+      <div class="dashboard-stack">
+        <section class="card dashboard-section"><div class="section-heading"><div><p class="eyebrow">Course progress</p><h2>Modules</h2></div><span>Study coverage: <strong data-study-coverage>Starting</strong></span></div><div class="module-list" data-module-progress></div></section>
+        <section class="card dashboard-section"><div class="section-heading"><div><p class="eyebrow">Mock-exam trends</p><h2>Performance by domain</h2></div></div><div class="domain-list" data-domain-progress></div><p class="privacy-note">Only scores, domain summaries, question IDs, selected option IDs, and correctness are included in the account-ready record. Question text and answer keys are not copied.</p></section>
+      </div>
+      <aside class="dashboard-stack">
+        <section class="card dashboard-section account-panel"><p class="eyebrow">Identity and access</p><h2>Account foundation</h2><dl><div><dt>Profile</dt><dd data-account-status>Loading…</dd></div><div><dt>Storage</dt><dd data-storage-status>Loading…</dd></div><div><dt>Access</dt><dd data-access-status>Loading…</dd></div><div><dt>Future transfer</dt><dd data-migration-status>Loading…</dd></div></dl><p class="privacy-note">Secure authentication and server-verified subscription entitlements will be added in later layers. Browser metadata is never treated as proof of payment.</p></section>
+        <section class="card dashboard-section"><div class="section-heading"><div><p class="eyebrow">Recent work</p><h2>Activity</h2></div></div><div class="activity-list" data-recent-activity></div></section>
+        <section class="card dashboard-section"><p class="eyebrow">Your data</p><h2>Export or reset</h2><p>Export includes the account-ready learning record. Private notes, analytics consent, theme, and email addresses are excluded.</p><div class="dashboard-actions"><button class="btn" type="button" data-export-progress>Export progress</button><button class="btn" type="button" data-reset-progress>Reset progress</button></div><div class="callout warn reset-confirmation" data-reset-confirmation hidden><strong>Reset learning progress?</strong><p>This removes module, quiz, task, and mock-exam progress from this browser. Notes and privacy choices remain.</p><div class="dashboard-actions"><button class="btn btn-primary" type="button" data-confirm-reset>Confirm reset</button><button class="btn" type="button" data-cancel-reset>Cancel</button></div></div></section>
+      </aside>
+    </div>
+    <p class="small muted">Last progress update: <span data-progress-updated>Not yet</span></p>
+  </div>
+</main>
+<footer class="footer"><div class="footer-inner"><span>© <span data-year></span> Free HTL Guide</span><span>Independent educational resource • Personal progress is not an official readiness determination</span></div></footer>
+<script src="assets/progress-service.js" data-free-htl-progress defer></script><script src="assets/guide.js" defer></script><script src="assets/dashboard.js" defer></script>
+</body></html>
