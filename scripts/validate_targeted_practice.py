@@ -152,6 +152,8 @@ def validate_runtime(root: Path) -> list[str]:
     ):
         if token not in controller:
             issues.append(f"targeted-practice.js is missing token: {token}")
+    if "protect the lowest domain" in controller:
+        issues.append("targeted-practice result guidance must say practice, not protect, the lowest domain")
     for prohibited in ("localStorage.setItem", "questionText", "correctAnswer"):
         if prohibited in state or prohibited in controller:
             issues.append(f"targeted-practice runtime must not contain prohibited token: {prohibited}")
