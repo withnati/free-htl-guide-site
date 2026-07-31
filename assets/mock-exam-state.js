@@ -3,6 +3,30 @@
   const ACTIVE_KEY = 'free-htl-mock-active-v1';
   const HISTORY_KEY = 'free-htl-mock-history-v1';
 
+  function uid() {
+    return globalThis.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  }
+
+  function dispatchState(attempt) {
+    if (!attempt) {
+      window.dispatchEvent(new CustomEvent('htl:mock-state', { detail: { cleared: true } }));
+      return;
+    }
+    window.dispatchEvent(new CustomEvent('htl:mock-state', {
+      detail: {
+        attemptId: attempt.attemptId || null,
+        examId: attempt.examId,
+        mode: attempt.mode,
+        startedAt: attempt.startedAt,
+        expiresAt: attempt.expiresAt,
+        currentIndex: attempt.currentIndex,
+        questionIds: attempt.questions.map((question) => question.id),
+        responses: { ...attempt.responses },
+        flags: [...attempt.flags]
+      }
+    }));
+  }
+
   function shuffle(items) {
     const copy = [...items];
     for (let index = copy.length - 1; index > 0; index -= 1) {
@@ -23,7 +47,8 @@
     });
     const startedAt = Date.now();
     return {
-      version: 1,
+      version: 2,
+      attemptId: uid(),
       examId: bank.blueprint.examId,
       mode,
       startedAt,
@@ -43,6 +68,7 @@
 
   function saveAttempt(attempt) {
     localStorage.setItem(ACTIVE_KEY, JSON.stringify(attempt));
+    dispatchState(attempt);
   }
 
   function loadAttempt(examId) {
@@ -52,6 +78,7 @@
 
   function clearAttempt() {
     localStorage.removeItem(ACTIVE_KEY);
+    dispatchState(null);
   }
 
   function history() {
