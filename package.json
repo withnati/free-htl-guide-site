@@ -1,0 +1,14 @@
+{
+  "name": "free-htl-guide-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Static HT and HTL study guide with browser-level quality checks.",
+  "scripts": {
+    "test:browser": "playwright test",
+    "test:browser:headed": "playwright test --headed",
+    "test:browser:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.0"
+  }
+}
