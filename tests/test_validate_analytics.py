@@ -63,13 +63,7 @@ class AnalyticsValidatorTests(unittest.TestCase):
             "data-analytics-banner", "debugEvents",
         ]
         (root / "assets" / "analytics.js").write_text("\n".join(markers), encoding="utf-8")
-        privacy = (
-            "<!doctype html><html><body><h1>Privacy choices</h1>"
-            "<p>Analytics is currently disabled. If enabled, collection requires explicit consent. "
-            "It does not collect email addresses, personal notes, quiz answers, or question responses. "
-            "Analytics retention is set to 14 months.</p></body></html>"
-        )
-        (root / "privacy.html").write_text(privacy, encoding="utf-8")
+        self.write_disabled_privacy(root)
         (root / "index.html").write_text(
             '<!doctype html><html><body><script src="assets/guide.js"></script></body></html>',
             encoding="utf-8",
@@ -82,8 +76,35 @@ class AnalyticsValidatorTests(unittest.TestCase):
     def save_config(self, root: Path, config: dict) -> None:
         (root / "data" / "analytics-config.json").write_text(json.dumps(config), encoding="utf-8")
 
+    def write_disabled_privacy(self, root: Path) -> None:
+        privacy = (
+            "<!doctype html><html><body><h1>Privacy choices</h1>"
+            "<p>Analytics is currently disabled. If enabled, collection requires explicit consent. "
+            "It does not collect email addresses, personal notes, quiz answers, or question responses. "
+            "Analytics retention is set to 14 months.</p></body></html>"
+        )
+        (root / "privacy.html").write_text(privacy, encoding="utf-8")
+
+    def write_enabled_privacy(self, root: Path) -> None:
+        privacy = (
+            "<!doctype html><html><body><h1>Privacy choices</h1>"
+            "<p>Analytics is available only after explicit consent. "
+            "It does not collect email addresses, personal notes, quiz answers, or question responses. "
+            "Analytics retention is set to 14 months.</p></body></html>"
+        )
+        (root / "privacy.html").write_text(privacy, encoding="utf-8")
+
     def test_valid_contract_passes(self) -> None:
         self.assertEqual(validate_analytics(self.make_root()), [])
+
+    def test_valid_enabled_contract_passes(self) -> None:
+        root = self.make_root()
+        config = self.load_config(root)
+        config["enabled"] = True
+        config["measurementId"] = "G-BTGBBLRFB3"
+        self.save_config(root, config)
+        self.write_enabled_privacy(root)
+        self.assertEqual(validate_analytics(root), [])
 
     def test_enabled_analytics_requires_measurement_id(self) -> None:
         root = self.make_root()
@@ -143,6 +164,22 @@ class AnalyticsValidatorTests(unittest.TestCase):
         )
         messages = [issue.message for issue in validate_analytics(root)]
         self.assertIn("Privacy policy must state: analytics is currently disabled", messages)
+
+    def test_privacy_policy_must_match_enabled_state(self) -> None:
+        root = self.make_root()
+        config = self.load_config(root)
+        config["enabled"] = True
+        config["measurementId"] = "G-BTGBBLRFB3"
+        self.save_config(root, config)
+        messages = [issue.message for issue in validate_analytics(root)]
+        self.assertIn(
+            "Privacy policy must state: analytics is available only after explicit consent",
+            messages,
+        )
+        self.assertIn(
+            "Privacy policy says analytics is disabled while configuration enables it",
+            messages,
+        )
 
 
 if __name__ == "__main__":
