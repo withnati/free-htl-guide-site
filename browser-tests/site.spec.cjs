@@ -196,3 +196,30 @@ test('custom 404 page renders and offers recovery links', async ({ page }, testI
   await expect(page.getByRole('link', { name: 'Browse modules' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Report a broken link' })).toHaveAttribute('href', 'contact.html');
 });
+
+test('all modules render authority metadata and classify 70 questions', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium');
+  const moduleUrls = productionUrls.filter((url) => new URL(url).pathname.includes('/modules/'));
+  let totalQuestions = 0;
+
+  expect(moduleUrls).toHaveLength(7);
+
+  for (const productionUrl of moduleUrls) {
+    const urlPath = localPath(productionUrl);
+    await page.goto(urlPath, { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('body')).toHaveAttribute('data-authority-loaded', 'true');
+    await expect(page.locator('#authority')).toBeVisible();
+    await expect(page.locator('.hero-card .status')).toContainText('v1.1.0');
+    await expect(page.getByRole('link', { name: 'Official content guideline' })).toHaveAttribute('href', /^https:\/\//);
+    await expect(page.getByRole('link', { name: 'Editorial standards and corrections' })).toBeVisible();
+
+    const questions = page.locator('#quiz fieldset[data-difficulty]');
+    await expect(questions).toHaveCount(10);
+    await expect(page.locator('#quiz .difficulty')).toHaveCount(10);
+    const difficulties = await questions.evaluateAll((items) => items.map((item) => item.dataset.difficulty));
+    expect(difficulties.every((item) => ['Foundational', 'Application', 'Troubleshooting'].includes(item))).toBe(true);
+    totalQuestions += difficulties.length;
+  }
+
+  expect(totalQuestions).toBe(70);
+});

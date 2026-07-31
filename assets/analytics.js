@@ -63,6 +63,14 @@
     document.head.appendChild(signupScript);
   }
 
+  if (analyticsScript?.src && !document.querySelector('script[data-free-htl-authority]')) {
+    const authorityScript = document.createElement('script');
+    authorityScript.src = new URL('authority.js', analyticsScript.src).href;
+    authorityScript.async = true;
+    authorityScript.dataset.freeHtlAuthority = 'true';
+    document.head.appendChild(authorityScript);
+  }
+
   document.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : event.target?.parentElement;
     const link = target?.closest('a[href]');
