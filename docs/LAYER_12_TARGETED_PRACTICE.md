@@ -77,7 +77,7 @@ Progress export continues to exclude notes, email addresses, theme, and analytic
 Layer 12 adds:
 
 - `scripts/validate_targeted_practice.py`;
-- regression tests for filters, modes, access status, editorial-status wording, noindex handling, and storage boundaries;
+- regression tests for filters, modes, access status, editorial-status wording, corrected result guidance, noindex handling, and storage boundaries;
 - desktop and Pixel 7 browser tests for loading, required filters, Study mode, resume, Exam mode, weak-domain selection, domain-specific weak links, exact missed-question selection, exact flagged-question selection, sanitized stored outcomes, and responsive layout;
 - continued execution of all existing site, authority, mock-exam, SEO, analytics, and progress checks.
 
