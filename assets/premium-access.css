@@ -78,6 +78,13 @@
   gap: 1.25rem;
 }
 
+.premium-content[hidden],
+.premium-actions[hidden],
+.premium-request-reference[hidden],
+.premium-loader[hidden] {
+  display: none;
+}
+
 .premium-content-header {
   border-top: 0.3rem solid #207a4b;
 }
