@@ -4,6 +4,10 @@
   const script = [...document.scripts].find((item) => /\/auth-service\.js(?:\?|$)/.test(item.src));
   const config = window.FreeHTLSupabaseConfig;
   const rootUrl = script ? new URL('../', script.src) : new URL('./', window.location.href);
+  const CLOUD_DECISION_KEY = 'free-htl-cloud-sync-v1';
+  const CLOUD_PENDING_PREFIX = 'free-htl-cloud-pending-v1:';
+  const CLOUD_CACHE_PREFIX = 'free-htl-cloud-cache-v1:';
+  const PROGRESS_STORAGE_KEY = 'free-htl-progress-v1';
 
   function siteUrl(path) {
     return new URL(path.replace(/^\//, ''), rootUrl).href;
@@ -99,6 +103,45 @@
     return { data, error: profile.error || null };
   }
 
+  function clearAccountBrowserState(userId) {
+    try {
+      const decision = JSON.parse(localStorage.getItem(CLOUD_DECISION_KEY) || 'null');
+      if (!decision || decision.userId === userId) localStorage.removeItem(CLOUD_DECISION_KEY);
+    } catch {
+      localStorage.removeItem(CLOUD_DECISION_KEY);
+    }
+    if (userId) {
+      localStorage.removeItem(`${CLOUD_PENDING_PREFIX}${userId}`);
+      localStorage.removeItem(`${CLOUD_CACHE_PREFIX}${userId}`);
+    }
+    localStorage.removeItem(PROGRESS_STORAGE_KEY);
+    sessionStorage.removeItem('free-htl-pending-email');
+  }
+
+  async function deleteAccount() {
+    const { data: sessionData, error: sessionError } = await client.auth.getSession();
+    if (sessionError || !sessionData.session?.user?.id) {
+      return {
+        data: null,
+        error: sessionError || new Error('A verified account session is required.')
+      };
+    }
+
+    const userId = sessionData.session.user.id;
+    const result = await client.functions.invoke('delete-account', {
+      body: { confirm: 'DELETE MY ACCOUNT' }
+    });
+    if (result.error) return result;
+
+    clearAccountBrowserState(userId);
+    try {
+      await client.auth.signOut({ scope: 'local' });
+    } catch {
+      // The deleted account may no longer support a server sign-out; browser state is already cleared.
+    }
+    return { data: result.data || { deleted: true }, error: null };
+  }
+
   window.FreeHTLAuth = Object.freeze({
     client,
     ready,
@@ -115,6 +158,8 @@
     requestPasswordReset,
     resendConfirmation,
     updatePassword,
-    updateDisplayName
+    updateDisplayName,
+    deleteAccount,
+    clearAccountBrowserState
   });
 })();
