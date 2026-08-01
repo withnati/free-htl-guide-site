@@ -25,6 +25,7 @@ class CloudAdapterValidationTests(unittest.TestCase):
             'assets/authority.js',
             'assets/dashboard.js',
             'my-progress.html',
+            'privacy.html',
         ):
             target = destination / relative
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -44,9 +45,12 @@ class CloudAdapterValidationTests(unittest.TestCase):
             root = Path(directory)
             self.copy_contract_files(root)
             page = root / 'my-progress.html'
-            page.write_text(page.read_text(encoding='utf-8').replace('Use account progress only', 'Continue'), encoding='utf-8')
+            page.write_text(
+                page.read_text(encoding='utf-8').replace('Use progress already in my account', 'Continue'),
+                encoding='utf-8'
+            )
             errors = MODULE.validate(root)
-            self.assertTrue(any('Use account progress only' in error for error in errors))
+            self.assertTrue(any('Use progress already in my account' in error for error in errors))
 
     def test_rejects_missing_global_account_match(self):
         with tempfile.TemporaryDirectory() as directory:
