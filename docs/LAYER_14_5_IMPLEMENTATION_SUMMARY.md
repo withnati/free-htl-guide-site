@@ -2,7 +2,7 @@
 
 **Branch:** `layer-14-5-exam-positioning-copy`  
 **Base:** `main` at `8df26b01e16cf148edfedf04f73e322cdba8906f`  
-**Status:** Implementation complete in draft form; automated and staging verification required before merge  
+**Status:** Implementation complete in draft form; final automated and staging verification required before merge  
 **Merge rule:** Do not merge without explicit owner approval
 
 ## Positioning implemented
@@ -49,20 +49,28 @@ This layer changes visible copy and metadata only. Authentication, progress stor
 
 Added `scripts/validate_learner_copy.py` and regression tests to prevent internal implementation narration from returning to learner-facing HTML, templates, and dynamic UI messages.
 
-The existing quality workflows continue to cover:
+The quality workflows cover:
 
 - Site Quality
 - Browser Quality for source and generated public builds
 - Database Quality
 - Layer 14 Security
 
-Browser and public-build tests were updated to assert the new learner-facing language while retaining authorization and protected-content boundary assertions.
+Browser and public-build tests assert the new learner-facing language while retaining authorization and protected-content boundary assertions.
+
+## Staging
+
+Cloudflare Pages created a branch preview at:
+
+`https://layer-14-5-exam-positioning.fhl-guide-staging.pages.dev`
+
+Live staging smoke tests are included in `browser-tests/staging.spec.cjs`. The Browser Quality workflow runs them when the `FHL_STAGING_BASE_URL` repository variable is configured. Provider deployment and a final manual desktop/mobile review remain merge gates.
 
 ## Verification still required
 
 Before merge:
 
-1. All GitHub Actions checks must pass.
+1. All GitHub Actions checks must pass on the final branch head.
 2. The generated public deployment must be reviewed on desktop and mobile.
 3. Signed-out, free-account, expired-session, entitled, error, offline, and conflict states must be checked in staging.
 4. The private Processing sample object should use learner-facing educational copy rather than security-proof narration.
