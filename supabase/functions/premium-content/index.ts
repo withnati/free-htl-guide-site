@@ -20,8 +20,7 @@ const CONTENT_ALLOWLIST = new Map<string, ProtectedContent>([
 function configuredOrigins() {
   const configured = Deno.env.get('FHL_ALLOWED_ORIGINS') || '';
   return new Set(
-    configured
-      .split(',')
+    configured.split(',')
       .map((value) => value.trim())
       .filter((value) => value.length > 0 && value !== '*')
   );
