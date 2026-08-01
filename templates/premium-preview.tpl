@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
   <title>{{TITLE}} | Free HTL Guide</title>
-  <meta name="description" content="Preview the {{TITLE}} HT/HTL exam-preparation experience included with Premium.">
+  <meta name="description" content="Premium learning preview of the {{TITLE}} HT/HTL exam-preparation experience.">
   <link rel="canonical" href="{{CANONICAL}}"><link rel="stylesheet" href="{{PREFIX}}assets/guide.css"><link rel="stylesheet" href="{{PREFIX}}assets/premium-preview.css"><meta name="theme-color" content="#0F4C81">
 </head>
 <body data-page="premium-preview"><a class="skip" href="#main">Skip to content</a>
