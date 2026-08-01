@@ -5,6 +5,7 @@
   const clone = (value) => JSON.parse(JSON.stringify(value));
   const PENDING_PREFIX = 'free-htl-cloud-pending-v1:';
   const CACHE_PREFIX = 'free-htl-cloud-cache-v1:';
+  const SESSION_TYPES = ['mock-exam', 'targeted-practice'];
 
   function emit(status, detail = {}) {
     window.dispatchEvent(new CustomEvent('htl:cloud-sync-state', {
@@ -17,6 +18,14 @@
     const message = String(error?.message || '').toLowerCase();
     if (!navigator.onLine || /network|fetch|offline|failed to connect/.test(message)) return 'offline';
     return 'error';
+  }
+
+  class CloudProgressConflictError extends Error {
+    constructor(conflict) {
+      super(`A newer ${conflict.sessionType} session is already saved on another device.`);
+      this.name = 'CloudProgressConflictError';
+      this.conflict = conflict;
+    }
   }
 
   class ResilientCloudAdapter {
@@ -53,16 +62,60 @@
       this.storage.removeItem(key);
     }
 
+    pendingEnvelope() {
+      return this.readEnvelope(this.pendingKey);
+    }
+
     pendingRecord() {
-      return this.readEnvelope(this.pendingKey)?.record || null;
+      return this.pendingEnvelope()?.record || null;
     }
 
     cachedRecord() {
       return this.readEnvelope(this.cacheKey)?.record || null;
     }
 
+    conflictInfo() {
+      const envelope = this.pendingEnvelope();
+      return envelope?.reason === 'conflict' ? envelope.conflict || null : null;
+    }
+
     hasPending() {
       return Boolean(this.pendingRecord());
+    }
+
+    async assertNoSessionConflicts(record) {
+      for (const sessionType of SESSION_TYPES) {
+        const local = record.activeSessions?.[sessionType];
+        const localRevision = Number(local?.revision || 0);
+        if (!local || !localRevision) continue;
+        const result = await this.base.client.from('active_sessions')
+          .select('session_id,revision,server_updated_at')
+          .eq('user_id', this.userId)
+          .eq('session_type', sessionType)
+          .limit(1);
+        if (result?.error) throw new Error(result.error.message || `Could not verify ${sessionType} revision.`);
+        const server = result?.data?.[0];
+        const serverRevision = Number(server?.revision || 0);
+        if (server && serverRevision > localRevision) {
+          throw new CloudProgressConflictError({
+            sessionType,
+            localRevision,
+            serverRevision,
+            localSessionId: local.attemptId || null,
+            serverSessionId: server.session_id || null,
+            serverUpdatedAt: server.server_updated_at || null
+          });
+        }
+      }
+    }
+
+    advanceSessionRevisions(record) {
+      SESSION_TYPES.forEach((sessionType) => {
+        const session = record.activeSessions?.[sessionType];
+        if (!session) return;
+        session.revision = Number(session.revision || 0) + 1;
+      });
+      return record;
     }
 
     async load() {
@@ -73,7 +126,9 @@
         let current = remote;
         if (pending) {
           current = cloud.mergeRecords(remote, pending, this.userId);
+          await this.assertNoSessionConflicts(current);
           await this.base.save(current);
+          this.advanceSessionRevisions(current);
           this.clearEnvelope(this.pendingKey);
         }
         this.writeEnvelope(this.cacheKey, current);
@@ -83,9 +138,17 @@
         const fallback = pending || cached;
         if (!fallback) throw error;
         const status = classify(error);
+        if (status === 'conflict' && pending) {
+          this.writeEnvelope(this.pendingKey, pending, {
+            reason: 'conflict',
+            error: error.message,
+            conflict: error.conflict
+          });
+        }
         emit(status, {
           userId: this.userId,
           pending: Boolean(pending),
+          conflict: error.conflict || null,
           message: error.message || 'Cloud progress could not be loaded.'
         });
         return clone(fallback);
@@ -96,20 +159,24 @@
       this.writeEnvelope(this.pendingKey, record, { reason: 'save' });
       emit('saving', { userId: this.userId, pending: true });
       try {
-        const saved = await this.base.save(record);
+        await this.assertNoSessionConflicts(record);
+        await this.base.save(record);
+        this.advanceSessionRevisions(record);
         this.clearEnvelope(this.pendingKey);
-        this.writeEnvelope(this.cacheKey, saved || record);
+        this.writeEnvelope(this.cacheKey, record);
         emit('saved', { userId: this.userId, pending: false });
-        return clone(saved || record);
+        return clone(record);
       } catch (error) {
         const status = classify(error);
         this.writeEnvelope(this.pendingKey, record, {
           reason: status,
-          error: error.message || 'Cloud progress could not be saved.'
+          error: error.message || 'Cloud progress could not be saved.',
+          conflict: error.conflict || null
         });
         emit(status, {
           userId: this.userId,
           pending: true,
+          conflict: error.conflict || null,
           message: error.message || 'Cloud progress could not be saved.'
         });
         return clone(record);
@@ -130,6 +197,30 @@
       return this.save(pending);
     }
 
+    async resolveConflict(strategy) {
+      if (!['remote', 'local'].includes(strategy)) throw new TypeError('Conflict strategy must be remote or local.');
+      const pending = this.pendingRecord();
+      if (!pending) return this.load();
+      emit('saving', { userId: this.userId, pending: true });
+      const remote = await this.base.load();
+      const merged = cloud.mergeRecords(remote, pending, this.userId);
+      if (strategy === 'remote') {
+        merged.activeSessions = clone(remote.activeSessions || {});
+      } else {
+        SESSION_TYPES.forEach((sessionType) => {
+          if (pending.activeSessions?.[sessionType]) {
+            merged.activeSessions[sessionType] = clone(pending.activeSessions[sessionType]);
+          }
+        });
+      }
+      await this.base.save(merged);
+      const resolved = await this.base.load();
+      this.clearEnvelope(this.pendingKey);
+      this.writeEnvelope(this.cacheKey, resolved);
+      emit('saved', { userId: this.userId, pending: false, resolution: strategy });
+      return clone(resolved);
+    }
+
     async hasCompletedMigration(recordId) {
       return this.base.hasCompletedMigration(recordId);
     }
@@ -147,6 +238,7 @@
         emit(status, {
           userId: this.userId,
           pending: false,
+          conflict: error.conflict || null,
           message: error.message || 'Browser progress could not be imported.'
         });
         throw error;
@@ -156,6 +248,7 @@
 
   window.FreeHTLResilientCloudAdapter = Object.freeze({
     ResilientCloudAdapter,
+    CloudProgressConflictError,
     pendingPrefix: PENDING_PREFIX,
     cachePrefix: CACHE_PREFIX
   });
