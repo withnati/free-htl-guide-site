@@ -56,11 +56,17 @@ def validate(root: Path) -> list[str]:
 
     required_resilience_tokens = (
         'class ResilientCloudAdapter',
+        'class CloudProgressConflictError',
         'free-htl-cloud-pending-v1:',
         'free-htl-cloud-cache-v1:',
         "emit('saving'",
         "emit('saved'",
-        "return this.save(pending)",
+        'assertNoSessionConflicts(record)',
+        'serverRevision > localRevision',
+        'resolveConflict(strategy)',
+        "strategy === 'remote'",
+        "strategy === 'local'",
+        'return this.save(pending)',
         'hasPending()',
         'navigator.onLine'
     )
@@ -72,12 +78,14 @@ def validate(root: Path) -> list[str]:
         'data-cloud-import', 'Importing and reconciling', 'hasCompletedMigration',
         'Use account progress only', 'reconnectAfterReset', 'localStorage.removeItem',
         DECISION_KEY, "mode === 'imported'", "'account-only'",
-        'ResilientCloudAdapter', 'adapter.hasPending()'
+        'ResilientCloudAdapter', 'adapter.hasPending()',
+        'data-cloud-conflict', 'Resume newer account session', 'Replace with this device',
+        "resolveConflict('remote')", "resolveConflict('local')"
     )
     combined = controller + page + dashboard
     for token in required_flow_tokens:
         if token not in combined:
-            errors.append(f'Cloud import flow is missing contract token: {token}')
+            errors.append(f'Cloud import or conflict flow is missing contract token: {token}')
 
     required_bootstrap_tokens = (
         DECISION_KEY,
@@ -130,7 +138,7 @@ def main() -> int:
     if errors:
         print('\n'.join(f'ERROR: {error}' for error in errors))
         return 1
-    print('Layer 13 cloud adapter, explicit import, site-wide activation, and resilience contract validated.')
+    print('Layer 13 cloud adapter, import, site-wide activation, resilience, and conflict contract validated.')
     return 0
 
 
