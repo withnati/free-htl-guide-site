@@ -52,13 +52,13 @@ jobs:
         run: npm run test:public-build-browser
 
       - name: Run live staging desktop and mobile smoke tests
-        if: ${{ vars.FHL_STAGING_BASE_URL != '' }}
+        if: ${{ vars.FHL_STAGING_BASE_URL != '' || github.head_ref == 'layer-14-5-exam-positioning-copy' }}
         env:
-          FHL_STAGING_BASE_URL: ${{ vars.FHL_STAGING_BASE_URL }}
+          FHL_STAGING_BASE_URL: ${{ vars.FHL_STAGING_BASE_URL != '' && vars.FHL_STAGING_BASE_URL || 'https://layer-14-5-exam-positioning.fhl-guide-staging.pages.dev' }}
         run: npx playwright test --config=playwright.staging.config.cjs
 
       - name: Report staging review gate
-        if: ${{ vars.FHL_STAGING_BASE_URL == '' }}
+        if: ${{ vars.FHL_STAGING_BASE_URL == '' && github.head_ref != 'layer-14-5-exam-positioning-copy' }}
         run: echo "::notice::Live staging tests were not run because the FHL_STAGING_BASE_URL repository variable is not configured. Provider deployment and manual staging review remain required before merge."
 
       - name: Upload browser reports and failure evidence
