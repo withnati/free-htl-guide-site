@@ -81,6 +81,11 @@
   }
 
   function setupSignIn() {
+    if (params.get('deleted') === '1') {
+      setStatus('Your account and cloud learning progress were permanently deleted. Anonymous study remains available.', 'success');
+    } else if (params.get('signed_out') === '1') {
+      setStatus('You have been signed out.', 'success');
+    }
     const form = document.querySelector('[data-sign-in-form]');
     form?.addEventListener('submit', async (event) => {
       event.preventDefault();
@@ -185,6 +190,57 @@
     document.querySelector('[data-sign-out]')?.addEventListener('click', async () => {
       await auth.signOut();
       window.location.assign(auth.siteUrl('account/sign-in.html?signed_out=1'));
+    });
+
+    const showDelete = document.querySelector('[data-show-delete-account]');
+    const panel = document.querySelector('[data-delete-account-panel]');
+    const confirmation = document.querySelector('[data-delete-confirmation]');
+    const confirmDelete = document.querySelector('[data-confirm-delete-account]');
+    const cancelDelete = document.querySelector('[data-cancel-delete-account]');
+
+    function setDeleteBusy(busy) {
+      [showDelete, confirmation, confirmDelete, cancelDelete].filter(Boolean).forEach((element) => {
+        element.disabled = busy;
+      });
+      panel?.setAttribute('aria-busy', String(busy));
+    }
+
+    showDelete?.addEventListener('click', () => {
+      panel.hidden = false;
+      showDelete.hidden = true;
+      confirmation.value = '';
+      confirmDelete.disabled = true;
+      confirmation.focus();
+    });
+
+    confirmation?.addEventListener('input', () => {
+      confirmDelete.disabled = confirmation.value !== 'DELETE';
+    });
+
+    cancelDelete?.addEventListener('click', () => {
+      panel.hidden = true;
+      showDelete.hidden = false;
+      confirmation.value = '';
+      confirmDelete.disabled = true;
+      showDelete.focus();
+    });
+
+    confirmDelete?.addEventListener('click', async () => {
+      if (confirmation.value !== 'DELETE') {
+        setStatus('Type DELETE exactly to confirm permanent account deletion.', 'error');
+        confirmation.focus();
+        return;
+      }
+      setDeleteBusy(true);
+      setStatus('Permanently deleting your account and cloud progress…', 'warning');
+      const result = await auth.deleteAccount();
+      if (result.error) {
+        setDeleteBusy(false);
+        confirmDelete.disabled = confirmation.value !== 'DELETE';
+        setStatus(errorMessage(result.error, 'The account could not be deleted. Nothing was removed.'), 'error');
+        return;
+      }
+      window.location.replace(auth.siteUrl('account/sign-in.html?deleted=1'));
     });
   }
 
