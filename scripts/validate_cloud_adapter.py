@@ -95,7 +95,7 @@ def validate(root: Path) -> list[str]:
         'session.user.id !== decision.userId',
         "emit('signed-out')",
         "emit('account-mismatch')",
-        "emit('connected'",
+        "adapter.hasPending() ? 'offline' : 'connected'",
         'mergeRecords(remoteRecord, localRecord',
         'lastLocalSyncAt',
         'cloud-sync.css',
