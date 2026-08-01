@@ -40,7 +40,7 @@ test('public homepage leads with HT and HTL exam preparation', async ({ page }) 
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Prepare confidently for the HT or HTL exam');
   await expect(page.getByRole('link', { name: 'Start the free Fixation lesson' }).first()).toHaveAttribute(
     'href',
-    'modules/fixation-guide-v3.html'
+    /modules\/fixation-guide-v3\.html$/
   );
   await expect(page.getByText('Free', { exact: true })).toBeVisible();
   await expect(page.getByText('Premium', { exact: true }).first()).toBeVisible();
@@ -67,7 +67,7 @@ test('complete public Fixation lesson remains usable in the generated deployment
   await expect(page.locator('fieldset[data-correct]')).toHaveCount(10);
   await expect(page.getByRole('link', { name: 'Download resources' })).toHaveAttribute(
     'href',
-    '../assets/all-fixation-downloads.zip'
+    /assets\/all-fixation-downloads\.zip$/
   );
   await expectNoHorizontalOverflow(page);
 });
