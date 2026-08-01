@@ -79,6 +79,7 @@ def validate_service(root: Path) -> list[str]:
     service = read(root / "assets/auth-service.js", issues)
     ui = read(root / "assets/auth-ui.js", issues)
     settings = read(root / "account/settings.html", issues)
+    guide = read(root / "assets/guide.js", issues)
     if service:
         for token in (
             "persistSession: true",
@@ -134,6 +135,8 @@ def validate_service(root: Path) -> list[str]:
         ):
             if token not in settings:
                 issues.append(f"Account settings deletion interface is missing required token: {token}")
+    if guide and "if (page === 'account') return;" not in guide:
+        issues.append("guide.js must not initialize learning-progress storage on private account pages")
     return issues
 
 
