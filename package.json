@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Secure HT and HTL learning platform with protected premium delivery and automated quality checks.",
   "scripts": {
-    "build:public": "python scripts/build_public_site_entry.py --root . --output dist",
+    "build:public": "python scripts/build_subscription_site_entry.py --root . --output dist",
     "validate:public-build": "python scripts/validate_public_build.py --root dist",
     "test:browser": "playwright test",
     "test:public-build-browser": "playwright test --config=playwright.public.config.cjs",
