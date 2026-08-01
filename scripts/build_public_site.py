@@ -279,6 +279,8 @@ def local_reference(source_relative: Path, value: str, root: Path) -> Path | Non
     else:
         candidate = source_relative.parent / parsed.path
     resolved = (root / candidate).resolve()
+    if resolved.is_dir():
+        resolved = resolved / "index.html"
     try:
         return resolved.relative_to(root.resolve())
     except ValueError as error:
