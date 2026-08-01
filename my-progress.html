@@ -22,6 +22,13 @@
     <p class="privacy-note">Import merges records by stable IDs and activity time. Completed attempts are not overwritten, and the current browser copy remains available as a temporary recovery backup.</p>
     <div class="dashboard-actions"><button class="btn btn-primary" type="button" data-import-progress>Import and enable cloud sync</button><button class="btn" type="button" data-account-progress-only>Use account progress only</button></div>
   </section>
+  <section class="card dashboard-section callout warn" data-cloud-conflict hidden aria-labelledby="cloudConflictTitle">
+    <p class="eyebrow">Multi-device conflict</p>
+    <h2 id="cloudConflictTitle">Choose which unfinished session to continue</h2>
+    <p data-cloud-conflict-summary>A newer unfinished session is saved in your account.</p>
+    <p class="privacy-note">Completed attempts and unrelated module progress remain merged. This choice affects the conflicting unfinished mock exam or Targeted Practice session.</p>
+    <div class="dashboard-actions"><button class="btn btn-primary" type="button" data-use-cloud-session>Resume newer account session</button><button class="btn" type="button" data-use-device-session>Replace with this device</button></div>
+  </section>
   <section class="callout warn" data-dashboard-error hidden>Progress could not be loaded. Your existing browser data has not been deleted.</section>
   <div data-dashboard-content>
     <section class="dashboard-grid" aria-label="Progress summary">
