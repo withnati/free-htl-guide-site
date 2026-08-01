@@ -4,7 +4,7 @@
     "name": "Free HTL Guide",
     "url": "https://withnati.github.io/free-htl-guide-site/",
     "language": "en-US",
-    "updated": "2026-07-31",
+    "updated": "2026-08-01",
     "defaultImage": "assets/og-home.png",
     "imageWidth": 1200,
     "imageHeight": 630,
@@ -44,6 +44,11 @@
       "path": "privacy.html", "type": "website", "section": "Privacy", "share": false,
       "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Privacy policy", "path": "privacy.html"}],
       "related": ["about", "contact", "editorial"]
+    },
+    "terms": {
+      "path": "terms.html", "type": "website", "section": "Terms of use", "share": false,
+      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Terms of use", "path": "terms.html"}],
+      "related": ["privacy", "contact", "editorial"]
     },
     "study-plan": {
       "path": "study-plan.html", "type": "article", "section": "Study planning", "share": true,
