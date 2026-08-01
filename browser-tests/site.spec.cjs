@@ -18,22 +18,16 @@ function localPath(productionUrl) {
 
 function collectBrowserProblems(page) {
   const problems = [];
-
-  page.on('pageerror', (error) => {
-    problems.push(`Page error: ${error.message}`);
-  });
-
+  page.on('pageerror', (error) => problems.push(`Page error: ${error.message}`));
   page.on('console', (message) => {
     if (message.type() === 'error') problems.push(`Console error: ${message.text()}`);
   });
-
   page.on('requestfailed', (request) => {
     const url = new URL(request.url());
     if (url.hostname === '127.0.0.1' || url.hostname === 'localhost') {
       problems.push(`Local request failed: ${url.pathname} (${request.failure()?.errorText || 'unknown error'})`);
     }
   });
-
   return problems;
 }
 
@@ -43,7 +37,6 @@ async function expectPageToRender(page, urlPath) {
   expect(response, `No response for ${urlPath}`).not.toBeNull();
   expect(response.ok(), `Unexpected HTTP status for ${urlPath}`).toBeTruthy();
   await page.waitForFunction(() => document.readyState === 'complete');
-
   await expect(page.locator('h1')).toHaveCount(1);
   await expect(page.locator('h1')).toBeVisible();
 
@@ -75,12 +68,12 @@ test.describe('canonical pages', () => {
 test('desktop navigation opens the complete public Fixation lesson', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
-  await page.getByRole('link', { name: 'Start the free lesson' }).click();
+  await page.getByRole('link', { name: 'Start the free Fixation lesson' }).first().click();
   await expect(page).toHaveURL(/\/modules\/fixation-guide-v3\.html$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Fixation' })).toBeVisible();
 });
 
-test('mobile menu opens, updates ARIA, and navigates within the approved homepage', async ({ page }, testInfo) => {
+test('mobile menu opens, updates ARIA, and navigates to the HT/HTL course', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await page.goto('/');
   const menuButton = page.getByRole('button', { name: 'Menu' });
@@ -88,10 +81,10 @@ test('mobile menu opens, updates ARIA, and navigates within the approved homepag
   await menuButton.click();
   await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
   await expect(page.locator('#mobileMenu')).toHaveClass(/open/);
-  await page.locator('#mobileMenu').getByRole('link', { name: 'Curriculum' }).click();
+  await page.locator('#mobileMenu').getByRole('link', { name: 'Course' }).click();
   await expect(page).toHaveURL(/\/#modules$/);
   await expect(page.locator('#modules')).toBeVisible();
-  await expect(page.locator('#modules').getByRole('heading', { level: 2 })).toContainText(/fixation through advanced/i);
+  await expect(page.locator('#modules').getByRole('heading', { level: 2 })).toContainText(/major exam domains/i);
 });
 
 test('dark mode persists after reload', async ({ page }, testInfo) => {
@@ -100,12 +93,10 @@ test('dark mode persists after reload', async ({ page }, testInfo) => {
   await page.goto('/');
   await page.evaluate(() => localStorage.removeItem('htl-theme'));
   await page.reload();
-
   await expect(page.locator('html')).not.toHaveClass(/dark/);
   await page.getByRole('button', { name: 'Toggle dark mode' }).click();
   await expect(page.locator('html')).toHaveClass(/dark/);
   expect(await page.evaluate(() => localStorage.getItem('htl-theme'))).toBe('dark');
-
   await page.reload();
   await expect(page.locator('html')).toHaveClass(/dark/);
 });
@@ -115,7 +106,6 @@ test('study-plan progress persists locally', async ({ page }, testInfo) => {
   await page.goto('/study-plan.html');
   await page.evaluate(() => localStorage.clear());
   await page.reload();
-
   const firstTask = page.locator('input[data-check]').first();
   await expect(firstTask).toBeVisible();
   await firstTask.check();
@@ -126,47 +116,37 @@ test('study-plan progress persists locally', async ({ page }, testInfo) => {
 test('quiz grading and reset work in the browser', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/modules/fixation-guide-v3.html#quiz');
-
   const firstQuestion = page.locator('fieldset[data-correct]').first();
   const correctValue = await firstQuestion.getAttribute('data-correct');
   await firstQuestion.locator(`input[value="${correctValue}"]`).check();
   await page.locator('[data-grade]').click();
-
   await expect(page.locator('.quiz-result')).toContainText('Score: 1/10');
+  await expect(page.locator('.quiz-result')).toContainText('Review each explanation');
   await expect(firstQuestion).toHaveClass(/correct/);
-
   await page.locator('[data-retry]').click();
   await expect(page.locator('.quiz-result')).toBeHidden();
   await expect(firstQuestion.locator('input:checked')).toHaveCount(0);
 });
 
-test('signup requires consent and redirects after a mocked success', async ({ page }, testInfo) => {
+test('email signup requires consent and redirects after a mocked success', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   let submittedBody = '';
-
   await page.route('https://formspree.io/**', async (route) => {
     submittedBody = route.request().postData() || '';
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ ok: true }),
-    });
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true }) });
   });
 
   await page.goto('/#starter');
   const form = page.locator('#emailSignupForm');
   const email = form.locator('input[name="email"]');
   const consent = form.locator('input[name="consent"]');
-
   await expect(consent).toHaveCount(1);
   await expect(form.locator('input[name="source"]')).toHaveCount(1);
   await expect(form.locator('input[name="subscription_type"]')).toHaveCount(1);
-
   await email.fill('qa@example.com');
   await form.getByRole('button', { name: 'Subscribe' }).click();
   expect(await consent.evaluate((element) => element.validity.valueMissing)).toBe(true);
   expect(submittedBody).toBe('');
-
   await consent.check();
   await form.getByRole('button', { name: 'Subscribe' }).click();
   await expect(page).toHaveURL(/\/thank-you\.html\?source=email-signup$/);
@@ -183,18 +163,18 @@ test('legacy module URLs redirect directly to current guides', async ({ page }, 
     ['/modules/embedding.html', '/modules/embedding-guide-v3.html'],
     ['/modules/staining.html', '/modules/staining-he-guide.html'],
   ];
-
   for (const [legacyPath, currentPath] of redirects) {
     await page.goto(legacyPath);
     await expect(page).toHaveURL(new RegExp(`${currentPath.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`));
   }
 });
 
-test('custom 404 page renders and offers recovery links', async ({ page }, testInfo) => {
+test('custom 404 page offers exam-preparation recovery links', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/404.html');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('not available');
-  await expect(page.getByRole('link', { name: 'Browse modules' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('We could not find that study page');
+  await expect(page.getByRole('link', { name: 'Start the free Fixation lesson' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Explore the HT/HTL course' })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Report a broken link' })).toHaveAttribute('href', 'contact.html');
 });
 
@@ -202,7 +182,6 @@ test('all modules render authority metadata and classify 70 questions', async ({
   test.skip(testInfo.project.name !== 'desktop-chromium');
   const moduleUrls = productionUrls.filter((url) => new URL(url).pathname.includes('/modules/'));
   let totalQuestions = 0;
-
   expect(moduleUrls).toHaveLength(7);
 
   for (const productionUrl of moduleUrls) {
@@ -213,7 +192,6 @@ test('all modules render authority metadata and classify 70 questions', async ({
     await expect(page.locator('.hero-card .status')).toContainText('v1.1.0');
     await expect(page.getByRole('link', { name: 'Official content guideline' })).toHaveAttribute('href', /^https:\/\//);
     await expect(page.getByRole('link', { name: 'Editorial standards and corrections' })).toBeVisible();
-
     const questions = page.locator('#quiz fieldset[data-difficulty]');
     await expect(questions).toHaveCount(10);
     await expect(page.locator('#quiz .difficulty')).toHaveCount(10);
@@ -221,6 +199,5 @@ test('all modules render authority metadata and classify 70 questions', async ({
     expect(difficulties.every((item) => ['Foundational', 'Application', 'Troubleshooting'].includes(item))).toBe(true);
     totalQuestions += difficulties.length;
   }
-
   expect(totalQuestions).toBe(70);
 });
