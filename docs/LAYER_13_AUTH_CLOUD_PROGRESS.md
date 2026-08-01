@@ -1,6 +1,6 @@
 # Layer 13 — Authentication and cloud progress
 
-**Status:** In progress  
+**Status:** In progress — authentication, remote schema, cloud dashboard adapter, and explicit browser import are implemented on the draft branch  
 **Branch:** `layer-13-auth-cloud-progress`  
 **Depends on:** Layer 12 merge commit `a130066847650988181e1d0c452f920bb7cf252b`
 
@@ -26,6 +26,8 @@ Use Supabase for the first production backend:
 
 The approved development project is `oqbubeklssmlkjjtqczr`. The repository contains only the project URL and browser-safe publishable key. Secret keys, service-role credentials, database passwords, and developer access tokens remain outside the repository.
 
+The initial migration has also been applied successfully to the remote development project. Supabase reported `Success. No rows returned`, which is the expected result for a schema migration.
+
 ## Architecture
 
 ```text
@@ -47,7 +49,7 @@ Browser
                                       └── Row Level Security
 ```
 
-Pages must continue to call the progress service. Lesson, quiz, mock-exam, Targeted Practice, and dashboard code must not write directly to Supabase tables.
+Pages continue to call the progress service. Lesson, quiz, mock-exam, Targeted Practice, and dashboard code do not write directly to Supabase tables.
 
 ## Data-model decisions
 
@@ -95,57 +97,61 @@ Records anonymous-browser imports so the same anonymous record cannot be importe
 
 ## Security boundaries
 
-Every user-owned table must:
+Every user-owned table:
 
-1. reference `auth.users(id)` with cascade deletion;
-2. enable Row Level Security;
-3. allow authenticated users to access only rows where `auth.uid() = user_id`;
-4. deny anonymous database access;
-5. avoid storing question text, explanations, answer keys, personal notes, email addresses, analytics consent, or theme preference.
+1. references `auth.users(id)` with cascade deletion;
+2. enables Row Level Security;
+3. allows authenticated users to access only rows where `auth.uid() = user_id`;
+4. denies anonymous database access;
+5. avoids storing question text, explanations, answer keys, personal notes, email addresses, analytics consent, or theme preference.
 
-The browser may receive only the project URL and browser-safe publishable key. Secret keys, service-role credentials, and administrative database credentials must never appear in repository frontend files.
+The browser receives only the project URL and browser-safe publishable key. Secret keys, service-role credentials, and administrative database credentials do not appear in repository frontend files.
 
 Paid status remains outside Layer 13. Account identity controls progress ownership; a later server-verified entitlement system will control premium access.
 
-## Sync rules
+## Cloud adapter behavior
 
-### Completed attempts
+`assets/cloud-progress-adapter.js` now implements the existing `load`, `save`, and `clear` adapter contract.
 
-Completed attempts are append-only in normal use and upserted by stable `(user_id, attempt_id)` identity. Retrying the same network request must not create duplicates.
+It:
 
-### Module and study-task progress
+- reads and writes all ten learner-progress tables;
+- reconstructs the normalized local progress shape for the existing dashboard;
+- inserts completed attempts idempotently by stable attempt ID;
+- keeps question content out of learner records;
+- merges module section sets and completion timestamps;
+- chooses the newest mutable study-task and active-session state;
+- maps active-session responses into separate rows;
+- records anonymous imports in `progress_migrations`;
+- keeps the original local-storage record as a temporary recovery backup until the learner resets it.
 
-Mutable rows carry revision and server-update timestamps. Cloud writes must not silently replace a newer revision.
-
-### Active sessions
-
-An active session is unique per user and session type. Conflicting newer revisions must be surfaced to the learner rather than overwritten.
-
-### Server time
-
-Server timestamps are authoritative for ordering cloud records. Client timestamps may be retained only as source context.
+The first connection point is My Progress. This controlled rollout proves the import and cloud-dashboard behavior before the adapter is automatically activated on every lesson and practice page.
 
 ## Anonymous-to-account migration
 
-After verified sign-in, the application may detect the normalized local record and offer an explicit import.
+After verified sign-in, My Progress detects a compatible normalized local record and presents an explicit choice:
 
-The migration process must:
+- **Import and enable cloud sync**; or
+- **Use account progress only**.
 
-1. validate the local record against the supported schema version;
-2. project it through an explicit cloud allowlist;
-3. fetch existing cloud progress;
-4. merge module sections and completion safely;
-5. import unique completed attempts by stable IDs;
-6. resolve active-session conflicts explicitly;
-7. write a `progress_migrations` record;
-8. verify the imported cloud data before marking the browser record migrated;
-9. remain idempotent if retried.
+The implemented migration process:
 
-Migration must never silently replace existing account progress.
+1. checks the stable anonymous record ID against completed migrations;
+2. counts the records that will be imported;
+3. creates or resumes a migration record;
+4. fetches existing cloud progress;
+5. merges module sections and completion safely;
+6. imports unique attempts by stable IDs;
+7. chooses the newest mutable task or active-session record;
+8. writes the merged result through the cloud adapter;
+9. marks the migration complete only after successful writes;
+10. remains safe to retry without duplicating completed attempts.
+
+Choosing account-only leaves the browser record untouched. A cloud reset removes both the cloud progress and the temporary browser backup while preserving account identity and privacy settings.
 
 ## Authentication experience
 
-The current branch includes:
+The branch includes:
 
 - account creation with display name, email, password, and policy consent;
 - verified-email handoff and resend flow;
@@ -157,13 +163,23 @@ The current branch includes:
 - PKCE session flow, persisted sessions, automatic refresh, and URL session detection;
 - same-origin and project-prefix validation for post-authentication redirects;
 - private `noindex,nofollow` account pages excluded from the sitemap;
-- a visible account entry point from My progress.
+- a visible account entry point from My Progress.
 
 Google sign-in remains optional and should follow only after the email/password flow and cloud adapter are stable.
 
+## Automated validation
+
+At the verified cloud-adapter checkpoint:
+
+- Site Quality passes, including the cloud-adapter/import validator and negative regression tests;
+- Browser Quality passes with the real adapter against an in-memory Supabase implementation;
+- Database Quality passes against a fresh local Supabase/PostgreSQL stack;
+- all 14 two-user Row Level Security assertions pass;
+- browser coverage verifies signed-out local behavior, explicit import, account-only behavior, cloud dashboard rendering, stable-attempt deduplication, and module-section merging.
+
 ## Deployment boundary
 
-GitHub Pages may remain the development preview while authentication and cloud progress are built. Layer 13 does not secure premium lesson or question-bank files. Protected content delivery and production hosting changes belong to Layer 14.
+GitHub Pages remains the development/public host while authentication and cloud progress are built. Layer 13 does not secure premium lesson or question-bank files. Protected content delivery and production hosting changes belong to Layer 14.
 
 Authentication URL configuration and migration deployment instructions are documented in `docs/LAYER_13_SUPABASE_SETUP.md`.
 
@@ -171,49 +187,38 @@ Authentication URL configuration and migration deployment instructions are docum
 
 ### 13.1 — Backend foundation
 
-- add the Supabase migration source tree;
-- create relational progress tables, indexes, constraints, and RLS policies;
-- add database tests for ownership isolation;
-- document local development and secret handling.
-
 **Status:** Complete and passing Database Quality.
 
 ### 13.2 — Authentication UI
 
-- add signup, verification, sign-in, recovery, callback, and settings pages;
-- add account entry points and session state;
-- preserve anonymous use when signed out.
-
-**Status:** Implemented on the draft branch; live project redirect configuration and end-to-end email testing remain.
+**Status:** Implemented on the draft branch. Supabase URL configuration and remote migration are complete; live signup, verification-email, recovery-email, and reset-link testing still require a deployable preview or merge.
 
 ### 13.3 — Cloud adapter
 
-- implement `CloudProgressAdapter` behind the existing progress service;
-- add idempotent attempt writes;
-- add revision-aware mutable writes;
-- read the dashboard from cloud records.
+**Status:** Implemented and passing static/browser tests on My Progress. Site-wide automatic adapter activation remains.
 
 ### 13.4 — Anonymous import
 
-- detect compatible browser progress;
-- show an explicit import choice;
-- sanitize, merge, upload, verify, and record migration status.
+**Status:** Explicit import and account-only paths are implemented and tested. Live remote import verification remains.
 
 ### 13.5 — Privacy and resilience
 
-- add progress export;
-- add delete-progress and delete-account flows;
-- add saving, saved, offline, conflict, and error states;
-- add retry-safe pending operations.
+Progress export and cloud-aware progress reset are implemented. Remaining work:
+
+- secure Auth account deletion;
+- offline pending-operation queue;
+- saving/saved/offline/error status across learning pages;
+- revision-conflict detection and learner choice;
+- site-wide cloud adapter activation.
 
 ### 13.6 — Validation
 
-- authentication browser tests;
-- two-user Row Level Security tests;
-- duplicate-attempt retry tests;
-- multi-device revision-conflict tests;
-- local-import idempotency tests;
-- desktop, mobile, keyboard, and accessibility review.
+Remaining work:
+
+- live signup and email-delivery test;
+- live remote import and second-device test;
+- multi-device revision-conflict test;
+- desktop, mobile, keyboard, and accessibility review of the live account flow.
 
 ## Definition of done
 
