@@ -50,7 +50,7 @@ jobs:
         env:
           FHL_ENVIRONMENT: preview
           FHL_PUBLIC_SITE_URL: https://preview.example.test/
-        run: python scripts/build_public_site.py --root "$GITHUB_WORKSPACE" --output "$RUNNER_TEMP/fhl-public-dist"
+        run: python scripts/build_public_site_entry.py --root "$GITHUB_WORKSPACE" --output "$RUNNER_TEMP/fhl-public-dist"
 
       - name: Report matched alternate-question identifiers
         env:
