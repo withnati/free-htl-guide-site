@@ -51,6 +51,11 @@ jobs:
       - name: Run generated public deployment desktop and mobile tests
         run: npm run test:public-build-browser
 
+      - name: Run live staging desktop and mobile smoke tests
+        env:
+          FHL_STAGING_BASE_URL: https://layer-14-5-exam-positioning.fhl-guide-staging.pages.dev
+        run: npx playwright test --config=playwright.staging.config.cjs
+
       - name: Upload browser reports and failure evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
@@ -61,6 +66,7 @@ jobs:
             test-results/
             playwright-public-report/
             test-results-public/
+            playwright-staging-report/
             dist/build-manifest.json
           if-no-files-found: ignore
           retention-days: 14
