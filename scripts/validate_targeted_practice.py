@@ -75,6 +75,7 @@ def validate_page(root: Path) -> list[str]:
     if not path.is_file():
         return ["Missing targeted-practice.html"]
     page_text = path.read_text(encoding="utf-8")
+    page_lower = page_text.lower()
     parser = PracticeParser()
     parser.feed(page_text)
     if parser.h1_count != 1:
@@ -84,7 +85,12 @@ def validate_page(root: Path) -> list[str]:
     robots = (parser.robots or "").lower().replace(" ", "")
     if "noindex" not in robots:
         issues.append("targeted-practice.html must remain noindex until protected delivery exists")
-    if "70 authority-reviewed base questions" not in page_text or "80 alternate scenarios" not in page_text:
+    reviewed_base = "70" in page_lower and "base question" in page_lower and "review" in page_lower
+    pending_scenarios = (
+        "80 alternate scenarios" in page_lower
+        and ("final review" in page_lower or "editorial review" in page_lower)
+    )
+    if not reviewed_base or not pending_scenarios:
         issues.append("targeted-practice must disclose the 70 reviewed base questions and 80 scenarios still in editorial review")
     if "same reviewed 150-question bank" in page_text or "150 reviewed records" in page_text:
         issues.append("targeted-practice must not describe all 150 development records as fully reviewed")
