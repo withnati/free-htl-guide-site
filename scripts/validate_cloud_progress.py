@@ -156,15 +156,16 @@ def validate_documentation(root: Path) -> list[str]:
     readme = read(root / SUPABASE_README, issues)
     gitignore = read(root / ".gitignore", issues)
     workflow = read(root / ".github/workflows/site-quality.yml", issues)
+    architecture_lower = architecture.lower()
 
     for token in (
-        "CloudProgressAdapter",
-        "Row Level Security",
+        "cloudprogressadapter",
+        "row level security",
         "anonymous-to-account migration",
         "stable `(user_id, attempt_id)`",
-        "Layer 14",
+        "layer 14",
     ):
-        if token not in architecture:
+        if token not in architecture_lower:
             issues.append(f"Layer 13 architecture document is missing required decision: {token}")
 
     for token in ("supabase db reset", "supabase db lint", "supabase test db"):
