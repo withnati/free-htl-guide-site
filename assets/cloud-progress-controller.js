@@ -11,6 +11,10 @@
   const importSummary = $('[data-cloud-import-summary]');
   const importButton = $('[data-import-progress]');
   const accountOnlyButton = $('[data-account-progress-only]');
+  const conflictPanel = $('[data-cloud-conflict]');
+  const conflictSummary = $('[data-cloud-conflict-summary]');
+  const useCloudSessionButton = $('[data-use-cloud-session]');
+  const useDeviceSessionButton = $('[data-use-device-session]');
   const anonymousActions = $('[data-anonymous-account-actions]');
   const authenticatedActions = $('[data-authenticated-account-actions]');
   const accountEmail = $('[data-cloud-account-email]');
@@ -29,10 +33,12 @@
   }
 
   function setBusy(busy) {
-    [importButton, accountOnlyButton].filter(Boolean).forEach((button) => {
-      button.disabled = busy;
-      button.setAttribute('aria-busy', busy ? 'true' : 'false');
-    });
+    [importButton, accountOnlyButton, useCloudSessionButton, useDeviceSessionButton]
+      .filter(Boolean)
+      .forEach((button) => {
+        button.disabled = busy;
+        button.setAttribute('aria-busy', busy ? 'true' : 'false');
+      });
   }
 
   function readDecision(expectedUserId) {
@@ -81,15 +87,34 @@
     return values[syncStatus] || null;
   }
 
+  function showConflict(conflict = null) {
+    if (!conflictPanel) return;
+    const type = conflict?.sessionType === 'targeted-practice' ? 'Targeted Practice' : 'mock exam';
+    const updated = conflict?.serverUpdatedAt ? new Date(conflict.serverUpdatedAt) : null;
+    const timeText = updated && !Number.isNaN(updated.getTime())
+      ? ` The account copy was updated ${updated.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}.`
+      : '';
+    conflictSummary.textContent = `A newer unfinished ${type} session is saved in your account.${timeText}`;
+    conflictPanel.hidden = false;
+    document.body.dataset.cloudProgress = 'conflict';
+  }
+
+  function hideConflict() {
+    if (conflictPanel) conflictPanel.hidden = true;
+  }
+
   async function connectAccountProgress(message = 'Cloud sync is connected to this verified account. Your browser copy remains available as a recovery backup.') {
     await service.useAdapter(adapter);
     importPanel.hidden = true;
+    const conflict = adapter.conflictInfo?.();
+    if (conflict) showConflict(conflict);
     if (adapter.hasPending() || ['offline', 'error', 'conflict'].includes(lastSyncStatus)) {
       const current = syncMessage(lastSyncStatus === 'saved' ? 'offline' : lastSyncStatus) || syncMessage('offline');
       setStatus(current[0], current[1], true);
-      document.body.dataset.cloudProgress = lastSyncStatus === 'conflict' ? 'conflict' : 'offline';
+      document.body.dataset.cloudProgress = conflict ? 'conflict' : (lastSyncStatus === 'conflict' ? 'conflict' : 'offline');
       return;
     }
+    hideConflict();
     setStatus(message, 'info', true);
     document.body.dataset.cloudProgress = 'connected';
   }
@@ -121,6 +146,30 @@
       localStorage.removeItem(DECISION_KEY);
       setStatus('Account progress could not be loaded. Your browser progress remains unchanged.', 'warn', true);
       document.body.dataset.cloudProgress = 'error';
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function resolveConflict(strategy) {
+    if (!adapter?.resolveConflict) return;
+    setBusy(true);
+    setStatus(strategy === 'remote'
+      ? 'Loading the newer account session and preserving unrelated progress…'
+      : 'Replacing the conflicting account session with this device’s retained session…');
+    try {
+      await adapter.resolveConflict(strategy);
+      await service.useAdapter(adapter);
+      hideConflict();
+      lastSyncStatus = 'saved';
+      document.body.dataset.cloudProgress = 'connected';
+      setStatus(strategy === 'remote'
+        ? 'The newer account session is ready to resume. Other progress was preserved.'
+        : 'This device’s session replaced the conflicting account session. Other progress was preserved.', 'info', true);
+    } catch (error) {
+      console.error(error);
+      showConflict(adapter.conflictInfo?.());
+      setStatus('The session conflict could not be resolved. Both choices remain available and this device’s work is still retained.', 'warn', true);
     } finally {
       setBusy(false);
     }
@@ -210,6 +259,8 @@
     const syncStatus = event.detail?.status;
     if (!syncStatus) return;
     lastSyncStatus = syncStatus;
+    if (syncStatus === 'conflict') showConflict(event.detail.conflict || adapter?.conflictInfo?.());
+    if (syncStatus === 'saved' && !adapter?.conflictInfo?.()) hideConflict();
     const current = syncMessage(syncStatus);
     if (!current || document.body.dataset.cloudProgress === 'awaiting-import') return;
     setStatus(current[0], current[1]);
@@ -218,6 +269,8 @@
 
   importButton?.addEventListener('click', () => { void importBrowserProgress(); });
   accountOnlyButton?.addEventListener('click', () => { void useAccountOnly(); });
+  useCloudSessionButton?.addEventListener('click', () => { void resolveConflict('remote'); });
+  useDeviceSessionButton?.addEventListener('click', () => { void resolveConflict('local'); });
 
   const ready = initialize().catch((error) => {
     console.error(error);
@@ -229,6 +282,7 @@
     decisionKey: DECISION_KEY,
     readDecision,
     isConnected,
-    reconnectAfterReset
+    reconnectAfterReset,
+    resolveConflict
   });
 })();
