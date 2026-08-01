@@ -72,7 +72,7 @@ test('live staging progress page keeps a signed-out learner on the device', asyn
   expect(response?.ok()).toBeTruthy();
   expectNoindex(response);
   await expect(page.locator('body')).toHaveAttribute('data-progress-dashboard-loaded', 'true');
-  await expect(page.locator('[data-account-status]')).toHaveText('Anonymous browser profile');
+  await expect(page.locator('[data-account-status]')).toHaveText('Using this device');
   await expect(page.locator('[data-storage-status]')).toHaveText('This device only');
   await expectNoHorizontalOverflow(page);
 });
