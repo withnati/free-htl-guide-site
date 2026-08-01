@@ -19,6 +19,8 @@ class CloudAdapterValidationTests(unittest.TestCase):
         for relative in (
             'assets/cloud-progress-adapter.js',
             'assets/cloud-progress-controller.js',
+            'assets/cloud-sync-bootstrap.js',
+            'assets/authority.js',
             'assets/dashboard.js',
             'my-progress.html',
         ):
@@ -43,6 +45,18 @@ class CloudAdapterValidationTests(unittest.TestCase):
             page.write_text(page.read_text(encoding='utf-8').replace('Use account progress only', 'Continue'), encoding='utf-8')
             errors = MODULE.validate(root)
             self.assertTrue(any('Use account progress only' in error for error in errors))
+
+    def test_rejects_missing_global_account_match(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.copy_contract_files(root)
+            bootstrap = root / 'assets/cloud-sync-bootstrap.js'
+            bootstrap.write_text(
+                bootstrap.read_text(encoding='utf-8').replace('session.user.id !== decision.userId', 'false'),
+                encoding='utf-8'
+            )
+            errors = MODULE.validate(root)
+            self.assertTrue(any('session.user.id !== decision.userId' in error for error in errors))
 
 
 if __name__ == '__main__':
