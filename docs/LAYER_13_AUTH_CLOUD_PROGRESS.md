@@ -24,7 +24,7 @@ Use Supabase for the first production backend:
 - Supabase Edge Functions only for privileged operations such as deleting an Auth user;
 - Supabase CLI migrations as the database source of truth.
 
-No remote Supabase project, production credentials, or paid entitlement system is created by this initial commit.
+The approved development project is `oqbubeklssmlkjjtqczr`. The repository contains only the project URL and browser-safe publishable key. Secret keys, service-role credentials, database passwords, and developer access tokens remain outside the repository.
 
 ## Architecture
 
@@ -145,23 +145,27 @@ Migration must never silently replace existing account progress.
 
 ## Authentication experience
 
-Layer 13 will add:
+The current branch includes:
 
-- account creation;
-- verified email flow;
-- sign in and sign out;
-- forgotten-password request;
+- account creation with display name, email, password, and policy consent;
+- verified-email handoff and resend flow;
+- email/password sign in;
+- neutral forgotten-password response;
 - password reset;
-- expired-session handling;
-- account settings;
-- progress export;
-- account and progress deletion through a privileged server function.
+- secure callback handling;
+- account settings and sign out;
+- PKCE session flow, persisted sessions, automatic refresh, and URL session detection;
+- same-origin and project-prefix validation for post-authentication redirects;
+- private `noindex,nofollow` account pages excluded from the sitemap;
+- a visible account entry point from My progress.
 
-Google sign-in is optional and should follow only after the email/password flow is stable.
+Google sign-in remains optional and should follow only after the email/password flow and cloud adapter are stable.
 
 ## Deployment boundary
 
 GitHub Pages may remain the development preview while authentication and cloud progress are built. Layer 13 does not secure premium lesson or question-bank files. Protected content delivery and production hosting changes belong to Layer 14.
+
+Authentication URL configuration and migration deployment instructions are documented in `docs/LAYER_13_SUPABASE_SETUP.md`.
 
 ## Implementation sequence
 
@@ -172,11 +176,15 @@ GitHub Pages may remain the development preview while authentication and cloud p
 - add database tests for ownership isolation;
 - document local development and secret handling.
 
+**Status:** Complete and passing Database Quality.
+
 ### 13.2 — Authentication UI
 
 - add signup, verification, sign-in, recovery, callback, and settings pages;
-- add auth-aware navigation and session state;
+- add account entry points and session state;
 - preserve anonymous use when signed out.
+
+**Status:** Implemented on the draft branch; live project redirect configuration and end-to-end email testing remain.
 
 ### 13.3 — Cloud adapter
 
