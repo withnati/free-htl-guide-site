@@ -65,6 +65,12 @@ LEARNER_JS = (
     "assets/premium-content-client.js",
 )
 
+JS_STRING_PATTERNS = (
+    re.compile(r"'((?:\\.|[^'\\])*)'", re.DOTALL),
+    re.compile(r'"((?:\\.|[^"\\])*)"', re.DOTALL),
+    re.compile(r"`((?:\\.|[^`\\])*)`", re.DOTALL),
+)
+
 
 class VisibleTextParser(HTMLParser):
     def __init__(self) -> None:
@@ -88,12 +94,6 @@ class VisibleTextParser(HTMLParser):
         return " ".join(self.parts)
 
 
-JS_STRING_RE = re.compile(
-    r"(?P<quote>['\"`])(?P<value>(?:\\.|(?!\1).)*?)(?P=quote)",
-    re.DOTALL,
-)
-
-
 def visible_html(path: Path) -> str:
     parser = VisibleTextParser()
     parser.feed(path.read_text(encoding="utf-8"))
@@ -102,7 +102,10 @@ def visible_html(path: Path) -> str:
 
 def visible_js(path: Path) -> str:
     content = path.read_text(encoding="utf-8")
-    return " ".join(match.group("value") for match in JS_STRING_RE.finditer(content))
+    values: list[str] = []
+    for pattern in JS_STRING_PATTERNS:
+        values.extend(match.group(1) for match in pattern.finditer(content))
+    return " ".join(values)
 
 
 def findings(root: Path) -> list[tuple[Path, str]]:
