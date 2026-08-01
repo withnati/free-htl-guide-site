@@ -1,6 +1,6 @@
 # Free HTL Guide
 
-Free HTL Guide is an account-ready HT/HTL learning platform in active development. The current public GitHub Pages build contains seven learning modules, module quizzes, a six-week study plan, cumulative practice, a 50-question mock exam backed by a 150-record development bank, and a private local-progress dashboard.
+Free HTL Guide is an account-ready HT/HTL learning platform in active development. The current public GitHub Pages build contains seven learning modules, module quizzes, a six-week study plan, cumulative practice, a 50-question mock exam backed by a 150-record development bank, Targeted Practice, and a private local-progress dashboard.
 
 ## Product direction
 
@@ -8,7 +8,7 @@ The project is transitioning from a static study guide into a subscription learn
 
 - **Public launch content:** homepage, instructor and editorial information, course outline, the complete Fixation lesson, a sample quiz, feature previews, pricing, and signup.
 - **Premium-designated content:** lessons 2–7, full module quizzes, the 150-record question bank, mock exams, targeted practice, complete progress history, and weak-domain recommendations.
-- **Account features:** authenticated identity, cloud-backed learning progress, resumable sessions, progress export, and account deletion.
+- **Account features:** verified identity, cloud-backed learning progress, resumable sessions, progress export, and account deletion.
 
 The current deployment is a development preview. Access metadata does not provide security, and browser storage cannot grant a paid entitlement. Premium content must be moved behind authenticated, server-authorized delivery before a paid launch.
 
@@ -20,14 +20,17 @@ The current deployment is a development preview. Access metadata does not provid
 - Replaceable progress-storage adapter
 - Stable question and selected-option IDs
 - Premium/public access metadata
+- Supabase Auth and PostgreSQL foundation under Layer 13 development
+- PostgreSQL Row Level Security contract and two-user ownership tests
 - Automated Python contract validation
 - Desktop and mobile Playwright browser testing
 
 ## Current development status
 
-- Layers 1–11 are merged into `main`.
-- Layer 12 Targeted Practice is under review in draft PR #17.
-- Layer 13 will introduce authentication and cloud progress after Layer 12 is approved and merged.
+- Layers 1–12 are merged into `main`.
+- Layer 13 authentication and cloud progress is under development in draft PR #18.
+- The Layer 13 branch includes the relational database/RLS foundation, a browser-safe Supabase development configuration, and private signup, verification, sign-in, recovery, callback, and settings pages.
+- The cloud progress adapter, anonymous-progress import, privacy operations, and end-to-end live account verification remain in progress.
 - Layers 14–16 will cover protected premium content, payments/paywall, and the launch funnel.
 
 The 150-record development bank contains 70 authority-reviewed base questions and 80 alternate scenarios that still require final manual scientific and editorial review.
@@ -44,12 +47,17 @@ python scripts/validate_mock_exam.py --root .
 python scripts/validate_seo.py --root .
 python scripts/validate_analytics.py --root .
 python scripts/validate_progress.py --root .
+python scripts/validate_targeted_practice.py --root .
 ```
 
-On the Layer 12 branch, also run:
+On the Layer 13 branch, also run:
 
 ```bash
-python scripts/validate_targeted_practice.py --root .
+python scripts/validate_cloud_progress.py --root .
+python scripts/validate_auth.py --root .
+supabase db start
+supabase db lint --level warning --fail-on error
+supabase test db
 ```
 
 Run browser tests:
@@ -63,7 +71,9 @@ npm run test:browser
 ## Key project documents
 
 - `docs/LAYER_11_ACCOUNT_READY_PROGRESS.md`
-- `docs/LAYER_12_TARGETED_PRACTICE.md` on the Layer 12 branch
+- `docs/LAYER_12_TARGETED_PRACTICE.md`
+- `docs/LAYER_13_AUTH_CLOUD_PROGRESS.md` on the Layer 13 branch
+- `docs/LAYER_13_SUPABASE_SETUP.md` on the Layer 13 branch
 - `data/content-access.json`
 - `data/progress-schema.json`
 - `data/question-bank-manifest.json`
@@ -72,4 +82,4 @@ npm run test:browser
 
 ## Repository workflow
 
-Major product layers are developed on dedicated branches and opened as draft pull requests. A layer should not be merged until the protected Site Quality and Browser Quality workflows pass and explicit approval is given.
+Major product layers are developed on dedicated branches and opened as draft pull requests. A layer should not be merged until Site Quality, Browser Quality, and any layer-specific security/database workflows pass and explicit approval is given.

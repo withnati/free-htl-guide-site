@@ -1,0 +1,39 @@
+.cloud-sync-indicator {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 80;
+  max-width: min(22rem, calc(100vw - 2rem));
+  padding: .65rem .85rem;
+  border: 1px solid rgba(15, 76, 129, .24);
+  border-radius: .8rem;
+  background: rgba(255, 255, 255, .96);
+  box-shadow: 0 .5rem 1.5rem rgba(15, 23, 42, .14);
+  color: #16324a;
+  font-size: .88rem;
+  line-height: 1.35;
+}
+
+.dark .cloud-sync-indicator {
+  border-color: rgba(148, 163, 184, .32);
+  background: rgba(15, 23, 42, .96);
+  color: #e2e8f0;
+}
+
+.cloud-sync-indicator[data-state="offline"],
+.cloud-sync-indicator[data-state="error"],
+.cloud-sync-indicator[data-state="conflict"] {
+  border-color: rgba(180, 83, 9, .48);
+}
+
+.cloud-sync-indicator[hidden] {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .cloud-sync-indicator {
+    right: .75rem;
+    bottom: .75rem;
+    max-width: calc(100vw - 1.5rem);
+  }
+}

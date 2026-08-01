@@ -2,3 +2,13 @@ node_modules/
 playwright-report/
 test-results/
 .DS_Store
+
+# Local environment files and credentials
+.env
+.env.*
+!.env.example
+
+# Supabase local state
+.supabase/
+supabase/.temp/
+supabase/.branches/

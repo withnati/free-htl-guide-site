@@ -10,6 +10,20 @@
   const dataUrl = new URL('../data/module-authority.json', script.src);
   const stylesheetUrl = new URL('authority.css', script.src);
   const editorialUrl = new URL('../editorial.html', script.src);
+  const cloudBootstrapUrl = new URL('cloud-sync-bootstrap.js', script.src);
+
+  function loadCloudSyncBootstrap() {
+    if (pageKey === 'account' || pageKey === 'my-progress') return;
+    if (!localStorage.getItem('free-htl-cloud-sync-v1')) return;
+    if (window.FreeHTLCloudSync || document.querySelector('script[data-free-htl-cloud-sync]')) return;
+    const cloudScript = document.createElement('script');
+    cloudScript.src = cloudBootstrapUrl.href;
+    cloudScript.async = false;
+    cloudScript.dataset.freeHtlCloudSync = 'true';
+    document.head.appendChild(cloudScript);
+  }
+
+  loadCloudSyncBootstrap();
 
   function ensureStylesheet() {
     if (document.querySelector('link[data-free-htl-authority]')) return;

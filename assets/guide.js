@@ -12,6 +12,7 @@
   }
 
   function loadProgressService() {
+    if (page === 'account') return;
     const guideScript = guideScriptElement();
     if (!guideScript || window.FreeHTLProgress || document.querySelector('script[data-free-htl-progress]')) return;
     const progressScript = document.createElement('script');
