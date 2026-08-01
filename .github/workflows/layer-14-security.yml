@@ -29,5 +29,23 @@ jobs:
         with:
           python-version: "3.13"
 
-      - name: Validate Layer 14 security contract
+      - name: Validate Layer 14 repository security contract
         run: python scripts/validate_layer14_security.py --root "$GITHUB_WORKSPACE"
+
+      - name: Build allowlisted public deployment
+        env:
+          FHL_ENVIRONMENT: preview
+          FHL_PUBLIC_SITE_URL: https://preview.example.test/
+        run: python scripts/build_public_site.py --root "$GITHUB_WORKSPACE" --output "$RUNNER_TEMP/fhl-public-dist"
+
+      - name: Scan public deployment for protected-content leakage
+        run: python scripts/validate_public_build.py --root "$RUNNER_TEMP/fhl-public-dist"
+
+      - name: Upload public-build manifest
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: layer-14-public-build-manifest
+          path: ${{ runner.temp }}/fhl-public-dist/build-manifest.json
+          if-no-files-found: error
+          retention-days: 14
