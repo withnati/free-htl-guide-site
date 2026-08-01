@@ -44,11 +44,19 @@
     return parts.length ? parts.join(', ') : 'a browser progress record';
   }
 
-  async function connectAccountProgress() {
+  async function connectAccountProgress(options = {}) {
     await service.useAdapter(adapter);
-    importPanel.hidden = true;
-    setStatus('Cloud sync is connected to this verified account. Your browser copy remains available as a recovery backup.', 'info', true);
+    if (importPanel) importPanel.hidden = true;
+    setStatus(options.reset
+      ? 'Cloud progress was reset. The temporary browser backup was also removed.'
+      : 'Cloud sync is connected to this verified account. Your browser copy remains available as a recovery backup.', 'info', true);
     document.body.dataset.cloudProgress = 'connected';
+  }
+
+  async function reconnectAfterReset() {
+    if (!adapter) return;
+    localStorage.removeItem(service.storageKey());
+    await connectAccountProgress({ reset: true });
   }
 
   async function importBrowserProgress() {
@@ -99,15 +107,15 @@
     }
 
     if (!session?.user?.id) {
-      anonymousActions.hidden = false;
-      authenticatedActions.hidden = true;
+      if (anonymousActions) anonymousActions.hidden = false;
+      if (authenticatedActions) authenticatedActions.hidden = true;
       setStatus('Progress is stored in this browser. Sign in or create an account to enable cloud synchronization.');
       document.body.dataset.cloudProgress = 'anonymous';
       return;
     }
 
-    anonymousActions.hidden = true;
-    authenticatedActions.hidden = false;
+    if (anonymousActions) anonymousActions.hidden = true;
+    if (authenticatedActions) authenticatedActions.hidden = false;
     if (accountEmail) accountEmail.textContent = session.user.email || 'Verified learner';
     browserRecord = await service.getSnapshot();
     adapter = new cloud.CloudProgressAdapter(auth.client, session.user.id, { schemaVersion: browserRecord.schemaVersion });
@@ -120,8 +128,8 @@
     const remoteHasProgress = cloud.hasMeaningfulProgress(remoteRecord);
 
     if (browserHasProgress && !alreadyImported) {
-      importSummary.textContent = `${countSummary(cloud.progressCounts(browserRecord))} were found on this browser.${remoteHasProgress ? ' They can be merged with the progress already saved to your account.' : ''}`;
-      importPanel.hidden = false;
+      if (importSummary) importSummary.textContent = `${countSummary(cloud.progressCounts(browserRecord))} were found on this browser.${remoteHasProgress ? ' They can be merged with the progress already saved to your account.' : ''}`;
+      if (importPanel) importPanel.hidden = false;
       setStatus('You are signed in. Choose whether to import this browser’s progress before cloud sync begins.', 'warn');
       document.body.dataset.cloudProgress = 'awaiting-import';
       return;
@@ -138,5 +146,9 @@
     setStatus('Cloud synchronization could not start. Your browser progress remains unchanged.', 'warn');
     document.body.dataset.cloudProgress = 'error';
   });
-  window.FreeHTLCloudProgress = Object.freeze({ ready });
+  window.FreeHTLCloudProgress = Object.freeze({
+    ready,
+    reconnectAfterReset,
+    isConnected: () => Boolean(adapter && document.body.dataset.cloudProgress === 'connected')
+  });
 })();
