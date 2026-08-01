@@ -3,6 +3,7 @@
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const service = window.FreeHTLProgress;
+  let latestModel = null;
 
   const escapeHtml = (value) => String(value ?? '')
     .replaceAll('&', '&amp;')
@@ -25,7 +26,7 @@
   function activityText(item) {
     const labels = {
       'module-section-viewed': `Viewed ${item.sectionId || 'a lesson section'} in ${item.page || 'a module'}`,
-      'study-task-updated': `${item.checked ? 'Completed' : 'Reopened'} study task ${item.taskId || ''}`,
+      'study-task-updated': `${item.checked ? 'Completed' : 'Updated'} study task ${item.taskId || ''}`,
       'quiz-completed': `Completed ${item.page || 'module'} quiz at ${item.percent ?? 0}%`,
       'mock-exam-completed': `Completed a ${item.mode || ''} mock exam at ${item.percent ?? 0}%`,
       'targeted-practice-completed': `Completed a ${item.mode || ''} targeted set at ${item.percent ?? 0}%`,
@@ -64,6 +65,7 @@
   }
 
   function render(model) {
+    latestModel = model;
     $('[data-summary-modules]').textContent = `${model.summary.modulesStarted}/${model.summary.totalModules}`;
     $('[data-summary-quiz]').textContent = model.summary.averageQuiz === null ? '—' : `${model.summary.averageQuiz}%`;
     $('[data-summary-mock]').textContent = model.summary.latestMock ? `${model.summary.latestMock.percent}%` : '—';
@@ -76,10 +78,10 @@
       <div><p class="eyebrow">Recommended next step</p><h2>${escapeHtml(recommendation.title)}</h2><p>${escapeHtml(recommendation.message)}</p>${accessBadge(recommendation.accessTier)}</div>
       <a class="btn btn-primary" href="${escapeHtml(recommendation.path)}">Continue</a>`;
 
-    $('[data-account-status]').textContent = model.account.localOnly ? 'Anonymous browser profile' : 'Connected account';
-    $('[data-storage-status]').textContent = model.account.localOnly ? 'This browser only' : escapeHtml(model.account.adapter);
+    $('[data-account-status]').textContent = model.account.localOnly ? 'Anonymous browser profile' : 'Verified learner account';
+    $('[data-storage-status]').textContent = model.account.localOnly ? 'This browser only' : 'Supabase cloud';
     $('[data-access-status]').textContent = model.account.entitlement.tier === 'public' ? 'Public preview' : model.account.entitlement.tier;
-    $('[data-migration-status]').textContent = model.access.accountPlan.anonymousMigrationSupported ? 'Prepared for account migration' : 'Not available';
+    $('[data-migration-status]').textContent = model.account.localOnly ? 'Ready for explicit import' : 'Account record active';
 
     renderModules(model);
     renderDomains(model);
@@ -120,10 +122,14 @@
   });
 
   $('[data-confirm-reset]')?.addEventListener('click', async () => {
+    const cloudConnected = Boolean(window.FreeHTLCloudProgress?.isConnected?.()) || Boolean(latestModel && !latestModel.account.localOnly);
     await service.resetProgress();
+    if (cloudConnected) await window.FreeHTLCloudProgress?.reconnectAfterReset?.();
     $('[data-reset-confirmation]').hidden = true;
     await refresh();
-    $('[data-progress-status]').textContent = 'Progress reset. Notes, theme, and analytics choices were not removed.';
+    $('[data-progress-status]').textContent = cloudConnected
+      ? 'Cloud progress and the temporary browser backup were reset. Account identity and privacy choices were not removed.'
+      : 'Progress reset. Notes, theme, and analytics choices were not removed.';
     $('[data-progress-status]').focus();
   });
 
