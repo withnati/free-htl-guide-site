@@ -56,6 +56,9 @@ jobs:
       - name: Validate Layer 13 cloud progress security contract
         run: python scripts/validate_cloud_progress.py --root "$GITHUB_WORKSPACE"
 
+      - name: Validate Layer 13 authentication contract
+        run: python scripts/validate_auth.py --root "$GITHUB_WORKSPACE"
+
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
