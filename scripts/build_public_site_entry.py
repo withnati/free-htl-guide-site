@@ -5,6 +5,8 @@ from __future__ import annotations
 import build_public_site
 
 build_public_site.PREVIEW_TEMPLATE = "templates/premium-preview.tpl"
+if "404.html" not in build_public_site.PUBLIC_SOURCE_HTML:
+    build_public_site.PUBLIC_SOURCE_HTML += ("404.html",)
 
 LEARNER_PREVIEW_COPY: dict[str, dict[str, object]] = {
     "study-plan.html": {
