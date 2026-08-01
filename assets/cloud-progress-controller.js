@@ -194,6 +194,18 @@
     await connectAccountProgress('Cloud sync is connected to this account. No earlier anonymous study progress was found on this browser.');
   }
 
+  function isConnected() {
+    return Boolean(adapter && userId);
+  }
+
+  async function reconnectAfterReset() {
+    if (!adapter) return;
+    localStorage.removeItem(service.storageKey());
+    await service.useAdapter(adapter);
+    lastSyncStatus = adapter.hasPending() ? 'offline' : 'saved';
+    document.body.dataset.cloudProgress = adapter.hasPending() ? 'offline' : 'connected';
+  }
+
   window.addEventListener('htl:cloud-sync-state', (event) => {
     const syncStatus = event.detail?.status;
     if (!syncStatus) return;
@@ -212,5 +224,11 @@
     setStatus('Cloud synchronization could not start. Your browser progress remains unchanged.', 'warn');
     document.body.dataset.cloudProgress = 'error';
   });
-  window.FreeHTLCloudProgress = Object.freeze({ ready, decisionKey: DECISION_KEY, readDecision });
+  window.FreeHTLCloudProgress = Object.freeze({
+    ready,
+    decisionKey: DECISION_KEY,
+    readDecision,
+    isConnected,
+    reconnectAfterReset
+  });
 })();
