@@ -3,8 +3,11 @@ const { test, expect } = require('@playwright/test');
 const sdkUrl = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.8';
 
 async function mockSupabase(page, options = {}) {
+  const calls = [];
+  await page.exposeFunction('__recordSupabaseCall', (call) => {
+    calls.push(call);
+  });
   const script = `
-    window.__supabaseCalls = [];
     window.supabase = {
       createClient() {
         const session = ${JSON.stringify(options.session || null)};
@@ -13,12 +16,12 @@ async function mockSupabase(page, options = {}) {
         const auth = {
           getSession: () => ok({ session }),
           getUser: () => ok({ user }),
-          signUp: (payload) => { window.__supabaseCalls.push(['signUp', payload]); return ok({ user: { id: 'user-a' }, session: null }); },
-          signInWithPassword: (payload) => { window.__supabaseCalls.push(['signIn', payload]); return ok({ user: { id: 'user-a' }, session: { access_token: 'test' } }); },
-          resetPasswordForEmail: (email, payload) => { window.__supabaseCalls.push(['reset', email, payload]); return ok({}); },
-          resend: (payload) => { window.__supabaseCalls.push(['resend', payload]); return ok({}); },
-          updateUser: (payload) => { window.__supabaseCalls.push(['updateUser', payload]); return ok({ user: user || { id: 'user-a', email: 'learner@example.test', user_metadata: payload.data || {} } }); },
-          signOut: () => { window.__supabaseCalls.push(['signOut']); return ok({}); },
+          signUp: async (payload) => { await window.__recordSupabaseCall(['signUp', payload]); return ok({ user: { id: 'user-a' }, session: null }); },
+          signInWithPassword: async (payload) => { await window.__recordSupabaseCall(['signIn', payload]); return ok({ user: { id: 'user-a' }, session: { access_token: 'test' } }); },
+          resetPasswordForEmail: async (email, payload) => { await window.__recordSupabaseCall(['reset', email, payload]); return ok({}); },
+          resend: async (payload) => { await window.__recordSupabaseCall(['resend', payload]); return ok({}); },
+          updateUser: async (payload) => { await window.__recordSupabaseCall(['updateUser', payload]); return ok({ user: user || { id: 'user-a', email: 'learner@example.test', user_metadata: payload.data || {} } }); },
+          signOut: async () => { await window.__recordSupabaseCall(['signOut']); return ok({}); },
           onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } })
         };
         return {
@@ -29,11 +32,12 @@ async function mockSupabase(page, options = {}) {
     };
   `;
   await page.route(sdkUrl, (route) => route.fulfill({ status: 200, contentType: 'application/javascript', body: script }));
+  return calls;
 }
 
 test('account signup sends approved redirect and moves to verification', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
-  await mockSupabase(page);
+  const calls = await mockSupabase(page);
   await page.goto('/account/sign-up.html?next=%2Fmy-progress.html');
   await page.getByLabel('Display name').fill('Learner A');
   await page.getByLabel('Email').fill('learner@example.test');
@@ -42,7 +46,6 @@ test('account signup sends approved redirect and moves to verification', async (
   await page.getByRole('checkbox').check();
   await page.getByRole('button', { name: 'Create account' }).click();
   await expect(page).toHaveURL(/\/account\/verify-email\.html/);
-  const calls = await page.evaluate(() => window.__supabaseCalls);
   expect(calls[0][0]).toBe('signUp');
   expect(calls[0][1].options.emailRedirectTo).toContain('/account/auth-callback.html');
 });
