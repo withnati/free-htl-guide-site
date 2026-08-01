@@ -63,12 +63,7 @@
     "mock-exam": {
       "path": "mock-exam.html", "type": "article", "section": "HT/HTL practice mock exams", "share": true,
       "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "50-question HT/HTL mock exam", "path": "mock-exam.html"}],
-      "related": ["cumulative-practice", "targeted-practice", "study-plan"]
-    },
-    "targeted-practice": {
-      "path": "targeted-practice.html", "type": "article", "section": "Targeted HT/HTL practice", "share": false,
-      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Targeted HT/HTL practice", "path": "targeted-practice.html"}],
-      "related": ["mock-exam", "cumulative-practice", "study-plan"]
+      "related": ["cumulative-practice", "study-plan", "lab-operations"]
     },
     "fixation-v3": {
       "path": "modules/fixation-guide-v3.html", "type": "article", "section": "HT/HTL exam domain lessons", "share": true,
