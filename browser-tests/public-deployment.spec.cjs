@@ -72,6 +72,17 @@ test('complete public Fixation lesson remains usable in the generated deployment
   await expectNoHorizontalOverflow(page);
 });
 
+test('custom 404 recovery page ships in the generated deployment', async ({ page }) => {
+  await page.goto('/404.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-page', 'not-found');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('We could not find that study page');
+  await expect(page.getByRole('link', { name: 'Start the free Fixation lesson' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Explore the HT/HTL course' })).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
 test('premium lesson route contains a learner-facing preview without lesson or quiz payload', async ({ page }) => {
   await page.goto('/modules/processing-guide-v3.html');
 
