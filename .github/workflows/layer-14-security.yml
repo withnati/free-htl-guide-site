@@ -32,11 +32,52 @@ jobs:
       - name: Validate Layer 14 repository security contract
         run: python scripts/validate_layer14_security.py --root "$GITHUB_WORKSPACE"
 
+      - name: Report stale premium download references
+        shell: bash
+        run: |
+          set -euo pipefail
+          matches=$(grep -R -n --fixed-strings "HTL_Curriculum_StudyPlan_6Week.pdf" \
+            index.html about.html contact.html editorial.html faq.html privacy.html terms.html \
+            my-progress.html account modules/fixation-guide-v3.html premium/processing-proof.html \
+            assets 2>/dev/null || true)
+          if [[ -n "$matches" ]]; then
+            echo "$matches"
+          else
+            echo "No stale study-plan PDF reference found in approved public source paths."
+          fi
+
       - name: Build allowlisted public deployment
         env:
           FHL_ENVIRONMENT: preview
           FHL_PUBLIC_SITE_URL: https://preview.example.test/
         run: python scripts/build_public_site.py --root "$GITHUB_WORKSPACE" --output "$RUNNER_TEMP/fhl-public-dist"
+
+      - name: Report matched alternate-question identifiers
+        env:
+          PUBLIC_DIST: ${{ runner.temp }}/fhl-public-dist
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          root = Path(os.environ["PUBLIC_DIST"])
+          pattern = re.compile(r"\b(?:fxv|prv|emv|hev|ssv|ihv|lov)-\d{3}\b")
+          found = False
+          for path in sorted(root.rglob("*")):
+              if not path.is_file() or path.suffix.lower() not in {".html", ".js", ".css", ".json", ".xml", ".txt", ""}:
+                  continue
+              try:
+                  content = path.read_text(encoding="utf-8")
+              except (OSError, UnicodeDecodeError):
+                  continue
+              matches = sorted(set(pattern.findall(content)))
+              if matches:
+                  found = True
+                  print(f"{path.relative_to(root)}: {', '.join(matches)}")
+          if not found:
+              print("No alternate-question identifier matches found.")
+          PY
 
       - name: Scan public deployment for protected-content leakage
         run: python scripts/validate_public_build.py --root "$RUNNER_TEMP/fhl-public-dist"
