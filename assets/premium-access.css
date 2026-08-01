@@ -1,0 +1,120 @@
+.premium-shell {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: clamp(2rem, 5vw, 4.5rem) 0 4rem;
+}
+
+.premium-intro {
+  max-width: 760px;
+  margin-bottom: 2rem;
+}
+
+.premium-access-card {
+  max-width: 820px;
+  margin-bottom: 2rem;
+}
+
+.premium-access-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.premium-access-heading h2,
+.premium-content-header h2 {
+  margin-top: 0;
+}
+
+.premium-state {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.85rem;
+  background: var(--surface-soft, rgba(15, 76, 129, 0.05));
+}
+
+.premium-state[data-state="signed-out"],
+.premium-state[data-state="upgrade-required"] {
+  border-inline-start: 0.35rem solid #b7791f;
+}
+
+.premium-state[data-state="error"],
+.premium-state[data-state="expired"] {
+  border-inline-start: 0.35rem solid #b42318;
+}
+
+.premium-state[data-state="authorized"] {
+  border-inline-start: 0.35rem solid #207a4b;
+}
+
+.premium-loader {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
+  border: 0.2rem solid currentColor;
+  border-inline-end-color: transparent;
+  border-radius: 50%;
+  animation: premium-spin 0.8s linear infinite;
+}
+
+.premium-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.premium-request-reference {
+  margin-top: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.premium-content {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.premium-content-header {
+  border-top: 0.3rem solid #207a4b;
+}
+
+.premium-content-section h3 {
+  margin-top: 0;
+}
+
+.premium-content-section p:last-child,
+.premium-content-section ul:last-child {
+  margin-bottom: 0;
+}
+
+.premium-content-list {
+  padding-inline-start: 1.3rem;
+}
+
+@keyframes premium-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .premium-loader { animation: none; }
+}
+
+@media (max-width: 640px) {
+  .premium-shell {
+    width: min(100% - 1rem, 1120px);
+    padding-top: 1.5rem;
+  }
+
+  .premium-access-heading {
+    display: grid;
+  }
+
+  .premium-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
