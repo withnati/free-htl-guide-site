@@ -61,7 +61,10 @@ test('complete public Fixation lesson remains usable in the generated deployment
   await expect(page.locator('body')).toHaveAttribute('data-page', 'fixation-v3');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Fixation');
   await expect(page.locator('fieldset[data-correct]')).toHaveCount(10);
-  await expect(page.getByRole('link', { name: /Fixation Quick Card/i }).first()).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Download resources' })).toHaveAttribute(
+    'href',
+    '../assets/all-fixation-downloads.zip'
+  );
   await expectNoHorizontalOverflow(page);
 });
 
@@ -95,7 +98,7 @@ test('generated account route remains noindex and usable as a public account she
   await page.goto('/account/sign-in.html');
 
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('Sign in');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Welcome back');
   await expect(page.locator('form[data-sign-in-form]')).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
