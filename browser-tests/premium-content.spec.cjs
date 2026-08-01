@@ -63,7 +63,7 @@ async function mockPremiumEndpoint(page, response) {
   return calls;
 }
 
-test('signed-out learner sees sign-in state without requesting premium payload', async ({ page }, testInfo) => {
+test('signed-out learner sees a clear sign-in state without requesting lesson content', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await mockSupabase(page, null);
   const calls = await mockPremiumEndpoint(page, {
@@ -74,13 +74,15 @@ test('signed-out learner sees sign-in state without requesting premium payload',
   await page.goto('/premium/processing-proof.html');
 
   await expect(page.locator('[data-premium-status-label]')).toHaveText('Sign in required');
+  await expect(page.locator('[data-premium-message]')).toHaveText('Sign in to continue learning.');
+  await expect(page.locator('[data-premium-sign-in]')).toHaveText('Sign in to continue');
   await expect(page.locator('[data-premium-sign-in]')).toBeVisible();
   await expect(page.locator('[data-premium-content]')).toBeHidden();
   expect(calls).toHaveLength(0);
   await expect(page.locator('[data-premium-sign-in]')).toHaveAttribute('href', /account\/sign-in\.html\?next=/);
 });
 
-test('verified free learner receives an accessible upgrade-required state', async ({ page }, testInfo) => {
+test('verified free learner receives a learner-facing Premium state', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await mockSupabase(page, {
     access_token: 'free-session-token',
@@ -97,7 +99,9 @@ test('verified free learner receives an accessible upgrade-required state', asyn
 
   await page.goto('/premium/processing-proof.html');
 
-  await expect(page.locator('[data-premium-status-label]')).toHaveText('Premium required');
+  await expect(page.locator('[data-premium-status-label]')).toHaveText('Included with Premium');
+  await expect(page.locator('[data-premium-message]')).toContainText('included with Premium');
+  await expect(page.locator('[data-premium-upgrade]')).toHaveText('See what Premium includes');
   await expect(page.locator('[data-premium-upgrade]')).toBeVisible();
   await expect(page.locator('[data-premium-content]')).toBeHidden();
   await expect(page.locator('[data-premium-request-reference]')).toContainText('request-free-1');
@@ -114,7 +118,7 @@ test('verified free learner receives an accessible upgrade-required state', asyn
   expect(overflow).toBeLessThanOrEqual(1);
 });
 
-test('invalid or expired session fails safely and prompts sign in again', async ({ page }, testInfo) => {
+test('invalid or expired session fails safely and asks the learner to sign in again', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await mockSupabase(page, {
     access_token: 'expired-session-token',
@@ -130,13 +134,15 @@ test('invalid or expired session fails safely and prompts sign in again', async 
 
   await page.goto('/premium/processing-proof.html');
 
-  await expect(page.locator('[data-premium-status-label]')).toHaveText('Session expired');
+  await expect(page.locator('[data-premium-status-label]')).toHaveText('Sign in again');
+  await expect(page.locator('[data-premium-message]')).toHaveText('Your session ended. Sign in again to continue.');
+  await expect(page.locator('[data-premium-sign-in]')).toHaveText('Sign in again');
   await expect(page.locator('[data-premium-sign-in]')).toBeVisible();
   await expect(page.locator('[data-premium-content]')).toBeHidden();
   await expect(page.locator('[data-premium-request-reference]')).toContainText('request-expired-1');
 });
 
-test('entitled learner receives and renders the authorized payload on mobile', async ({ page }, testInfo) => {
+test('entitled learner receives and renders a learner-facing lesson on mobile', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await mockSupabase(page, {
     access_token: 'premium-session-token',
@@ -147,13 +153,17 @@ test('entitled learner receives and renders the authorized payload on mobile', a
     body: {
       schemaVersion: 1,
       contentId: 'processing-proof-v1',
-      title: 'Protected Processing Lesson Proof',
-      summary: 'This small staging package was delivered only after server authorization.',
+      title: 'Processing and Decalcification: Core Review',
+      summary: 'Review the sequence and the decisions that prevent common processing artifacts.',
       sections: [
         {
-          heading: 'Protected delivery confirmed',
-          paragraphs: ['The public page contained only the learner interface and content identifier.'],
-          bullets: ['The server verified the session.', 'The server checked entitlement.', 'The object came from private storage.']
+          heading: 'Processing sequence',
+          paragraphs: ['Tissue processing replaces water with a supportive medium while preserving morphology and analytes.'],
+          bullets: [
+            'Dehydration removes water.',
+            'Clearing replaces the dehydrant.',
+            'Infiltration replaces the clearing agent with a supportive medium.'
+          ]
         }
       ]
     }
@@ -161,11 +171,12 @@ test('entitled learner receives and renders the authorized payload on mobile', a
 
   await page.goto('/premium/processing-proof.html');
 
-  await expect(page.locator('[data-premium-status-label]')).toHaveText('Access granted');
+  await expect(page.locator('[data-premium-status-label]')).toHaveText('Lesson ready');
+  await expect(page.locator('[data-premium-message]')).toHaveText('Your lesson is ready.');
   await expect(page.locator('[data-premium-content]')).toBeVisible();
-  await expect(page.locator('[data-premium-title]')).toHaveText('Protected Processing Lesson Proof');
-  await expect(page.getByRole('heading', { name: 'Protected delivery confirmed' })).toBeVisible();
-  await expect(page.getByText('The server checked entitlement.')).toBeVisible();
+  await expect(page.locator('[data-premium-title]')).toHaveText('Processing and Decalcification: Core Review');
+  await expect(page.getByRole('heading', { name: 'Processing sequence' })).toBeVisible();
+  await expect(page.getByText('Dehydration removes water.')).toBeVisible();
   expect(calls).toHaveLength(1);
   expect(calls[0].headers.authorization).toBe('Bearer premium-session-token');
   expect(calls[0].body).toEqual({ contentId: 'processing-proof-v1' });

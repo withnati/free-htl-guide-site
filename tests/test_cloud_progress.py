@@ -1,5 +1,12 @@
 from __future__ import annotations
 
+"""Regression tests for the unchanged Layer 13/14 cloud-progress database contract.
+
+Layer 14.5 changes learner-facing copy only. Keeping this suite in the branch also
+forces Database Quality to re-run and confirm that the existing schema and RLS
+boundaries remain intact while the copy layer is reviewed.
+"""
+
 import importlib.util
 import shutil
 import tempfile

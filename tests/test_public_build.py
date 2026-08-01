@@ -2,21 +2,19 @@ from __future__ import annotations
 
 import importlib.util
 import os
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
+SCRIPTS = ROOT / "scripts"
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
 
-BUILD_SPEC = importlib.util.spec_from_file_location(
-    "build_public_site",
-    ROOT / "scripts/build_public_site.py",
-)
-BUILD = importlib.util.module_from_spec(BUILD_SPEC)
-assert BUILD_SPEC.loader
-BUILD_SPEC.loader.exec_module(BUILD)
-BUILD.PREVIEW_TEMPLATE = "templates/premium-preview.tpl"
+import build_public_site as BUILD  # noqa: E402
+import build_public_site_entry  # noqa: F401,E402 - applies learner-facing preview overrides
 
 VALIDATE_SPEC = importlib.util.spec_from_file_location(
     "validate_public_build",
@@ -46,13 +44,43 @@ class PublicBuildTests(unittest.TestCase):
             output = self.build_preview(directory)
             self.assertEqual([], VALIDATE.validate(output))
 
-    def test_premium_routes_are_generated_previews(self) -> None:
+    def test_custom_404_page_is_deployed_and_noindexed(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = self.build_preview(directory)
+            page = output / "404.html"
+            self.assertTrue(page.is_file())
+            content = page.read_text(encoding="utf-8")
+            self.assertIn('data-page="not-found"', content)
+            self.assertIn("We could not find that study page", content)
+            self.assertIn('content="noindex,follow"', content)
+            self.assertIn(
+                'href="https://preview.example.test/404.html"',
+                content,
+            )
+
+    def test_extensionless_preview_routes_receive_private_headers(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = self.build_preview(directory)
+            headers = (output / "_headers").read_text(encoding="utf-8")
+            self.assertIn(
+                "/modules/processing-guide-v3\n  Cache-Control: private, no-store",
+                headers,
+            )
+            self.assertIn(
+                "/mock-exam\n  Cache-Control: private, no-store",
+                headers,
+            )
+
+    def test_premium_routes_are_learner_facing_previews(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = self.build_preview(directory)
             for route in VALIDATE.PREVIEW_ROUTES:
                 content = (output / route).read_text(encoding="utf-8")
                 self.assertIn('data-page="premium-preview"', content)
-                self.assertIn("Premium learning preview", content)
+                self.assertIn("Included with Premium", content)
+                self.assertIn("Start the free Fixation lesson", content)
+                self.assertNotIn("protected-delivery proof", content.casefold())
+                self.assertNotIn("server-controlled entitlement", content.casefold())
                 self.assertNotIn("data-correct=", content)
                 self.assertNotIn("data-expl=", content)
 

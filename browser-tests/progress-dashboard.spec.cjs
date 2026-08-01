@@ -11,11 +11,11 @@ async function openDashboard(page) {
   await expect(page.locator('body')).toHaveAttribute('data-progress-dashboard-loaded', 'true');
 }
 
-test('dashboard is private, account-ready, and labels the planned access model', async ({ page }) => {
+test('dashboard is private, learner-centered, and labels the access model', async ({ page }) => {
   await openDashboard(page);
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', /noindex/);
-  await expect(page.locator('[data-account-status]')).toHaveText('Anonymous browser profile');
-  await expect(page.locator('[data-storage-status]')).toHaveText('This browser only');
+  await expect(page.locator('[data-account-status]')).toHaveText('Using this device');
+  await expect(page.locator('[data-storage-status]')).toHaveText('On this device');
   await expect(page.locator('[data-module-progress] .module-row')).toHaveCount(7);
   await expect(page.locator('[data-module-progress] .access-public')).toHaveCount(1);
   await expect(page.locator('[data-module-progress] .access-premium')).toHaveCount(6);
@@ -66,7 +66,7 @@ test('module quiz events write through the shared progress service', async ({ pa
   await expect(page.locator('[data-module-progress] .module-row').first()).toContainText('100%');
 });
 
-test('account-ready export excludes private notes and answer keys', async ({ page }) => {
+test('learner export excludes private notes and answer keys', async ({ page }) => {
   await page.addInitScript(() => {
     localStorage.setItem('note:fixation-v3:main', 'private-note-value');
   });

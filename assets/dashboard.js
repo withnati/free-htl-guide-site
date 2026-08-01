@@ -6,11 +6,8 @@
   let latestModel = null;
 
   const escapeHtml = (value) => String(value ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
+    .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 
   function formatDate(value) {
     if (!value) return 'Not yet';
@@ -19,29 +16,29 @@
   }
 
   function accessBadge(tier) {
-    const label = tier === 'premium' ? 'Premium planned' : tier === 'registered' ? 'Account feature' : 'Public';
+    const label = tier === 'premium' ? 'Premium' : tier === 'registered' ? 'Free account' : 'Free';
     return `<span class="access-badge access-${escapeHtml(tier)}">${label}</span>`;
   }
 
   function activityText(item) {
     const labels = {
-      'module-section-viewed': `Viewed ${item.sectionId || 'a lesson section'} in ${item.page || 'a module'}`,
-      'study-task-updated': `${item.checked ? 'Completed' : 'Updated'} study task ${item.taskId || ''}`,
-      'quiz-completed': `Completed ${item.page || 'module'} quiz at ${item.percent ?? 0}%`,
+      'module-section-viewed': `Studied ${item.sectionId || 'a lesson section'} in ${item.page || 'a lesson'}`,
+      'study-task-updated': `${item.checked ? 'Completed' : 'Updated'} a study task`,
+      'quiz-completed': `Completed the ${item.page || 'lesson'} quiz at ${item.percent ?? 0}%`,
       'mock-exam-completed': `Completed a ${item.mode || ''} mock exam at ${item.percent ?? 0}%`,
-      'targeted-practice-completed': `Completed a ${item.mode || ''} targeted set at ${item.percent ?? 0}%`,
-      'legacy-progress-imported': `Imported ${item.importedRecords || 0} existing browser progress records`,
-      'progress-reset': 'Reset learning progress'
+      'targeted-practice-completed': `Completed a ${item.mode || ''} Targeted Practice set at ${item.percent ?? 0}%`,
+      'legacy-progress-imported': `Added ${item.importedRecords || 0} earlier study records`,
+      'progress-reset': 'Reset study progress'
     };
-    return labels[item.type] || 'Updated learning progress';
+    return labels[item.type] || 'Updated study progress';
   }
 
   function renderModules(model) {
     const root = $('[data-module-progress]');
     root.innerHTML = model.modules.map((item) => `
       <article class="module-row">
-        <div><h3><a href="${escapeHtml(item.path)}">${escapeHtml(item.title)}</a></h3><div class="module-meta">${escapeHtml(item.domain)}${item.lastSection ? ` · Last section: ${escapeHtml(item.lastSection)}` : ''}</div></div>
-        <div class="module-status"><span class="module-meta">Status</span><div class="status-value">${escapeHtml(item.status)}</div></div>
+        <div><h3><a href="${escapeHtml(item.path)}">${escapeHtml(item.title)}</a></h3><div class="module-meta">${escapeHtml(item.domain)}${item.lastSection ? ` · Continue at ${escapeHtml(item.lastSection)}` : ''}</div></div>
+        <div class="module-status"><span class="module-meta">Progress</span><div class="status-value">${escapeHtml(item.status)}</div></div>
         <div class="module-score"><span class="module-meta">Best quiz</span><div class="status-value">${item.bestQuiz ? `${item.bestQuiz}%` : '—'}</div></div>
         <div>${accessBadge(item.accessTier)}</div>
       </article>`).join('');
@@ -51,17 +48,15 @@
     const root = $('[data-domain-progress]');
     const measured = model.domains.filter((item) => item.average !== null);
     root.innerHTML = measured.length ? measured.map((item) => `
-      <div class="domain-row">
-        <strong>${escapeHtml(item.domain)}</strong>
-        <div class="domain-track" aria-label="${escapeHtml(item.domain)} average ${item.average}%"><i style="width:${Math.max(0, Math.min(100, item.average))}%"></i></div>
-        <span>${item.average}%</span>
-      </div>`).join('') : '<div class="empty-state">Complete a mock exam or targeted set to generate five-domain performance trends.</div>';
+      <div class="domain-row"><strong>${escapeHtml(item.domain)}</strong><div class="domain-track" aria-label="${escapeHtml(item.domain)} average ${item.average}%"><i style="width:${Math.max(0, Math.min(100, item.average))}%"></i></div><span>${item.average}%</span></div>`).join('')
+      : '<div class="empty-state">Complete a mock exam or Targeted Practice set to see performance by exam domain.</div>';
   }
 
   function renderActivity(model) {
     const root = $('[data-recent-activity]');
     root.innerHTML = model.recentActivity.length ? model.recentActivity.map((item) => `
-      <div class="activity-item"><strong>${escapeHtml(activityText(item))}</strong><div class="module-meta">${escapeHtml(formatDate(item.occurredAt))}</div></div>`).join('') : '<div class="empty-state">Your recent study activity will appear here.</div>';
+      <div class="activity-item"><strong>${escapeHtml(activityText(item))}</strong><div class="module-meta">${escapeHtml(formatDate(item.occurredAt))}</div></div>`).join('')
+      : '<div class="empty-state">Your recent lessons, quizzes, and practice attempts will appear here.</div>';
   }
 
   function render(model) {
@@ -76,12 +71,12 @@
     const recommendation = model.recommendation;
     $('[data-next-step]').innerHTML = `
       <div><p class="eyebrow">Recommended next step</p><h2>${escapeHtml(recommendation.title)}</h2><p>${escapeHtml(recommendation.message)}</p>${accessBadge(recommendation.accessTier)}</div>
-      <a class="btn btn-primary" href="${escapeHtml(recommendation.path)}">Continue</a>`;
+      <a class="btn btn-primary" href="${escapeHtml(recommendation.path)}">Continue studying</a>`;
 
-    $('[data-account-status]').textContent = model.account.localOnly ? 'Anonymous browser profile' : 'Verified learner account';
-    $('[data-storage-status]').textContent = model.account.localOnly ? 'This browser only' : 'Supabase cloud';
-    $('[data-access-status]').textContent = model.account.entitlement.tier === 'public' ? 'Public preview' : model.account.entitlement.tier;
-    $('[data-migration-status]').textContent = model.account.localOnly ? 'Ready for explicit import' : 'Account record active';
+    $('[data-account-status]').textContent = model.account.localOnly ? 'Using this device' : 'Free learner account';
+    $('[data-storage-status]').textContent = model.account.localOnly ? 'On this device' : 'In your account';
+    $('[data-access-status]').textContent = model.account.entitlement.tier === 'public' ? 'Free content' : 'Premium content';
+    $('[data-migration-status]').textContent = model.account.localOnly ? 'Ready to add to an account' : 'Connected to this account';
 
     renderModules(model);
     renderDomains(model);
@@ -122,14 +117,14 @@
   });
 
   $('[data-confirm-reset]')?.addEventListener('click', async () => {
-    const cloudConnected = Boolean(window.FreeHTLCloudProgress?.isConnected?.()) || Boolean(latestModel && !latestModel.account.localOnly);
+    const accountConnected = Boolean(window.FreeHTLCloudProgress?.isConnected?.()) || Boolean(latestModel && !latestModel.account.localOnly);
     await service.resetProgress();
-    if (cloudConnected) await window.FreeHTLCloudProgress?.reconnectAfterReset?.();
+    if (accountConnected) await window.FreeHTLCloudProgress?.reconnectAfterReset?.();
     $('[data-reset-confirmation]').hidden = true;
     await refresh();
-    $('[data-progress-status]').textContent = cloudConnected
-      ? 'Cloud progress and the temporary browser backup were reset. Account identity and privacy choices were not removed.'
-      : 'Progress reset. Notes, theme, and analytics choices were not removed.';
+    $('[data-progress-status]').textContent = accountConnected
+      ? 'Your saved study progress was reset. Your account and privacy choices were not removed.'
+      : 'Your study progress on this device was reset. Your notes, theme, and privacy choices were not removed.';
     $('[data-progress-status]').focus();
   });
 

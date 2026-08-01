@@ -8,7 +8,7 @@
     "defaultImage": "assets/og-home.png",
     "imageWidth": 1200,
     "imageHeight": 630,
-    "imageAlt": "Free HTL Guide — practical HT and HTL exam preparation",
+    "imageAlt": "Free HTL Guide — HT and HTL certification exam preparation",
     "manifest": "site.webmanifest",
     "icon": "assets/app-icon.svg",
     "sharePage": "share.html",
@@ -16,12 +16,12 @@
   },
   "pages": {
     "home": {
-      "path": "index.html", "type": "website", "section": "Home", "share": true,
+      "path": "index.html", "type": "website", "section": "HT and HTL exam preparation", "share": true,
       "breadcrumbs": [{"name": "Home", "path": "index.html"}],
-      "related": ["study-plan", "mock-exam", "fixation-v3", "cumulative-practice"]
+      "related": ["fixation-v3", "study-plan", "mock-exam", "cumulative-practice"]
     },
     "about": {
-      "path": "about.html", "type": "profile", "section": "About", "share": true,
+      "path": "about.html", "type": "profile", "section": "About the instructor and platform", "share": true,
       "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "About", "path": "about.html"}],
       "related": ["editorial", "faq", "contact"]
     },
@@ -31,19 +31,19 @@
       "related": ["about", "editorial", "faq"]
     },
     "editorial": {
-      "path": "editorial.html", "type": "article", "section": "Editorial standards", "share": true,
+      "path": "editorial.html", "type": "article", "section": "Editorial and question standards", "share": true,
       "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Editorial standards", "path": "editorial.html"}],
       "related": ["about", "faq", "contact"]
     },
     "faq": {
-      "path": "faq.html", "type": "website", "section": "Frequently asked questions", "share": true,
+      "path": "faq.html", "type": "website", "section": "HT and HTL exam preparation FAQ", "share": true,
       "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Frequently asked questions", "path": "faq.html"}],
-      "related": ["study-plan", "mock-exam", "contact"]
+      "related": ["fixation-v3", "study-plan", "mock-exam"]
     },
     "privacy": {
       "path": "privacy.html", "type": "website", "section": "Privacy", "share": false,
       "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Privacy policy", "path": "privacy.html"}],
-      "related": ["about", "contact", "editorial"]
+      "related": ["about", "contact", "terms"]
     },
     "terms": {
       "path": "terms.html", "type": "website", "section": "Terms of use", "share": false,
@@ -51,53 +51,53 @@
       "related": ["privacy", "contact", "editorial"]
     },
     "study-plan": {
-      "path": "study-plan.html", "type": "article", "section": "Study planning", "share": true,
-      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Six-week study plan", "path": "study-plan.html"}],
+      "path": "study-plan.html", "type": "article", "section": "HT/HTL study planning", "share": true,
+      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Six-week HT/HTL study plan", "path": "study-plan.html"}],
       "related": ["mock-exam", "fixation-v3", "cumulative-practice"]
     },
     "cumulative-practice": {
-      "path": "practice.html", "type": "article", "section": "Practice questions", "share": true,
-      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Cumulative practice", "path": "practice.html"}],
+      "path": "practice.html", "type": "article", "section": "HT/HTL practice questions", "share": true,
+      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Cumulative HT/HTL practice", "path": "practice.html"}],
       "related": ["mock-exam", "study-plan", "fixation-v3"]
     },
     "mock-exam": {
-      "path": "mock-exam.html", "type": "article", "section": "Practice exams", "share": true,
-      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "HT/HTL mock exam", "path": "mock-exam.html"}],
+      "path": "mock-exam.html", "type": "article", "section": "HT/HTL practice mock exams", "share": true,
+      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "50-question HT/HTL mock exam", "path": "mock-exam.html"}],
       "related": ["cumulative-practice", "study-plan", "lab-operations"]
     },
     "fixation-v3": {
-      "path": "modules/fixation-guide-v3.html", "type": "article", "section": "Study modules", "share": true,
-      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Study modules", "path": "index.html#modules"}, {"name": "Fixation", "path": "modules/fixation-guide-v3.html"}],
+      "path": "modules/fixation-guide-v3.html", "type": "article", "section": "HT/HTL exam domain lessons", "share": true,
+      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "HT/HTL course", "path": "index.html#modules"}, {"name": "Fixation", "path": "modules/fixation-guide-v3.html"}],
       "related": ["processing-v3", "ihc-ish", "study-plan"]
     },
     "processing-v3": {
-      "path": "modules/processing-guide-v3.html", "type": "article", "section": "Study modules", "share": true,
-      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Study modules", "path": "index.html#modules"}, {"name": "Processing and Decalcification", "path": "modules/processing-guide-v3.html"}],
+      "path": "modules/processing-guide-v3.html", "type": "article", "section": "HT/HTL exam domain lessons", "share": true,
+      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "HT/HTL course", "path": "index.html#modules"}, {"name": "Processing and Decalcification", "path": "modules/processing-guide-v3.html"}],
       "related": ["fixation-v3", "embedding-v3", "ihc-ish"]
     },
     "embedding-v3": {
-      "path": "modules/embedding-guide-v3.html", "type": "article", "section": "Study modules", "share": true,
-      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Study modules", "path": "index.html#modules"}, {"name": "Embedding and Microtomy", "path": "modules/embedding-guide-v3.html"}],
+      "path": "modules/embedding-guide-v3.html", "type": "article", "section": "HT/HTL exam domain lessons", "share": true,
+      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "HT/HTL course", "path": "index.html#modules"}, {"name": "Embedding and Microtomy", "path": "modules/embedding-guide-v3.html"}],
       "related": ["processing-v3", "he-guide", "lab-operations"]
     },
     "he-guide": {
-      "path": "modules/staining-he-guide.html", "type": "article", "section": "Study modules", "share": true,
-      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Study modules", "path": "index.html#modules"}, {"name": "Routine H&E Staining", "path": "modules/staining-he-guide.html"}],
+      "path": "modules/staining-he-guide.html", "type": "article", "section": "HT/HTL exam domain lessons", "share": true,
+      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "HT/HTL course", "path": "index.html#modules"}, {"name": "Routine H&E Staining", "path": "modules/staining-he-guide.html"}],
       "related": ["embedding-v3", "special-stains", "lab-operations"]
     },
     "special-stains": {
-      "path": "modules/special-stains-guide.html", "type": "article", "section": "Study modules", "share": true,
-      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Study modules", "path": "index.html#modules"}, {"name": "Special Stains", "path": "modules/special-stains-guide.html"}],
+      "path": "modules/special-stains-guide.html", "type": "article", "section": "HT/HTL exam domain lessons", "share": true,
+      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "HT/HTL course", "path": "index.html#modules"}, {"name": "Special Stains", "path": "modules/special-stains-guide.html"}],
       "related": ["he-guide", "ihc-ish", "lab-operations"]
     },
     "lab-operations": {
-      "path": "modules/lab-operations-guide.html", "type": "article", "section": "Study modules", "share": true,
-      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Study modules", "path": "index.html#modules"}, {"name": "Laboratory Operations", "path": "modules/lab-operations-guide.html"}],
+      "path": "modules/lab-operations-guide.html", "type": "article", "section": "HT/HTL exam domain lessons", "share": true,
+      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "HT/HTL course", "path": "index.html#modules"}, {"name": "Laboratory Operations", "path": "modules/lab-operations-guide.html"}],
       "related": ["embedding-v3", "special-stains", "mock-exam"]
     },
     "ihc-ish": {
-      "path": "modules/ihc-ish-guide.html", "type": "article", "section": "Study modules", "share": true,
-      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "Study modules", "path": "index.html#modules"}, {"name": "IHC and ISH Fundamentals", "path": "modules/ihc-ish-guide.html"}],
+      "path": "modules/ihc-ish-guide.html", "type": "article", "section": "HTL exam preparation", "share": true,
+      "breadcrumbs": [{"name": "Home", "path": "index.html"}, {"name": "HT/HTL course", "path": "index.html#modules"}, {"name": "IHC and ISH Fundamentals", "path": "modules/ihc-ish-guide.html"}],
       "related": ["fixation-v3", "processing-v3", "special-stains"]
     }
   }

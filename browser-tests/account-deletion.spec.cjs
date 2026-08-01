@@ -68,7 +68,7 @@ test('account deletion requires exact confirmation and clears account progress s
   await finalButton.click();
 
   await expect(page).toHaveURL(/\/account\/sign-in\.html\?deleted=1$/);
-  await expect(page.locator('[data-auth-status]')).toContainText('permanently deleted');
+  await expect(page.locator('[data-auth-status]')).toContainText('account and saved account progress were deleted');
 
   const invocation = calls.find((call) => call[0] === 'invoke');
   expect(invocation).toBeTruthy();

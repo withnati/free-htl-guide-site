@@ -118,7 +118,7 @@ def validate_service(root: Path) -> list[str]:
             "auth.deleteAccount()",
             "account/sign-in.html?deleted=1",
             "Passwords do not match.",
-            "If an account exists for that email",
+            "If an account uses that email",
         ):
             if token not in ui:
                 issues.append(f"auth-ui.js is missing required behavior token: {token}")
@@ -126,7 +126,7 @@ def validate_service(root: Path) -> list[str]:
             issues.append("auth-ui.js must not persist passwords or email addresses in localStorage")
     if settings:
         for token in (
-            "Delete account and cloud progress",
+            "Delete account and saved progress",
             "data-delete-account-panel",
             "data-delete-confirmation",
             "data-confirm-delete-account",

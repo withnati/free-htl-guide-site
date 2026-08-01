@@ -44,7 +44,7 @@ test('account signup sends approved redirect and moves to verification', async (
   await page.getByLabel('Password', { exact: true }).fill('SecurePass1');
   await page.getByLabel('Confirm password').fill('SecurePass1');
   await page.getByRole('checkbox').check();
-  await page.getByRole('button', { name: 'Create account' }).click();
+  await page.getByRole('button', { name: 'Create free account' }).click();
   await expect(page).toHaveURL(/\/account\/verify-email\.html/);
   expect(calls[0][0]).toBe('signUp');
   expect(calls[0][1].options.emailRedirectTo).toContain('/account/auth-callback.html');
@@ -56,7 +56,7 @@ test('sign in rejects an external next destination', async ({ page }, testInfo) 
   await page.goto('/account/sign-in.html?next=https%3A%2F%2Fevil.example%2Fsteal');
   await page.getByLabel('Email').fill('learner@example.test');
   await page.getByLabel('Password').fill('SecurePass1');
-  await page.getByRole('button', { name: 'Sign in' }).click();
+  await page.getByRole('button', { name: 'Sign in to continue' }).click();
   await expect(page).toHaveURL(/\/my-progress\.html$/);
 });
 

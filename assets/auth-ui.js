@@ -29,19 +29,32 @@
     return '';
   }
 
-  function errorMessage(error, fallback) {
-    return error?.message || fallback;
+  function friendlyError(error, fallback) {
+    const value = String(error?.message || '').toLowerCase();
+    if (value.includes('invalid login') || value.includes('invalid credentials')) {
+      return 'We could not sign you in. Check your email and password and try again.';
+    }
+    if (value.includes('already registered') || value.includes('already exists')) {
+      return 'An account already uses this email. Sign in or reset your password.';
+    }
+    if (value.includes('rate limit') || value.includes('too many')) {
+      return 'Too many attempts were made. Wait a moment and try again.';
+    }
+    if (value.includes('network') || value.includes('fetch')) {
+      return 'We could not reach the account service. Check your connection and try again.';
+    }
+    return fallback;
   }
 
   async function initialize() {
     if (!auth) {
-      setStatus('Authentication is not available in this preview.', 'error');
+      setStatus('Sign-in is temporarily unavailable. Please try again later.', 'error');
       return;
     }
     try {
       await auth.ready;
-    } catch (error) {
-      setStatus(errorMessage(error, 'Authentication could not be initialized.'), 'error');
+    } catch {
+      setStatus('Sign-in is temporarily unavailable. Please try again later.', 'error');
       return;
     }
 
@@ -67,10 +80,10 @@
       if (issue) return setStatus(issue, 'error');
       if (password !== confirmation) return setStatus('Passwords do not match.', 'error');
       setBusy(form, true);
-      setStatus('Creating your account…');
+      setStatus('Creating your free account…');
       const { data, error } = await auth.signUp({ email, password, displayName, next: params.get('next') });
       setBusy(form, false);
-      if (error) return setStatus(errorMessage(error, 'Account creation failed.'), 'error');
+      if (error) return setStatus(friendlyError(error, 'We could not create your account. Check the information entered and try again.'), 'error');
       if (data.session) {
         window.location.assign(auth.safeNext(params.get('next')));
         return;
@@ -82,7 +95,7 @@
 
   function setupSignIn() {
     if (params.get('deleted') === '1') {
-      setStatus('Your account and cloud learning progress were permanently deleted. Anonymous study remains available.', 'success');
+      setStatus('Your account and saved account progress were deleted. You can still use the free lesson without an account.', 'success');
     } else if (params.get('signed_out') === '1') {
       setStatus('You have been signed out.', 'success');
     }
@@ -97,7 +110,7 @@
         password: String(values.get('password') || '')
       });
       setBusy(form, false);
-      if (error) return setStatus(errorMessage(error, 'Sign in failed.'), 'error');
+      if (error) return setStatus(friendlyError(error, 'We could not sign you in. Check your email and password and try again.'), 'error');
       window.location.assign(auth.safeNext(params.get('next')));
     });
   }
@@ -115,7 +128,10 @@
       setBusy(form, true);
       const { error } = await auth.resendConfirmation(value, params.get('next'));
       setBusy(form, false);
-      setStatus(error ? errorMessage(error, 'The email could not be resent.') : 'A new verification email has been sent.', error ? 'error' : 'success');
+      setStatus(
+        error ? friendlyError(error, 'We could not resend the verification email. Please try again.') : 'A new verification email has been sent.',
+        error ? 'error' : 'success'
+      );
     });
   }
 
@@ -127,7 +143,7 @@
       setBusy(form, true);
       await auth.requestPasswordReset(email);
       setBusy(form, false);
-      setStatus('If an account exists for that email, a password-reset link has been sent.', 'success');
+      setStatus('If an account uses that email, a password-reset link has been sent.', 'success');
     });
   }
 
@@ -144,8 +160,8 @@
       setBusy(form, true);
       const { error } = await auth.updatePassword(password);
       setBusy(form, false);
-      if (error) return setStatus(errorMessage(error, 'Password update failed.'), 'error');
-      setStatus('Your password has been updated. Redirecting to account settings…', 'success');
+      if (error) return setStatus(friendlyError(error, 'We could not update your password. Request a new reset link and try again.'), 'error');
+      setStatus('Your password was updated. Returning to account settings…', 'success');
       window.setTimeout(() => window.location.assign(auth.siteUrl('account/settings.html')), 600);
     });
   }
@@ -154,15 +170,15 @@
     const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''));
     const callbackError = params.get('error_description') || hash.get('error_description');
     if (callbackError) {
-      setStatus(callbackError, 'error');
+      setStatus('This verification or sign-in link is no longer valid. Request a new email or sign in again.', 'error');
       return;
     }
     const { data, error } = await auth.getSession();
     if (error || !data.session) {
-      setStatus('The sign-in link is invalid or expired. Request a new link or sign in again.', 'error');
+      setStatus('This verification or sign-in link is no longer valid. Request a new email or sign in again.', 'error');
       return;
     }
-    setStatus('Your account is verified. Redirecting…', 'success');
+    setStatus('Your account is ready. Returning to your study page…', 'success');
     window.setTimeout(() => window.location.assign(auth.safeNext(params.get('next'))), 400);
   }
 
@@ -185,7 +201,12 @@
       setBusy(form, true);
       const result = await auth.updateDisplayName(displayName);
       setBusy(form, false);
-      setStatus(result.error ? 'Your account name was updated, but the profile record could not be synchronized yet.' : 'Account settings saved.', result.error ? 'warning' : 'success');
+      setStatus(
+        result.error
+          ? 'Your display name was updated, but we could not finish saving the change everywhere. Please try again later.'
+          : 'Account settings saved.',
+        result.error ? 'warning' : 'success'
+      );
     });
     document.querySelector('[data-sign-out]')?.addEventListener('click', async () => {
       await auth.signOut();
@@ -232,12 +253,12 @@
         return;
       }
       setDeleteBusy(true);
-      setStatus('Permanently deleting your account and cloud progress…', 'warning');
+      setStatus('Deleting your account and saved progress…', 'warning');
       const result = await auth.deleteAccount();
       if (result.error) {
         setDeleteBusy(false);
         confirmDelete.disabled = confirmation.value !== 'DELETE';
-        setStatus(errorMessage(result.error, 'The account could not be deleted. Nothing was removed.'), 'error');
+        setStatus('We could not delete your account. Nothing was removed. Please try again.', 'error');
         return;
       }
       window.location.replace(auth.siteUrl('account/sign-in.html?deleted=1'));
