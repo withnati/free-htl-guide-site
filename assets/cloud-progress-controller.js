@@ -4,6 +4,7 @@
   const service = window.FreeHTLProgress;
   const auth = window.FreeHTLAuth;
   const cloud = window.FreeHTLCloudProgressAdapter;
+  const resilience = window.FreeHTLResilientCloudAdapter;
   const $ = (selector) => document.querySelector(selector);
   const status = $('[data-progress-status]');
   const importPanel = $('[data-cloud-import]');
@@ -17,6 +18,7 @@
   let adapter = null;
   let browserRecord = null;
   let userId = null;
+  let lastSyncStatus = 'local';
 
   function setStatus(message, tone = 'info', focus = false) {
     if (!status) return;
@@ -68,9 +70,26 @@
     return parts.length ? parts.join(', ') : 'a browser progress record';
   }
 
+  function syncMessage(syncStatus) {
+    const values = {
+      saving: ['Saving progress to your account…', 'info'],
+      saved: ['Progress is saved to your account.', 'info'],
+      offline: ['Offline — changes are preserved on this device and will retry when cloud access returns.', 'warn'],
+      error: ['Cloud sync has a problem. Changes are preserved on this device for retry.', 'warn'],
+      conflict: ['A newer unfinished session exists on another device. Your current changes were not allowed to overwrite it.', 'warn']
+    };
+    return values[syncStatus] || null;
+  }
+
   async function connectAccountProgress(message = 'Cloud sync is connected to this verified account. Your browser copy remains available as a recovery backup.') {
     await service.useAdapter(adapter);
     importPanel.hidden = true;
+    if (adapter.hasPending() || ['offline', 'error', 'conflict'].includes(lastSyncStatus)) {
+      const current = syncMessage(lastSyncStatus === 'saved' ? 'offline' : lastSyncStatus) || syncMessage('offline');
+      setStatus(current[0], current[1], true);
+      document.body.dataset.cloudProgress = lastSyncStatus === 'conflict' ? 'conflict' : 'offline';
+      return;
+    }
     setStatus(message, 'info', true);
     document.body.dataset.cloudProgress = 'connected';
   }
@@ -108,7 +127,7 @@
   }
 
   async function initialize() {
-    if (!service || !auth || !cloud) {
+    if (!service || !auth || !cloud || !resilience) {
       setStatus('Cloud synchronization is unavailable. Progress remains safely stored in this browser.', 'warn');
       document.body.dataset.cloudProgress = 'unavailable';
       return;
@@ -138,7 +157,8 @@
     authenticatedActions.hidden = false;
     if (accountEmail) accountEmail.textContent = session.user.email || 'Verified learner';
     browserRecord = await service.getSnapshot();
-    adapter = new cloud.CloudProgressAdapter(auth.client, userId, { schemaVersion: browserRecord.schemaVersion });
+    const baseAdapter = new cloud.CloudProgressAdapter(auth.client, userId, { schemaVersion: browserRecord.schemaVersion });
+    adapter = new resilience.ResilientCloudAdapter(baseAdapter);
 
     const decision = readDecision(userId);
     if (decision) {
@@ -173,6 +193,16 @@
     saveDecision('account-only');
     await connectAccountProgress('Cloud sync is connected to this account. No earlier anonymous study progress was found on this browser.');
   }
+
+  window.addEventListener('htl:cloud-sync-state', (event) => {
+    const syncStatus = event.detail?.status;
+    if (!syncStatus) return;
+    lastSyncStatus = syncStatus;
+    const current = syncMessage(syncStatus);
+    if (!current || document.body.dataset.cloudProgress === 'awaiting-import') return;
+    setStatus(current[0], current[1]);
+    document.body.dataset.cloudProgress = syncStatus === 'saved' ? 'connected' : syncStatus;
+  });
 
   importButton?.addEventListener('click', () => { void importBrowserProgress(); });
   accountOnlyButton?.addEventListener('click', () => { void useAccountOnly(); });
