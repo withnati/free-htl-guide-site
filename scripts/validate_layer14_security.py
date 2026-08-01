@@ -13,6 +13,10 @@ CONTENT_DOC = "docs/LAYER_14_CONTENT_BOUNDARY.md"
 ROADMAP_DOC = "docs/ROADMAP.md"
 ENTITLEMENT_MIGRATION = "supabase/migrations/20260801060000_layer_14_entitlements.sql"
 PREMIUM_FUNCTION = "supabase/functions/premium-content/index.ts"
+PREMIUM_PAGE = "premium/processing-proof.html"
+PREMIUM_CLIENT = "assets/premium-content-client.js"
+PREMIUM_STYLE = "assets/premium-access.css"
+PREMIUM_BROWSER_TEST = "browser-tests/premium-content.spec.cjs"
 BROWSER_WORKFLOW = ".github/workflows/browser-quality.yml"
 SECURITY_WORKFLOW = ".github/workflows/layer-14-security.yml"
 
@@ -112,6 +116,8 @@ def validate_entitlements(root: Path) -> list[str]:
         "alter table public.entitlement_events enable row level security",
         "revoke all on table public.entitlements from authenticated",
         "revoke all on table public.entitlement_events from authenticated",
+        "revoke all on function public.has_effective_entitlement(uuid, text, timestamptz) from public",
+        "revoke all on function public.has_effective_entitlement(uuid, text, timestamptz) from authenticated",
         "grant execute on function public.has_effective_entitlement(uuid, text, timestamptz) to service_role",
         "status in (",
         "'trial'",
@@ -124,7 +130,6 @@ def validate_entitlements(root: Path) -> list[str]:
         "'institutional'",
         "insert into storage.buckets",
         "'premium-content'",
-        "public is false",
     )
     lowered = migration.lower()
     for token in required:
@@ -132,6 +137,15 @@ def validate_entitlements(root: Path) -> list[str]:
             issues.append(f"Layer 14 entitlement migration is missing required token: {token}")
     if re.search(r"create\s+policy[\s\S]{0,500}on\s+public\.entitlements[\s\S]{0,300}to\s+authenticated", lowered):
         issues.append("Authenticated browser users must not receive a direct entitlement-table policy")
+    if not re.search(
+        r"values\s*\(\s*'premium-content'\s*,\s*'premium-content'\s*,\s*false\s*,",
+        lowered,
+    ):
+        issues.append("The premium-content storage bucket must be created with public=false")
+    if "public = false" not in lowered:
+        issues.append("The premium-content upsert must preserve public=false")
+    if re.search(r"grant\s+[^;]+on\s+table\s+public\.entitlements\s+to\s+(?:anon|authenticated)", lowered):
+        issues.append("Browser roles must not receive direct entitlement-table grants")
     return issues
 
 
@@ -143,6 +157,8 @@ def validate_protected_function(root: Path) -> list[str]:
     required = (
         "CONTENT_ALLOWLIST",
         "FHL_ALLOWED_ORIGINS",
+        "configured.split(',')",
+        "value !== '*'",
         "authorization.startsWith('Bearer ')",
         "userClient.auth.getUser()",
         "SUPABASE_SERVICE_ROLE_KEY",
@@ -166,8 +182,6 @@ def validate_protected_function(root: Path) -> list[str]:
         "https://raw.githack.com",
         "http://127.0.0.1:4173",
         "http://localhost:4173",
-        "Access-Control-Allow-Origin': '*'",
-        'Access-Control-Allow-Origin\": \"*',
         "createSignedUrl(",
         "payload.userId",
         "payload.user_id",
@@ -175,10 +189,93 @@ def validate_protected_function(root: Path) -> list[str]:
     for token in prohibited:
         if token in function:
             issues.append(f"premium-content Edge Function contains prohibited token: {token}")
+    if re.search(r"Access-Control-Allow-Origin[^\n]{0,120}['\"]\*['\"]", function):
+        issues.append("premium-content Edge Function must not use a wildcard CORS origin")
     if re.search(r"\.from\((?:payload|request|contentId)", function):
         issues.append("The premium storage bucket must not be selected from caller-controlled input")
     if re.search(r"\.download\((?:payload|request|contentId)", function):
         issues.append("The private object path must come only from the server allowlist")
+    if re.search(r"requested_user_id\s*:\s*(?:payload|request)", function):
+        issues.append("The entitlement user ID must come only from the verified bearer token")
+    return issues
+
+
+def validate_protected_entry(root: Path) -> list[str]:
+    issues: list[str] = []
+    page = read(root / PREMIUM_PAGE, issues)
+    client = read(root / PREMIUM_CLIENT, issues)
+    style = read(root / PREMIUM_STYLE, issues)
+    browser_test = read(root / PREMIUM_BROWSER_TEST, issues)
+
+    if page:
+        required_page = (
+            'content="noindex,nofollow"',
+            'rel="canonical"',
+            'data-protected-content-id="processing-proof-v1"',
+            'data-premium-state="loading"',
+            'data-premium-sign-in',
+            'data-premium-upgrade',
+            'data-premium-retry',
+            'data-premium-content',
+            '../assets/premium-content-client.js',
+        )
+        for token in required_page:
+            if token not in page:
+                issues.append(f"Protected proof page is missing required token: {token}")
+        if "proof/processing-proof-v1.json" in page:
+            issues.append("Protected proof page must not expose the private storage object path")
+        if re.search(r"data-(?:premium|entitlement)-(?:granted|active)\s*=", page, re.IGNORECASE):
+            issues.append("Protected proof page must not contain client-controlled entitlement flags")
+
+    if client:
+        required_client = (
+            "auth.ready",
+            "session.access_token",
+            "Authorization: `Bearer ${session.access_token}`",
+            "body: JSON.stringify({ contentId })",
+            "credentials: 'omit'",
+            "cache: 'no-store'",
+            "response.status === 401",
+            "payload.code === 'upgrade_required'",
+            "validatePayload(payload)",
+            "payload.contentId !== contentId",
+            "textContent",
+        )
+        for token in required_client:
+            if token not in client:
+                issues.append(f"premium-content client is missing required token: {token}")
+        for prohibited in (
+            "localStorage",
+            "sessionStorage",
+            ".innerHTML",
+            "proof/processing-proof-v1.json",
+            "SUPABASE_SERVICE_ROLE_KEY",
+            "payload.userId",
+            "payload.entitlement",
+            "payload.bucket",
+            "payload.objectPath",
+        ):
+            if prohibited in client:
+                issues.append(f"premium-content client contains prohibited authorization/content token: {prohibited}")
+
+    if style:
+        for token in ("prefers-reduced-motion", "@media (max-width: 640px)", ".premium-state"):
+            if token not in style:
+                issues.append(f"Premium access styling is missing responsive/accessibility token: {token}")
+
+    if browser_test:
+        required_test = (
+            "signed-out learner",
+            "verified free learner",
+            "invalid or expired session",
+            "entitled learner",
+            "expect(calls[0].body).toEqual({ contentId: 'processing-proof-v1' })",
+            "expect(calls[0].body.userId).toBeUndefined()",
+            "expect(calls[0].body.objectPath).toBeUndefined()",
+        )
+        for token in required_test:
+            if token not in browser_test:
+                issues.append(f"Premium browser coverage is missing required token: {token}")
     return issues
 
 
@@ -248,8 +345,9 @@ def validate_public_proof_absence(root: Path) -> list[str]:
     allowed_references = {
         Path(PREMIUM_FUNCTION),
         Path("scripts/validate_layer14_security.py"),
+        Path("docs/LAYER_14_ENTITLEMENTS_AND_PROOF.md"),
     }
-    for directory in ("assets", "data", "modules"):
+    for directory in ("assets", "data", "modules", "premium"):
         base = root / directory
         if not base.exists():
             continue
@@ -288,6 +386,7 @@ def validate(root: Path) -> list[str]:
         + validate_dependency_lock(root)
         + validate_entitlements(root)
         + validate_protected_function(root)
+        + validate_protected_entry(root)
         + validate_environment_template(root)
         + validate_secret_scan(root)
         + validate_public_proof_absence(root)
@@ -307,7 +406,7 @@ def main() -> int:
         return 1
     print(
         "Layer 14 security validation passed: environment separation, deterministic dependencies, "
-        "server-controlled entitlements, private delivery, secret boundaries, and proof containment are intact."
+        "server-controlled entitlements, private delivery, learner states, secret boundaries, and proof containment are intact."
     )
     return 0
 
