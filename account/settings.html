@@ -1,40 +1,8 @@
 <!doctype html>
 <html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
-  <link rel="stylesheet" href="../assets/guide.css"><link rel="stylesheet" href="../assets/auth.css">
-  <meta name="theme-color" content="#0F4C81">
-  <title>Account settings | Free HTL Guide</title>
-  <meta name="description" content="Manage your Free HTL Guide learner account.">
-  <link rel="canonical" href="https://withnati.github.io/free-htl-guide-site/account/settings.html">
-</head>
-<body data-page="account" data-auth-page="settings">
-<a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><div class="bar"><a class="brand" href="../index.html">Free HTL Guide</a><nav class="nav" aria-label="Primary"><a href="../index.html#modules">Modules</a><a href="../study-plan.html">Study plan</a><a href="../practice.html">Practice</a><a href="../my-progress.html">My progress</a></nav><div class="actions"><button id="themeBtn" class="btn" aria-label="Toggle dark mode">🌙</button><button id="menuBtn" class="btn menu-btn" aria-expanded="false" aria-controls="mobileMenu">Menu</button><a class="btn btn-primary" href="sign-in.html">Sign in</a></div></div><nav id="mobileMenu" class="mobile-menu"><a href="../index.html#modules">Modules</a><a href="../study-plan.html">Study plan</a><a href="../practice.html">Practice</a><a href="../my-progress.html">My progress</a><a href="sign-in.html">Sign in</a></nav></header>
-<main id="main" class="auth-shell">
-  <section class="auth-intro"><p class="eyebrow">Verified learner accounts</p><h1>Account settings</h1><p class="lead">Manage the identity attached to your learning progress.</p><ul class="auth-list"><li>Email verification and secure session handling</li><li>Anonymous study remains available while signed out</li><li>Paid access is not granted by browser account state</li></ul></section>
-  <section class="card auth-card">
-    <p class="auth-status" data-auth-status tabindex="-1" hidden></p>
-    <dl class="auth-meta"><div><dt>Email</dt><dd data-account-email>Loading…</dd></div></dl>
-    <form class="auth-form" data-profile-form>
-      <div class="auth-field"><label for="displayName">Display name</label><input id="displayName" name="display_name" autocomplete="name" maxlength="80" required></div>
-      <div class="auth-actions"><button class="btn btn-primary" type="submit">Save settings</button><button class="btn" type="button" data-sign-out>Sign out</button></div>
-    </form>
-    <div class="auth-meta"><p class="small muted">Learning-progress export and reset are available from My Progress.</p><a class="btn" href="../my-progress.html">Open My progress</a></div>
-    <section class="auth-danger" aria-labelledby="deleteAccountTitle">
-      <p class="eyebrow">Danger zone</p>
-      <h2 id="deleteAccountTitle">Delete account and cloud progress</h2>
-      <p>This permanently deletes your verified account and its cloud learning records. It cannot be undone. You can still use the anonymous browser experience afterward.</p>
-      <button class="btn btn-danger" type="button" data-show-delete-account>Delete my account</button>
-      <div class="auth-danger-panel" data-delete-account-panel hidden>
-        <p><strong>Final confirmation:</strong> type <code>DELETE</code> below.</p>
-        <div class="auth-field"><label for="deleteConfirmation">Confirmation</label><input id="deleteConfirmation" name="delete_confirmation" autocomplete="off" spellcheck="false" data-delete-confirmation></div>
-        <div class="auth-actions"><button class="btn btn-danger" type="button" data-confirm-delete-account disabled>Delete account and progress</button><button class="btn" type="button" data-cancel-delete-account>Cancel</button></div>
-      </div>
-    </section>
-  </section>
-</main>
-<footer class="footer"><div class="footer-inner"><span>© <span data-year></span> Free HTL Guide</span><span>Secure account development preview</span></div></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.8" defer></script><script src="../assets/supabase-config.js" defer></script><script src="../assets/auth-service.js" defer></script><script src="../assets/guide.js" defer></script><script src="../assets/auth-ui.js" defer></script>
-</body></html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><link rel="stylesheet" href="../assets/guide.css"><link rel="stylesheet" href="../assets/auth.css"><meta name="theme-color" content="#0F4C81"><title>Account Settings | Free HTL Guide</title><meta name="description" content="Manage your Free HTL Guide profile, learning records, sign-in, and account choices."><link rel="canonical" href="https://withnati.github.io/free-htl-guide-site/account/settings.html"></head>
+<body data-page="account" data-auth-page="settings"><a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><div class="bar"><a class="brand" href="../index.html">Free HTL Guide</a><nav class="nav" aria-label="Primary"><a href="../index.html#modules">Course</a><a href="../practice.html">Practice</a><a href="../my-progress.html">My progress</a><a href="../faq.html">FAQ</a></nav><div class="actions"><button id="themeBtn" class="btn" aria-label="Toggle dark mode">🌙</button><button id="menuBtn" class="btn menu-btn" aria-expanded="false" aria-controls="mobileMenu">Menu</button><a class="btn btn-primary" href="../my-progress.html">View my progress</a></div></div><nav id="mobileMenu" class="mobile-menu"><a href="../index.html#modules">Course</a><a href="../practice.html">Practice</a><a href="../my-progress.html">My progress</a><a href="../faq.html">FAQ</a></nav></header>
+<main id="main" class="auth-shell"><section class="auth-intro"><p class="eyebrow">Your account</p><h1>Account settings</h1><p class="lead">Update your profile, sign out, or manage the account connected to your saved study progress.</p><ul class="auth-list"><li>Change the display name shown in your account</li><li>Open My Progress to export or reset eligible learning records</li><li>Delete your account and saved account progress when needed</li></ul></section><section class="card auth-card"><p class="auth-status" data-auth-status tabindex="-1" hidden></p><dl class="auth-meta"><div><dt>Email</dt><dd data-account-email>Loading…</dd></div></dl><form class="auth-form" data-profile-form><div class="auth-field"><label for="displayName">Display name</label><input id="displayName" name="display_name" autocomplete="name" maxlength="80" required></div><div class="auth-actions"><button class="btn btn-primary" type="submit">Save account settings</button><button class="btn" type="button" data-sign-out>Sign out</button></div></form><div class="auth-meta"><p class="small muted">Use My Progress to review your activity, export eligible learning records, or reset study progress.</p><a class="btn" href="../my-progress.html">View my progress</a></div><section class="auth-danger" aria-labelledby="deleteAccountTitle"><p class="eyebrow">Delete account</p><h2 id="deleteAccountTitle">Delete account and saved progress</h2><p>This permanently deletes your account and its saved learning records. It cannot be undone. You can still use the complete free Fixation lesson without an account afterward.</p><button class="btn btn-danger" type="button" data-show-delete-account>Delete my account</button><div class="auth-danger-panel" data-delete-account-panel hidden><p><strong>Final confirmation:</strong> type <code>DELETE</code> below.</p><div class="auth-field"><label for="deleteConfirmation">Confirmation</label><input id="deleteConfirmation" name="delete_confirmation" autocomplete="off" spellcheck="false" data-delete-confirmation></div><div class="auth-actions"><button class="btn btn-danger" type="button" data-confirm-delete-account disabled>Delete account and progress</button><button class="btn" type="button" data-cancel-delete-account>Cancel</button></div></div></section></section></main>
+<footer class="footer"><div class="footer-inner"><span>© <span data-year></span> Free HTL Guide</span><span><a href="../privacy.html">Privacy</a> · <a href="../terms.html">Terms</a> · <a href="../contact.html">Contact</a></span></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.110.8" defer></script><script src="../assets/supabase-config.js" defer></script><script src="../assets/auth-service.js" defer></script><script src="../assets/guide.js" defer></script><script src="../assets/auth-ui.js" defer></script></body></html>
