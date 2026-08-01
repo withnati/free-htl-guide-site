@@ -85,8 +85,9 @@ class Layer14SecurityValidatorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             copy = self.copy_repository(directory)
             leaked = copy / "docs/leaked-secret.txt"
+            fake_prefix = "github_" + "pat_"
             leaked.write_text(
-                "Never commit github_pat_EXAMPLE12345678901234567890",
+                f"Never commit {fake_prefix}EXAMPLE12345678901234567890",
                 encoding="utf-8",
             )
             issues = VALIDATOR.validate(copy)
