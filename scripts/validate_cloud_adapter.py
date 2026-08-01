@@ -8,6 +8,7 @@ REQUIRED_TABLES = (
     'active_session_responses', 'learning_activity', 'progress_migrations'
 )
 FORBIDDEN = ('service_role', 'sb_secret_', 'answer_key', 'question_text', 'explanation_text')
+DECISION_KEY = 'free-htl-cloud-sync-v1'
 
 
 def validate(root: Path) -> list[str]:
@@ -15,6 +16,8 @@ def validate(root: Path) -> list[str]:
     paths = {
         'adapter': root / 'assets/cloud-progress-adapter.js',
         'controller': root / 'assets/cloud-progress-controller.js',
+        'bootstrap': root / 'assets/cloud-sync-bootstrap.js',
+        'shared_loader': root / 'assets/authority.js',
         'dashboard': root / 'assets/dashboard.js',
         'page': root / 'my-progress.html',
     }
@@ -26,6 +29,8 @@ def validate(root: Path) -> list[str]:
 
     adapter = paths['adapter'].read_text(encoding='utf-8')
     controller = paths['controller'].read_text(encoding='utf-8')
+    bootstrap = paths['bootstrap'].read_text(encoding='utf-8')
+    shared_loader = paths['shared_loader'].read_text(encoding='utf-8')
     dashboard = paths['dashboard'].read_text(encoding='utf-8')
     page = paths['page'].read_text(encoding='utf-8')
 
@@ -33,7 +38,7 @@ def validate(root: Path) -> list[str]:
         if table not in adapter:
             errors.append(f'Cloud adapter does not reference required table: {table}')
     for token in FORBIDDEN:
-        if token.lower() in adapter.lower() or token.lower() in controller.lower():
+        if any(token.lower() in content.lower() for content in (adapter, controller, bootstrap)):
             errors.append(f'Forbidden cloud-progress token found: {token}')
 
     required_adapter_tokens = (
@@ -47,12 +52,33 @@ def validate(root: Path) -> list[str]:
 
     required_flow_tokens = (
         'data-cloud-import', 'Importing and reconciling', 'hasCompletedMigration',
-        'Use account progress only', 'reconnectAfterReset', 'localStorage.removeItem'
+        'Use account progress only', 'reconnectAfterReset', 'localStorage.removeItem',
+        DECISION_KEY, "mode === 'imported'", "'account-only'"
     )
-    combined = controller + page
+    combined = controller + page + dashboard
     for token in required_flow_tokens:
         if token not in combined:
             errors.append(f'Cloud import flow is missing contract token: {token}')
+
+    required_bootstrap_tokens = (
+        DECISION_KEY,
+        'CloudProgressAdapter',
+        'service.useAdapter(adapter)',
+        'session.user.id !== decision.userId',
+        "emit('signed-out')",
+        "emit('account-mismatch')",
+        "emit('connected'",
+        'mergeRecords(remoteRecord, localRecord',
+        'lastLocalSyncAt'
+    )
+    for token in required_bootstrap_tokens:
+        if token not in bootstrap:
+            errors.append(f'Site-wide cloud bootstrap is missing contract token: {token}')
+
+    if 'cloud-sync-bootstrap.js' not in shared_loader or DECISION_KEY not in shared_loader:
+        errors.append('The shared site runtime must conditionally load cloud-sync-bootstrap.js after an approved decision.')
+    if "pageKey === 'account'" not in shared_loader or "pageKey === 'my-progress'" not in shared_loader:
+        errors.append('The shared cloud loader must avoid duplicate initialization on account and dashboard pages.')
 
     scripts = (
         'supabase-config.js', 'auth-service.js', 'progress-service.js',
@@ -79,7 +105,7 @@ def main() -> int:
     if errors:
         print('\n'.join(f'ERROR: {error}' for error in errors))
         return 1
-    print('Layer 13 cloud adapter and explicit import contract validated.')
+    print('Layer 13 cloud adapter, explicit import, and site-wide activation contract validated.')
     return 0
 
 
