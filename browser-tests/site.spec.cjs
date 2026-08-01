@@ -72,15 +72,15 @@ test.describe('canonical pages', () => {
   }
 });
 
-test('desktop navigation opens a current module', async ({ page }, testInfo) => {
+test('desktop navigation opens the complete public Fixation lesson', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/');
-  await page.getByRole('link', { name: 'Open Fixation' }).click();
+  await page.getByRole('link', { name: 'Start the free lesson' }).click();
   await expect(page).toHaveURL(/\/modules\/fixation-guide-v3\.html$/);
   await expect(page.getByRole('heading', { level: 1, name: 'Fixation' })).toBeVisible();
 });
 
-test('mobile menu opens, updates ARIA, and navigates', async ({ page }, testInfo) => {
+test('mobile menu opens, updates ARIA, and navigates within the approved homepage', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await page.goto('/');
   const menuButton = page.getByRole('button', { name: 'Menu' });
@@ -88,9 +88,10 @@ test('mobile menu opens, updates ARIA, and navigates', async ({ page }, testInfo
   await menuButton.click();
   await expect(menuButton).toHaveAttribute('aria-expanded', 'true');
   await expect(page.locator('#mobileMenu')).toHaveClass(/open/);
-  await page.locator('#mobileMenu').getByRole('link', { name: 'Study plan' }).click();
-  await expect(page).toHaveURL(/\/study-plan\.html$/);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText(/study plan/i);
+  await page.locator('#mobileMenu').getByRole('link', { name: 'Curriculum' }).click();
+  await expect(page).toHaveURL(/\/#modules$/);
+  await expect(page.locator('#modules')).toBeVisible();
+  await expect(page.locator('#modules').getByRole('heading', { level: 2 })).toContainText(/fixation through advanced/i);
 });
 
 test('dark mode persists after reload', async ({ page }, testInfo) => {
