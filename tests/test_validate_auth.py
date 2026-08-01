@@ -36,6 +36,32 @@ class AuthValidatorTests(unittest.TestCase):
             issues = VALIDATOR.validate(copy)
             self.assertTrue(any("candidate.origin" in issue for issue in issues))
 
+    def test_delete_function_rejects_caller_supplied_user_id(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            copy = Path(directory) / "repo"
+            shutil.copytree(ROOT, copy)
+            function = copy / "supabase/functions/delete-account/index.ts"
+            content = function.read_text(encoding="utf-8").replace(
+                "payload.confirm !== 'DELETE MY ACCOUNT'",
+                "payload.userId || payload.confirm !== 'DELETE MY ACCOUNT'",
+            )
+            function.write_text(content, encoding="utf-8")
+            issues = VALIDATOR.validate(copy)
+            self.assertTrue(any("caller-supplied user ID" in issue for issue in issues))
+
+    def test_delete_function_must_use_token_identity(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            copy = Path(directory) / "repo"
+            shutil.copytree(ROOT, copy)
+            function = copy / "supabase/functions/delete-account/index.ts"
+            content = function.read_text(encoding="utf-8").replace(
+                "adminClient.auth.admin.deleteUser(userData.user.id)",
+                "adminClient.auth.admin.deleteUser('fixed-id')",
+            )
+            function.write_text(content, encoding="utf-8")
+            issues = VALIDATOR.validate(copy)
+            self.assertTrue(any("verified bearer token" in issue or "deleteUser" in issue for issue in issues))
+
 
 if __name__ == "__main__":
     unittest.main()
