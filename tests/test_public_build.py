@@ -16,6 +16,7 @@ BUILD_SPEC = importlib.util.spec_from_file_location(
 BUILD = importlib.util.module_from_spec(BUILD_SPEC)
 assert BUILD_SPEC.loader
 BUILD_SPEC.loader.exec_module(BUILD)
+BUILD.PREVIEW_TEMPLATE = "templates/premium-preview.tpl"
 
 VALIDATE_SPEC = importlib.util.spec_from_file_location(
     "validate_public_build",
