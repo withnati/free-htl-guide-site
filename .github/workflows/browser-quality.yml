@@ -28,10 +28,10 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "24"
-          package-manager-cache: false
+          package-manager-cache: npm
 
-      - name: Install test dependency
-        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Install locked test dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Install Chromium and operating-system dependencies
         run: npx playwright install chromium --with-deps
