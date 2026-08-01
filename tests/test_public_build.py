@@ -44,6 +44,20 @@ class PublicBuildTests(unittest.TestCase):
             output = self.build_preview(directory)
             self.assertEqual([], VALIDATE.validate(output))
 
+    def test_custom_404_page_is_deployed_and_noindexed(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = self.build_preview(directory)
+            page = output / "404.html"
+            self.assertTrue(page.is_file())
+            content = page.read_text(encoding="utf-8")
+            self.assertIn('data-page="not-found"', content)
+            self.assertIn("We could not find that study page", content)
+            self.assertIn('content="noindex,follow"', content)
+            self.assertIn(
+                'href="https://preview.example.test/404.html"',
+                content,
+            )
+
     def test_premium_routes_are_learner_facing_previews(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = self.build_preview(directory)
