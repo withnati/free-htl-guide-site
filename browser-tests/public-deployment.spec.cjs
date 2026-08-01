@@ -44,7 +44,7 @@ test('public homepage presents the approved free-to-premium learner journey', as
   );
   await expect(page.getByText('Public', { exact: true })).toBeVisible();
   await expect(page.getByText('Premium preview', { exact: true }).first()).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Create free account' }).first()).toBeVisible();
+  await expect(page.getByRole('link', { name: /Create a free account/i }).first()).toBeVisible();
   await expect(page.locator('.resource-card')).toHaveCount(6);
 
   const publicDownloads = await page.locator('.resource-card').evaluateAll((links) =>
