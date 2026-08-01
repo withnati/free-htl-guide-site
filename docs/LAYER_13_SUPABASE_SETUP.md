@@ -26,6 +26,21 @@ https://withnati.github.io/free-htl-guide-site/account/auth-callback.html
 https://withnati.github.io/free-htl-guide-site/account/reset-password.html
 ```
 
+For the temporary Layer 13 branch staging review, also add these exact URLs:
+
+```text
+https://raw.githack.com/withnati/free-htl-guide-site/layer-13-auth-cloud-progress/account/auth-callback.html
+https://raw.githack.com/withnati/free-htl-guide-site/layer-13-auth-cloud-progress/account/reset-password.html
+```
+
+The stable branch staging entry points are:
+
+```text
+https://raw.githack.com/withnati/free-htl-guide-site/layer-13-auth-cloud-progress/account/sign-up.html?next=../my-progress.html
+https://raw.githack.com/withnati/free-htl-guide-site/layer-13-auth-cloud-progress/account/sign-in.html?next=../my-progress.html
+https://raw.githack.com/withnati/free-htl-guide-site/layer-13-auth-cloud-progress/my-progress.html
+```
+
 For local development, add:
 
 ```text
@@ -35,7 +50,7 @@ http://localhost:4173/account/auth-callback.html
 http://localhost:4173/account/reset-password.html
 ```
 
-Do not add broad third-party preview-host wildcards for authentication callbacks. Verification and recovery URLs carry short-lived authorization material and should return only to controlled origins.
+Do not add wildcard callback URLs. Verification and recovery URLs carry short-lived authorization material and should return only to controlled paths. RawGitHack is a temporary Layer 13 staging origin and must be removed from the production Edge Function origin list after the production-hosting transition.
 
 ## Email/password settings
 
@@ -76,15 +91,43 @@ After deployment, confirm that the following tables exist and have Row Level Sec
 - `learning_activity`
 - `progress_migrations`
 
+## Deploy secure account deletion
+
+Account deletion is implemented in:
+
+```text
+supabase/functions/delete-account/index.ts
+```
+
+Deploy it from a trusted Supabase CLI session:
+
+```bash
+supabase functions deploy delete-account --project-ref oqbubeklssmlkjjtqczr
+```
+
+Supabase supplies `SUPABASE_URL`, `SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` to the deployed function environment. Do not copy the service-role key into the website, GitHub, chat, or a local browser configuration.
+
+The function:
+
+- accepts only authenticated POST requests from controlled origins;
+- requires the exact server confirmation `DELETE MY ACCOUNT`;
+- derives the account ID from the verified bearer token;
+- never accepts a user ID from the browser request;
+- uses the server-only admin client to delete that Auth user;
+- relies on database cascade deletion to remove the user’s learner-progress rows.
+
+After deployment, test deletion only with a disposable development account.
+
 ## Local verification
 
 ```bash
 supabase db start
 supabase db lint --level warning --fail-on error
 supabase test db
+supabase functions serve delete-account
 ```
 
-The repository Database Quality workflow independently applies the migration to a fresh local database and runs the two-user ownership-isolation suite.
+The repository Database Quality workflow independently applies the migration to a fresh local database and runs the two-user ownership-isolation suite. Site and Browser Quality validate the account deletion boundary and client confirmation flow without using a real service-role credential.
 
 ## Current boundary
 
