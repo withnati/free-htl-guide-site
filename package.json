@@ -7,6 +7,7 @@
     "build:public": "python scripts/build_public_site.py --root . --output dist",
     "validate:public-build": "python scripts/validate_public_build.py --root dist",
     "test:browser": "playwright test",
+    "test:public-build-browser": "playwright test --config=playwright.public.config.cjs",
     "test:browser:headed": "playwright test --headed",
     "test:browser:report": "playwright show-report"
   },
