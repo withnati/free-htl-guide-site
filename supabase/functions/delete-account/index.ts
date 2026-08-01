@@ -19,6 +19,20 @@ function configuredOrigins() {
   );
 }
 
+function readNamedProjectKey(mapName: string, legacyName: string) {
+  const mapped = Deno.env.get(mapName);
+  if (mapped) {
+    try {
+      const parsed = JSON.parse(mapped) as Record<string, unknown>;
+      const value = parsed.default;
+      if (typeof value === 'string' && value.trim().length > 0) return value;
+    } catch {
+      console.error(JSON.stringify({ error: 'invalid_project_key_map', mapName }));
+    }
+  }
+  return Deno.env.get(legacyName);
+}
+
 function response(origin: string | undefined, status: number, body: Record<string, unknown> | null) {
   const headers = new Headers({
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -57,8 +71,8 @@ Deno.serve(async (request) => {
   }
 
   const projectUrl = Deno.env.get('SUPABASE_URL');
-  const publishableKey = Deno.env.get('SUPABASE_ANON_KEY');
-  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  const publishableKey = readNamedProjectKey('SUPABASE_PUBLISHABLE_KEYS', 'SUPABASE_ANON_KEY');
+  const serviceRoleKey = readNamedProjectKey('SUPABASE_SECRET_KEYS', 'SUPABASE_SERVICE_ROLE_KEY');
   if (!projectUrl || !publishableKey || !serviceRoleKey) {
     console.error('Required Supabase function environment variables are unavailable.');
     return response(origin, 503, { error: 'Account deletion is temporarily unavailable.' });
