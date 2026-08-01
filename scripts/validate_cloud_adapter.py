@@ -22,6 +22,7 @@ def validate(root: Path) -> list[str]:
         'shared_loader': root / 'assets/authority.js',
         'dashboard': root / 'assets/dashboard.js',
         'page': root / 'my-progress.html',
+        'privacy': root / 'privacy.html',
     }
     for label, path in paths.items():
         if not path.exists():
@@ -37,6 +38,7 @@ def validate(root: Path) -> list[str]:
     shared_loader = paths['shared_loader'].read_text(encoding='utf-8')
     dashboard = paths['dashboard'].read_text(encoding='utf-8')
     page = paths['page'].read_text(encoding='utf-8')
+    privacy = paths['privacy'].read_text(encoding='utf-8')
 
     for table in REQUIRED_TABLES:
         if table not in adapter:
@@ -75,11 +77,11 @@ def validate(root: Path) -> list[str]:
             errors.append(f'Resilient cloud adapter is missing contract token: {token}')
 
     required_flow_tokens = (
-        'data-cloud-import', 'Importing and reconciling', 'hasCompletedMigration',
-        'Use account progress only', 'reconnectAfterReset', 'localStorage.removeItem',
+        'data-cloud-import', 'Adding this device’s study progress', 'hasCompletedMigration',
+        'Use progress already in my account', 'reconnectAfterReset', 'localStorage.removeItem',
         DECISION_KEY, "mode === 'imported'", "'account-only'",
         'ResilientCloudAdapter', 'adapter.hasPending()',
-        'data-cloud-conflict', 'Resume newer account session', 'Replace with this device',
+        'data-cloud-conflict', 'Continue newer account session', "Continue this device’s session",
         "resolveConflict('remote')", "resolveConflict('local')"
     )
     combined = controller + page + dashboard
@@ -125,8 +127,8 @@ def validate(root: Path) -> list[str]:
 
     if 'reconnectAfterReset' not in dashboard or 'isConnected' not in dashboard:
         errors.append('Dashboard reset does not restore an account-owned cloud record.')
-    if 'question text' not in page.lower() or 'answer keys' not in page.lower():
-        errors.append('My Progress must state that question content and answer keys are excluded.')
+    if 'full question text' not in privacy.lower() or 'answer keys' not in privacy.lower():
+        errors.append('The Privacy Policy must state that full question content and answer keys are excluded from learning records.')
     return errors
 
 
