@@ -2,7 +2,7 @@
 
 Free HTL Guide is an HT/HTL learning and certification-preparation platform in active development. It combines structured histotechnology lessons, quizzes, mock exams, targeted practice, verified learner accounts, and cloud-backed progress.
 
-The current public GitHub Pages deployment remains a development preview. Premium-designated content is still publicly retrievable in the static repository and deployment and must not be treated as securely protected until Layer 14 is complete.
+The current public GitHub Pages deployment remains a development preview. Premium-designated content is still publicly retrievable in the existing static repository and deployment and must not be treated as securely protected until Layer 14 staging, review, and cutover are complete.
 
 ## Product direction
 
@@ -68,6 +68,47 @@ The browser must not receive premium lesson payloads, full question banks, expla
 
 Existing public premium-designated material is treated as development-preview content. Revised or newly created launch-premium content must remain private from creation onward.
 
+## Allowlisted public deployment
+
+Production hosting must deploy the generated `dist/` directory, never the repository root.
+
+The public build:
+
+- copies only approved public and account-shell files;
+- keeps the complete Fixation lesson as the public acquisition hook;
+- replaces premium lesson, practice, mock-exam, and Targeted Practice routes with noindex preview shells;
+- excludes premium question-bank JSON, explanations, answer-key material, server code, migrations, tests, documentation, and unapproved downloads;
+- generates environment-specific browser-safe Supabase configuration;
+- generates the approved sitemap, robots file, and Cloudflare `_headers` rules;
+- scans the output for protected paths, question-bank identifiers, credentials, and premium leakage.
+
+Build and validate a local preview:
+
+```bash
+npm run build:public
+npm run validate:public-build
+```
+
+For staging and production, set explicit browser-safe values before building:
+
+```bash
+FHL_ENVIRONMENT=staging \
+FHL_PUBLIC_SITE_URL=https://staging.example.test/ \
+FHL_SUPABASE_URL=https://example-project.supabase.co \
+FHL_SUPABASE_PUBLISHABLE_KEY=replace-with-browser-safe-publishable-key \
+npm run build:public
+
+npm run validate:public-build
+```
+
+Do not place a service-role key, database password, secret key, deployment token, signing secret, or payment secret in the build environment or frontend configuration.
+
+Cloudflare Pages target configuration:
+
+- build command: `npm run build:public && npm run validate:public-build`
+- output directory: `dist`
+- repository root is not a deployable output directory
+
 ## Local validation
 
 Run static and contract checks:
@@ -84,6 +125,7 @@ python scripts/validate_targeted_practice.py --root .
 python scripts/validate_cloud_progress.py --root .
 python scripts/validate_auth.py --root .
 python scripts/validate_cloud_adapter.py --root .
+python scripts/validate_layer14_security.py --root .
 ```
 
 Run database checks with the Supabase CLI:
@@ -115,14 +157,17 @@ The committed `package-lock.json` and Browser Quality workflow use deterministic
 - `docs/LAYER_14_ARCHITECTURE_DECISION.md`
 - `docs/LAYER_14_ENVIRONMENT_PLAN.md`
 - `docs/LAYER_14_CONTENT_BOUNDARY.md`
+- `docs/LAYER_14_ENTITLEMENTS_AND_PROOF.md`
+- `docs/LAYER_14_OPERATIONS.md`
 - `data/content-access.json`
 - `data/progress-schema.json`
 - `data/question-bank-manifest.json`
 - `editorial.html`
 - `privacy.html`
+- `terms.html`
 
 ## Repository workflow
 
 Major product layers are developed on dedicated branches and opened as draft pull requests. A layer must not be merged until its automated workflows pass, its security boundaries are reviewed, desktop and mobile behavior is verified, staging evidence is complete, and explicit merge approval is given.
 
-Layer 14 must remain in draft until Site Quality, Browser Quality, Database Quality, new protected-delivery security checks, public-build leakage scans, staging verification, and owner approval are complete.
+Layer 14 must remain in draft until Site Quality, Browser Quality, Database Quality, protected-delivery security checks, public-build leakage scans, staging verification, and owner approval are complete.
