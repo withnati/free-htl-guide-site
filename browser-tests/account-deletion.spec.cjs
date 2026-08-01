@@ -46,6 +46,8 @@ test('account deletion requires exact confirmation and clears account progress s
   test.skip(testInfo.project.name !== 'desktop-chromium');
   const calls = await mockSupabase(page);
   await page.addInitScript(() => {
+    if (sessionStorage.getItem('free-htl-deletion-test-seeded') === '1') return;
+    sessionStorage.setItem('free-htl-deletion-test-seeded', '1');
     localStorage.setItem('free-htl-cloud-sync-v1', JSON.stringify({ userId: 'user-a', mode: 'account-only' }));
     localStorage.setItem('free-htl-cloud-pending-v1:user-a', JSON.stringify({ record: { recordId: 'pending' } }));
     localStorage.setItem('free-htl-cloud-cache-v1:user-a', JSON.stringify({ record: { recordId: 'cached' } }));
