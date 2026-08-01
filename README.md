@@ -98,12 +98,12 @@ supabase stop --no-backup
 Run browser tests:
 
 ```bash
-npm install --ignore-scripts --no-audit --no-fund
+npm ci --ignore-scripts --no-audit --no-fund
 npx playwright install chromium
 npm run test:browser
 ```
 
-A committed dependency lockfile and conversion from `npm install` to deterministic `npm ci` remain an active repository-maintenance item in Layer 14.
+The committed `package-lock.json` and Browser Quality workflow use deterministic `npm ci` installation.
 
 ## Key project documents
 
