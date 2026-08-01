@@ -58,6 +58,19 @@ class PublicBuildTests(unittest.TestCase):
                 content,
             )
 
+    def test_extensionless_preview_routes_receive_private_headers(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = self.build_preview(directory)
+            headers = (output / "_headers").read_text(encoding="utf-8")
+            self.assertIn(
+                "/modules/processing-guide-v3\n  Cache-Control: private, no-store",
+                headers,
+            )
+            self.assertIn(
+                "/mock-exam\n  Cache-Control: private, no-store",
+                headers,
+            )
+
     def test_premium_routes_are_learner_facing_previews(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = self.build_preview(directory)
