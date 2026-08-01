@@ -53,6 +53,9 @@ jobs:
       - name: Validate targeted-practice filters and progress integration
         run: python scripts/validate_targeted_practice.py --root "$GITHUB_WORKSPACE"
 
+      - name: Validate Layer 13 cloud progress security contract
+        run: python scripts/validate_cloud_progress.py --root "$GITHUB_WORKSPACE"
+
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
