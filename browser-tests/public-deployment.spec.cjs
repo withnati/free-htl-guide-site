@@ -94,7 +94,7 @@ test('public mock-exam route previews exam value without shipping the runtime or
 
   await expect(page.locator('body')).toHaveAttribute('data-page', 'premium-preview');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('50-question HT/HTL mock exam');
-  await expect(page.getByText('Included with Premium', { exact: true })).toBeVisible();
+  await expect(page.getByText('Included with Premium', { exact: true }).first()).toBeVisible();
   await expect(page.locator('[data-start-exam]')).toHaveCount(0);
   await expect(page.locator('script[src*="mock-exam"]')).toHaveCount(0);
   const body = await page.locator('body').innerText();
