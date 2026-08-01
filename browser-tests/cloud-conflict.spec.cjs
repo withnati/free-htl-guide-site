@@ -151,7 +151,7 @@ test('newer account session is surfaced and can be selected', async ({ page }, t
   await expect(page.locator('[data-cloud-conflict]')).toBeVisible();
   await expect(page.locator('[data-cloud-conflict-summary]')).toContainText('newer unfinished mock exam');
 
-  await page.getByRole('button', { name: 'Resume newer account session' }).click();
+  await page.getByRole('button', { name: 'Continue newer account session' }).click();
   await expect(page.locator('[data-cloud-conflict]')).toBeHidden();
   await expect(page.locator('[data-progress-status]')).toContainText('newer account session is ready');
   expect(await page.evaluate(() => localStorage.getItem('free-htl-cloud-pending-v1:user-a'))).toBeNull();
