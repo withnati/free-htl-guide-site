@@ -46,11 +46,13 @@
 
   function saveDecision(mode) {
     if (!userId || !['imported', 'account-only'].includes(mode)) return;
-    localStorage.setItem(DECISION_KEY, JSON.stringify({
+    const value = {
       userId,
       mode,
       decidedAt: new Date().toISOString()
-    }));
+    };
+    if (mode === 'imported' && browserRecord?.updatedAt) value.lastLocalSyncAt = browserRecord.updatedAt;
+    localStorage.setItem(DECISION_KEY, JSON.stringify(value));
   }
 
   function countSummary(counts) {
