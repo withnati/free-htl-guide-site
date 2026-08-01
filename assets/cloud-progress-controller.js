@@ -54,35 +54,30 @@
 
   function saveDecision(mode) {
     if (!userId || !['imported', 'account-only'].includes(mode)) return;
-    const value = {
-      userId,
-      mode,
-      decidedAt: new Date().toISOString()
-    };
+    const value = { userId, mode, decidedAt: new Date().toISOString() };
     if (mode === 'imported' && browserRecord?.updatedAt) value.lastLocalSyncAt = browserRecord.updatedAt;
     localStorage.setItem(DECISION_KEY, JSON.stringify(value));
   }
 
   function countSummary(counts) {
     const parts = [
-      [counts.modules, 'module record'],
+      [counts.modules, 'lesson record'],
       [counts.studyTasks, 'study task'],
       [counts.quizAttempts, 'quiz attempt'],
       [counts.mockAttempts, 'mock-exam attempt'],
-      [counts.targetedAttempts, 'targeted-practice attempt'],
+      [counts.targetedAttempts, 'Targeted Practice attempt'],
       [counts.activeSessions, 'unfinished session']
-    ].filter(([count]) => count > 0)
-      .map(([count, label]) => `${count} ${label}${count === 1 ? '' : 's'}`);
-    return parts.length ? parts.join(', ') : 'a browser progress record';
+    ].filter(([count]) => count > 0).map(([count, label]) => `${count} ${label}${count === 1 ? '' : 's'}`);
+    return parts.length ? parts.join(', ') : 'study progress';
   }
 
   function syncMessage(syncStatus) {
     const values = {
-      saving: ['Saving progress to your account…', 'info'],
-      saved: ['Progress is saved to your account.', 'info'],
-      offline: ['Offline — changes are preserved on this device and will retry when cloud access returns.', 'warn'],
-      error: ['Cloud sync has a problem. Changes are preserved on this device for retry.', 'warn'],
-      conflict: ['A newer unfinished session exists on another device. Your current changes were not allowed to overwrite it.', 'warn']
+      saving: ['Saving your progress…', 'info'],
+      saved: ['Your progress is saved to your account.', 'info'],
+      offline: ['You are offline. Your changes are saved on this device and will be added to your account when the connection returns.', 'warn'],
+      error: ['We could not save the latest changes to your account yet. They remain saved on this device and will be retried.', 'warn'],
+      conflict: ['A newer unfinished session is saved to your account. Choose which session to continue. Completed work will remain available.', 'warn']
     };
     return values[syncStatus] || null;
   }
@@ -92,9 +87,9 @@
     const type = conflict?.sessionType === 'targeted-practice' ? 'Targeted Practice' : 'mock exam';
     const updated = conflict?.serverUpdatedAt ? new Date(conflict.serverUpdatedAt) : null;
     const timeText = updated && !Number.isNaN(updated.getTime())
-      ? ` The account copy was updated ${updated.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}.`
+      ? ` The account session was updated ${updated.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}.`
       : '';
-    conflictSummary.textContent = `A newer unfinished ${type} session is saved in your account.${timeText}`;
+    conflictSummary.textContent = `A newer unfinished ${type} is saved to your account.${timeText}`;
     conflictPanel.hidden = false;
     document.body.dataset.cloudProgress = 'conflict';
   }
@@ -103,7 +98,7 @@
     if (conflictPanel) conflictPanel.hidden = true;
   }
 
-  async function connectAccountProgress(message = 'Cloud sync is connected to this verified account. Your browser copy remains available as a recovery backup.') {
+  async function connectAccountProgress(message = 'Your study progress is connected to this account. A copy remains on this device to help recover from connection problems.') {
     await service.useAdapter(adapter);
     importPanel.hidden = true;
     const conflict = adapter.conflictInfo?.();
@@ -121,14 +116,14 @@
 
   async function importBrowserProgress() {
     setBusy(true);
-    setStatus('Importing and reconciling your browser progress…');
+    setStatus('Adding this device’s study progress to your account…');
     try {
       await adapter.importRecord(browserRecord);
       saveDecision('imported');
       await connectAccountProgress();
     } catch (error) {
       console.error(error);
-      setStatus('Browser progress could not be imported. Nothing was deleted; you can try again.', 'warn', true);
+      setStatus('We could not add this device’s progress to your account. Nothing was deleted. Please try again.', 'warn', true);
       document.body.dataset.cloudProgress = 'error';
     } finally {
       setBusy(false);
@@ -137,14 +132,14 @@
 
   async function useAccountOnly() {
     setBusy(true);
-    setStatus('Loading progress already saved to this account…');
+    setStatus('Loading the progress already saved to your account…');
     try {
       saveDecision('account-only');
-      await connectAccountProgress('Account progress is connected. This browser’s earlier anonymous record remains separate and unchanged.');
+      await connectAccountProgress('Your account progress is ready. Earlier study activity on this device remains separate and unchanged.');
     } catch (error) {
       console.error(error);
       localStorage.removeItem(DECISION_KEY);
-      setStatus('Account progress could not be loaded. Your browser progress remains unchanged.', 'warn', true);
+      setStatus('We could not load the progress saved to your account. Study activity on this device remains unchanged.', 'warn', true);
       document.body.dataset.cloudProgress = 'error';
     } finally {
       setBusy(false);
@@ -155,8 +150,8 @@
     if (!adapter?.resolveConflict) return;
     setBusy(true);
     setStatus(strategy === 'remote'
-      ? 'Loading the newer account session and preserving unrelated progress…'
-      : 'Replacing the conflicting account session with this device’s retained session…');
+      ? 'Opening the newer session from your account…'
+      : 'Using the unfinished session saved on this device…');
     try {
       await adapter.resolveConflict(strategy);
       await service.useAdapter(adapter);
@@ -164,12 +159,12 @@
       lastSyncStatus = 'saved';
       document.body.dataset.cloudProgress = 'connected';
       setStatus(strategy === 'remote'
-        ? 'The newer account session is ready to resume. Other progress was preserved.'
-        : 'This device’s session replaced the conflicting account session. Other progress was preserved.', 'info', true);
+        ? 'The newer account session is ready to continue. Your other progress was preserved.'
+        : 'This device’s session is ready to continue. Your other progress was preserved.', 'info', true);
     } catch (error) {
       console.error(error);
       showConflict(adapter.conflictInfo?.());
-      setStatus('The session conflict could not be resolved. Both choices remain available and this device’s work is still retained.', 'warn', true);
+      setStatus('We could not complete that choice. Both sessions remain available, and your work on this device is still saved.', 'warn', true);
     } finally {
       setBusy(false);
     }
@@ -177,7 +172,7 @@
 
   async function initialize() {
     if (!service || !auth || !cloud || !resilience) {
-      setStatus('Cloud synchronization is unavailable. Progress remains safely stored in this browser.', 'warn');
+      setStatus('Account progress is temporarily unavailable. Your study activity remains saved on this device.', 'warn');
       document.body.dataset.cloudProgress = 'unavailable';
       return;
     }
@@ -188,7 +183,7 @@
       session = await auth.ready;
     } catch (error) {
       console.error(error);
-      setStatus('Account services could not be reached. Progress remains stored in this browser.', 'warn');
+      setStatus('We could not reach your account. Your study activity remains saved on this device.', 'warn');
       document.body.dataset.cloudProgress = 'unavailable';
       return;
     }
@@ -196,7 +191,7 @@
     if (!session?.user?.id) {
       anonymousActions.hidden = false;
       authenticatedActions.hidden = true;
-      setStatus('Progress is stored in this browser. Sign in or create an account to enable cloud synchronization.');
+      setStatus('Progress on this device is available here. Sign in or create a free account to continue across devices.');
       document.body.dataset.cloudProgress = 'anonymous';
       return;
     }
@@ -204,7 +199,7 @@
     userId = session.user.id;
     anonymousActions.hidden = true;
     authenticatedActions.hidden = false;
-    if (accountEmail) accountEmail.textContent = session.user.email || 'Verified learner';
+    if (accountEmail) accountEmail.textContent = session.user.email || 'Learner';
     browserRecord = await service.getSnapshot();
     const baseAdapter = new cloud.CloudProgressAdapter(auth.client, userId, { schemaVersion: browserRecord.schemaVersion });
     adapter = new resilience.ResilientCloudAdapter(baseAdapter);
@@ -212,8 +207,8 @@
     const decision = readDecision(userId);
     if (decision) {
       const message = decision.mode === 'imported'
-        ? 'Cloud sync is active for this account. Your original browser record remains available as a recovery backup.'
-        : 'Cloud sync is active using account progress only. The earlier anonymous browser record remains separate.';
+        ? 'Your study progress is connected to this account. A recovery copy remains on this device.'
+        : 'Your account progress is connected. Earlier study activity on this device remains separate.';
       await connectAccountProgress(message);
       return;
     }
@@ -232,15 +227,15 @@
     }
 
     if (browserHasProgress) {
-      importSummary.textContent = `${countSummary(cloud.progressCounts(browserRecord))} were found on this browser.${remoteHasProgress ? ' They can be merged with the progress already saved to your account.' : ''}`;
+      importSummary.textContent = `${countSummary(cloud.progressCounts(browserRecord))} ${remoteHasProgress ? 'can be added to the progress already saved to your account.' : 'can be added to your account.'}`;
       importPanel.hidden = false;
-      setStatus('You are signed in. Choose whether to import this browser’s progress before cloud sync begins.', 'warn');
+      setStatus('We found study activity saved on this device. Choose how you would like to continue.', 'warn');
       document.body.dataset.cloudProgress = 'awaiting-import';
       return;
     }
 
     saveDecision('account-only');
-    await connectAccountProgress('Cloud sync is connected to this account. No earlier anonymous study progress was found on this browser.');
+    await connectAccountProgress('Your account progress is ready. No earlier study activity was found on this device.');
   }
 
   function isConnected() {
@@ -274,15 +269,8 @@
 
   const ready = initialize().catch((error) => {
     console.error(error);
-    setStatus('Cloud synchronization could not start. Your browser progress remains unchanged.', 'warn');
+    setStatus('We could not start account progress. Your study activity remains saved on this device.', 'warn');
     document.body.dataset.cloudProgress = 'error';
   });
-  window.FreeHTLCloudProgress = Object.freeze({
-    ready,
-    decisionKey: DECISION_KEY,
-    readDecision,
-    isConnected,
-    reconnectAfterReset,
-    resolveConflict
-  });
+  window.FreeHTLCloudProgress = Object.freeze({ ready, decisionKey: DECISION_KEY, readDecision, isConnected, reconnectAfterReset, resolveConflict });
 })();
