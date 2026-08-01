@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the allowlisted FHL public deployment without premium source payloads."""
+"""Build an allowlisted FHL public deployment without premium source payloads."""
 from __future__ import annotations
 
 import argparse
@@ -16,6 +16,7 @@ from urllib.parse import urlsplit
 DEFAULT_SITE_URL = "https://withnati.github.io/free-htl-guide-site/"
 DEFAULT_SUPABASE_URL = "https://oqbubeklssmlkjjtqczr.supabase.co"
 DEFAULT_PUBLISHABLE_KEY = "sb_publishable_u7IMzg3GZJAVr-032rbhcQ_3RbxAua4"
+PREVIEW_TEMPLATE = "templates/premium-preview.html"
 
 PUBLIC_SOURCE_HTML = (
     "index.html",
@@ -24,6 +25,7 @@ PUBLIC_SOURCE_HTML = (
     "editorial.html",
     "faq.html",
     "privacy.html",
+    "terms.html",
     "my-progress.html",
     "account/auth-callback.html",
     "account/forgot-password.html",
@@ -43,10 +45,11 @@ PUBLIC_INDEXABLE_HTML = (
     "editorial.html",
     "faq.html",
     "privacy.html",
+    "terms.html",
     "modules/fixation-guide-v3.html",
 )
 
-PREVIEW_ROUTES = {
+PREVIEW_ROUTES: dict[str, dict[str, object]] = {
     "study-plan.html": {
         "title": "Six-week HT/HTL study plan",
         "eyebrow": "Premium study planning",
@@ -188,8 +191,9 @@ class ReferenceParser(HTMLParser):
         self.references: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        tag = tag.lower()
         attr_map = {name.lower(): value or "" for name, value in attrs}
-        for attribute in REFERENCE_ATTRIBUTES.get(tag.lower(), ()):
+        for attribute in REFERENCE_ATTRIBUTES.get(tag, ()):
             value = attr_map.get(attribute, "").strip()
             if not value:
                 continue
@@ -199,6 +203,12 @@ class ReferenceParser(HTMLParser):
                 )
             else:
                 self.references.append(value)
+        if tag == "meta":
+            key = attr_map.get("property", "").lower() or attr_map.get("name", "").lower()
+            if key in {"og:image", "twitter:image"}:
+                value = attr_map.get("content", "").strip()
+                if value:
+                    self.references.append(value)
 
 
 def normalized_site_url(value: str) -> str:
@@ -221,18 +231,14 @@ def environment_values() -> tuple[str, str, str, str]:
         "FHL_SUPABASE_PUBLISHABLE_KEY", DEFAULT_PUBLISHABLE_KEY
     ).strip()
     if environment in {"staging", "production"}:
-        missing = [
-            name
-            for name, value in (
-                ("FHL_PUBLIC_SITE_URL", os.environ.get("FHL_PUBLIC_SITE_URL", "")),
-                ("FHL_SUPABASE_URL", os.environ.get("FHL_SUPABASE_URL", "")),
-                (
-                    "FHL_SUPABASE_PUBLISHABLE_KEY",
-                    os.environ.get("FHL_SUPABASE_PUBLISHABLE_KEY", ""),
-                ),
-            )
-            if not value.strip()
-        ]
+        required = {
+            "FHL_PUBLIC_SITE_URL": os.environ.get("FHL_PUBLIC_SITE_URL", ""),
+            "FHL_SUPABASE_URL": os.environ.get("FHL_SUPABASE_URL", ""),
+            "FHL_SUPABASE_PUBLISHABLE_KEY": os.environ.get(
+                "FHL_SUPABASE_PUBLISHABLE_KEY", ""
+            ),
+        }
+        missing = [name for name, value in required.items() if not value.strip()]
         if missing:
             raise ValueError(
                 f"{environment} builds require explicit values for: {', '.join(missing)}"
@@ -261,61 +267,49 @@ def local_reference(source_relative: Path, value: str, root: Path) -> Path | Non
     if parsed.scheme.lower() in SKIP_SCHEMES:
         return None
     if parsed.scheme in {"http", "https"}:
-        if value.startswith(DEFAULT_SITE_URL):
-            candidate = Path(parsed.path.removeprefix("/free-htl-guide-site/"))
-        else:
+        if not value.startswith(DEFAULT_SITE_URL):
             return None
+        candidate = Path(parsed.path.removeprefix("/free-htl-guide-site/"))
     elif parsed.scheme:
         return None
+    elif parsed.path.startswith("/free-htl-guide-site/"):
+        candidate = Path(parsed.path.removeprefix("/free-htl-guide-site/"))
+    elif parsed.path.startswith("/") or not parsed.path:
+        return None
     else:
-        path = parsed.path
-        if not path:
-            return None
-        if path.startswith("/free-htl-guide-site/"):
-            candidate = Path(path.removeprefix("/free-htl-guide-site/"))
-        elif path.startswith("/"):
-            return None
-        else:
-            candidate = source_relative.parent / path
-    normalized = Path(os.path.normpath(candidate.as_posix()))
-    if normalized.is_absolute() or ".." in normalized.parts:
-        resolved = (root / normalized).resolve()
-        try:
-            return resolved.relative_to(root.resolve())
-        except ValueError as error:
-            raise ValueError(f"Public reference escapes repository root: {value}") from error
-    return normalized
+        candidate = source_relative.parent / parsed.path
+    resolved = (root / candidate).resolve()
+    try:
+        return resolved.relative_to(root.resolve())
+    except ValueError as error:
+        raise ValueError(f"Public reference escapes repository root: {value}") from error
 
 
-def dependency_closure(root: Path, source_html: tuple[str, ...]) -> set[Path]:
-    pending: list[Path] = [Path(item) for item in source_html]
-    required: set[Path] = set(pending)
+def dependency_closure(root: Path) -> set[Path]:
+    pending = [Path(item) for item in PUBLIC_SOURCE_HTML]
+    required = set(pending)
     while pending:
         relative = pending.pop()
         source = root / relative
         if not source.is_file():
             raise FileNotFoundError(f"Required public source is missing: {relative.as_posix()}")
-        suffix = source.suffix.lower()
         references: list[str] = []
-        if suffix == ".html":
+        if source.suffix.lower() == ".html":
             parser = ReferenceParser()
             parser.feed(source.read_text(encoding="utf-8"))
             references = parser.references
-        elif suffix == ".css":
+        elif source.suffix.lower() == ".css":
             text = source.read_text(encoding="utf-8")
             references = [match.group(2).strip() for match in CSS_URL_RE.finditer(text)]
-        else:
-            continue
-
         for value in references:
             target = local_reference(relative, value, root)
             if target is None:
                 continue
+            route = target.as_posix()
             if target.suffix.lower() == ".html":
-                if target.as_posix() not in PUBLIC_SOURCE_HTML and target.as_posix() not in PREVIEW_ROUTES:
+                if route not in PUBLIC_SOURCE_HTML and route not in PREVIEW_ROUTES:
                     raise ValueError(
-                        f"Approved public source {relative.as_posix()} links to unclassified HTML route "
-                        f"{target.as_posix()}"
+                        f"Approved public source {relative.as_posix()} links to unclassified HTML route {route}"
                     )
                 continue
             if target not in required:
@@ -332,16 +326,9 @@ def rewrite_html(content: str, route: str, site_url: str) -> str:
     return CANONICAL_RE.sub(rf"\g<1>{canonical}\g<3>", content, count=1)
 
 
-def relative_prefix(route: str) -> str:
-    depth = len(Path(route).parent.parts)
-    return "../" * depth
-
-
-def preview_page(route: str, config: dict[str, object], site_url: str) -> str:
-    prefix = relative_prefix(route)
-    title = html.escape(str(config["title"]))
-    eyebrow = html.escape(str(config["eyebrow"]))
-    summary = html.escape(str(config["summary"]))
+def preview_page(root: Path, route: str, config: dict[str, object], site_url: str) -> str:
+    template = (root / PREVIEW_TEMPLATE).read_text(encoding="utf-8")
+    prefix = "../" * len(Path(route).parent.parts)
     features = "".join(
         f"<li>{html.escape(str(item))}</li>" for item in config.get("features", [])
     )
@@ -351,82 +338,24 @@ def preview_page(route: str, config: dict[str, object], site_url: str) -> str:
             f'<a class="btn" href="{prefix}premium/processing-proof.html">'
             "Open the protected-delivery proof</a>"
         )
-    canonical = site_url + route
-    return f'''<!doctype html>
-<html lang="en" class="scroll-smooth">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="robots" content="noindex,nofollow">
-  <title>{title} | Free HTL Guide</title>
-  <meta name="description" content="Preview the {title} premium learning experience.">
-  <link rel="canonical" href="{canonical}">
-  <link rel="stylesheet" href="{prefix}assets/guide.css">
-  <link rel="stylesheet" href="{prefix}assets/premium-preview.css">
-  <meta name="theme-color" content="#0F4C81">
-</head>
-<body data-page="premium-preview">
-<a class="skip" href="#main">Skip to content</a>
-<header class="site-header"><div class="bar">
-  <a class="brand" href="{prefix}index.html">Free HTL Guide</a>
-  <nav class="nav" aria-label="Primary">
-    <a href="{prefix}index.html#modules">Modules</a>
-    <a href="{prefix}study-plan.html">Study plan</a>
-    <a href="{prefix}practice.html">Practice</a>
-    <a href="{prefix}my-progress.html">My progress</a>
-  </nav>
-  <div class="actions">
-    <button id="themeBtn" class="btn" type="button" aria-label="Toggle dark mode">🌙</button>
-    <button id="menuBtn" class="btn menu-btn" type="button" aria-expanded="false" aria-controls="mobileMenu">Menu</button>
-    <a class="btn btn-primary" href="{prefix}account/sign-up.html">Create account</a>
-  </div>
-</div>
-<nav id="mobileMenu" class="mobile-menu" aria-label="Mobile">
-  <a href="{prefix}index.html#modules">Modules</a>
-  <a href="{prefix}study-plan.html">Study plan</a>
-  <a href="{prefix}practice.html">Practice</a>
-  <a href="{prefix}my-progress.html">My progress</a>
-  <a href="{prefix}account/sign-up.html">Create account</a>
-</nav></header>
-<main id="main" class="preview-shell">
-  <section class="preview-hero">
-    <div class="preview-copy">
-      <p class="eyebrow">{eyebrow}</p>
-      <h1>{title}</h1>
-      <p class="lead">{summary}</p>
-      <div class="preview-actions">
-        <a class="btn btn-primary" href="{prefix}account/sign-up.html">Create a learner account</a>
-        <a class="btn" href="{prefix}modules/fixation-guide-v3.html">Study the free Fixation lesson</a>
-        {proof_link}
-      </div>
-    </div>
-    <aside class="card preview-card">
-      <p class="eyebrow">Premium learning preview</p>
-      <h2>What the full experience will include</h2>
-      <ul class="preview-list">{features}</ul>
-      <p class="small muted">Payment checkout is not active during Layer 14. Creating an account does not automatically grant premium access.</p>
-    </aside>
-  </section>
-  <section class="card preview-security-note">
-    <h2>Protected before delivery</h2>
-    <p>The public page contains this preview only. Full premium lessons, question banks, explanations, answer keys, and downloads are delivered only after a server verifies both the learner session and a server-controlled entitlement.</p>
-  </section>
-</main>
-<footer class="footer"><div class="footer-inner">
-  <span>© <span data-year></span> Free HTL Guide</span>
-  <span><a href="{prefix}editorial.html">Editorial standards</a> · <a href="{prefix}privacy.html">Privacy</a></span>
-</div></footer>
-<script src="{prefix}assets/guide.js" defer></script>
-</body>
-</html>
-'''
+    replacements = {
+        "{{TITLE}}": html.escape(str(config["title"])),
+        "{{EYEBROW}}": html.escape(str(config["eyebrow"])),
+        "{{SUMMARY}}": html.escape(str(config["summary"])),
+        "{{CANONICAL}}": site_url + route,
+        "{{PREFIX}}": prefix,
+        "{{FEATURES}}": features,
+        "{{PROOF_LINK}}": proof_link,
+    }
+    for token, value in replacements.items():
+        template = template.replace(token, value)
+    if "{{" in template or "}}" in template:
+        raise ValueError(f"Unresolved premium preview template token for {route}")
+    return template
 
 
 def copy_safe_data(root: Path, output: Path) -> None:
-    data_dir = root / "data"
-    if not data_dir.is_dir():
-        return
-    for source in sorted(data_dir.glob("*.json")):
+    for source in sorted((root / "data").glob("*.json")):
         if any(pattern.fullmatch(source.name) for pattern in BLOCKED_DATA_PATTERNS):
             continue
         destination = output / "data" / source.name
@@ -435,8 +364,9 @@ def copy_safe_data(root: Path, output: Path) -> None:
             payload = json.loads(source.read_text(encoding="utf-8"))
             payload["enforcementMode"] = "server-authorized"
             payload["secureEnforcementRequired"] = True
-            payload.setdefault("accountPlan", {})["paymentEntitlementSource"] = "server-verified"
-            payload["accountPlan"]["clientMetadataIsNotAuthorization"] = True
+            account_plan = payload.setdefault("accountPlan", {})
+            account_plan["paymentEntitlementSource"] = "server-verified"
+            account_plan["clientMetadataIsNotAuthorization"] = True
             destination.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
         else:
             shutil.copy2(source, destination)
@@ -467,13 +397,13 @@ def write_sitemap(output: Path, site_url: str) -> None:
     for route in PUBLIC_INDEXABLE_HTML:
         url = site_url if route == "index.html" else site_url + route
         entries.append(f"  <url><loc>{html.escape(url)}</loc><lastmod>{today}</lastmod></url>")
-    content = (
+    (output / "sitemap.xml").write_text(
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
         + "\n".join(entries)
-        + "\n</urlset>\n"
+        + "\n</urlset>\n",
+        encoding="utf-8",
     )
-    (output / "sitemap.xml").write_text(content, encoding="utf-8")
     (output / "robots.txt").write_text(
         f"User-agent: *\nAllow: /\nSitemap: {site_url}sitemap.xml\n",
         encoding="utf-8",
@@ -481,53 +411,26 @@ def write_sitemap(output: Path, site_url: str) -> None:
 
 
 def write_headers(output: Path, environment: str, supabase_url: str) -> None:
-    supabase_origin = urlsplit(supabase_url)
-    connect_origin = f"{supabase_origin.scheme}://{supabase_origin.netloc}"
-    global_robots = "\n  X-Robots-Tag: noindex, nofollow" if environment != "production" else ""
+    parsed = urlsplit(supabase_url)
+    connect_origin = f"{parsed.scheme}://{parsed.netloc}"
+    preview_header = "\n  X-Robots-Tag: noindex, nofollow" if environment != "production" else ""
+    routes = [
+        "/account/*",
+        "/premium/*",
+        *[f"/{route}" for route in sorted(PREVIEW_ROUTES)],
+    ]
+    protected_headers = "\n\n".join(
+        f"{route}\n  Cache-Control: private, no-store\n  X-Robots-Tag: noindex, nofollow"
+        for route in routes
+    )
     content = f"""/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   X-Frame-Options: DENY
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; connect-src 'self' {connect_origin}; font-src 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests{global_robots}
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; connect-src 'self' {connect_origin}; font-src 'self'; form-action 'self'; frame-ancestors 'none'; img-src 'self' data:; object-src 'none'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; upgrade-insecure-requests{preview_header}
 
-/account/*
-  Cache-Control: private, no-store
-  X-Robots-Tag: noindex, nofollow
-
-/premium/*
-  Cache-Control: private, no-store
-  X-Robots-Tag: noindex, nofollow
-
-/modules/processing-guide-v3.html
-  X-Robots-Tag: noindex, nofollow
-
-/modules/embedding-guide-v3.html
-  X-Robots-Tag: noindex, nofollow
-
-/modules/staining-he-guide.html
-  X-Robots-Tag: noindex, nofollow
-
-/modules/special-stains-guide.html
-  X-Robots-Tag: noindex, nofollow
-
-/modules/lab-operations-guide.html
-  X-Robots-Tag: noindex, nofollow
-
-/modules/ihc-ish-guide.html
-  X-Robots-Tag: noindex, nofollow
-
-/mock-exam.html
-  X-Robots-Tag: noindex, nofollow
-
-/targeted-practice.html
-  X-Robots-Tag: noindex, nofollow
-
-/practice.html
-  X-Robots-Tag: noindex, nofollow
-
-/study-plan.html
-  X-Robots-Tag: noindex, nofollow
+{protected_headers}
 """
     (output / "_headers").write_text(content, encoding="utf-8")
 
@@ -538,14 +441,12 @@ def build(root: Path, output: Path) -> dict[str, object]:
         shutil.rmtree(output)
     output.mkdir(parents=True)
 
-    dependencies = dependency_closure(root, PUBLIC_SOURCE_HTML)
+    dependencies = dependency_closure(root)
     dependencies.update(Path(item) for item in PUBLIC_FIXATION_DOWNLOADS)
     dependencies.add(Path("assets/premium-preview.css"))
-
     for relative in sorted(dependencies):
-        if relative.suffix.lower() == ".html":
-            continue
-        copy_file(root, output, relative)
+        if relative.suffix.lower() != ".html":
+            copy_file(root, output, relative)
 
     for route in PUBLIC_SOURCE_HTML:
         source = root / route
@@ -555,11 +456,10 @@ def build(root: Path, output: Path) -> dict[str, object]:
             rewrite_html(source.read_text(encoding="utf-8"), route, site_url),
             encoding="utf-8",
         )
-
     for route, config in PREVIEW_ROUTES.items():
         destination = output / route
         destination.parent.mkdir(parents=True, exist_ok=True)
-        destination.write_text(preview_page(route, config, site_url), encoding="utf-8")
+        destination.write_text(preview_page(root, route, config, site_url), encoding="utf-8")
 
     copy_safe_data(root, output)
     write_supabase_config(output, supabase_url, publishable_key, environment)
@@ -576,11 +476,12 @@ def build(root: Path, output: Path) -> dict[str, object]:
         "publicSourcePages": list(PUBLIC_SOURCE_HTML),
         "premiumPreviewRoutes": sorted(PREVIEW_ROUTES),
         "indexableRoutes": list(PUBLIC_INDEXABLE_HTML),
-        "fileCount": sum(1 for path in output.rglob("*") if path.is_file()),
+        "fileCount": 0,
     }
-    (output / "build-manifest.json").write_text(
-        json.dumps(manifest, indent=2) + "\n", encoding="utf-8"
-    )
+    manifest_path = output / "build-manifest.json"
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+    manifest["fileCount"] = sum(1 for path in output.rglob("*") if path.is_file())
+    manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
     return manifest
 
 
