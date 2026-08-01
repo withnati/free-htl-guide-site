@@ -114,5 +114,29 @@ LEARNER_PREVIEW_COPY: dict[str, dict[str, object]] = {
 
 build_public_site.PREVIEW_ROUTES.update(LEARNER_PREVIEW_COPY)
 
+_BASE_WRITE_HEADERS = build_public_site.write_headers
+
+
+def write_headers_with_extensionless_previews(output, environment, supabase_url) -> None:
+    """Apply protected caching headers to the routes Cloudflare actually serves."""
+    _BASE_WRITE_HEADERS(output, environment, supabase_url)
+    extensionless_routes = sorted(
+        {
+            f"/{route.removesuffix('.html')}"
+            for route in build_public_site.PREVIEW_ROUTES
+            if route.endswith(".html")
+        }
+    )
+    rules = "\n\n".join(
+        f"{route}\n  Cache-Control: private, no-store\n  X-Robots-Tag: noindex, nofollow"
+        for route in extensionless_routes
+    )
+    if rules:
+        with (output / "_headers").open("a", encoding="utf-8") as headers:
+            headers.write(f"\n{rules}\n")
+
+
+build_public_site.write_headers = write_headers_with_extensionless_previews
+
 if __name__ == "__main__":
     raise SystemExit(build_public_site.main())
