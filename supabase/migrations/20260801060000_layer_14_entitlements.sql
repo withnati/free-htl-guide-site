@@ -218,6 +218,7 @@ grant execute on function public.has_effective_entitlement(uuid, text, timestamp
 grant select, insert, update, delete on table public.entitlements to service_role;
 grant select, insert on table public.entitlement_events to service_role;
 
+-- Security invariant: the premium-content bucket public is false and no public object policy is created.
 insert into storage.buckets (
   id,
   name,
@@ -234,8 +235,8 @@ values (
     'application/json',
     'application/pdf',
     'application/zip',
-    'text/html; charset=utf-8',
-    'text/plain; charset=utf-8'
+    'text/html',
+    'text/plain'
   ]::text[]
 )
 on conflict (id) do update
