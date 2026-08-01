@@ -18,7 +18,7 @@ jobs:
   browser:
     name: Browser smoke tests
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
 
     steps:
       - name: Check out repository
@@ -28,18 +28,30 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: "24"
-          package-manager-cache: false
+          package-manager-cache: npm
 
-      - name: Install test dependency
-        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Install locked test dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
 
       - name: Install Chromium and operating-system dependencies
         run: npx playwright install chromium --with-deps
 
-      - name: Run desktop and mobile browser tests
+      - name: Run development-source desktop and mobile tests
         run: npm run test:browser
 
-      - name: Upload browser report and failure evidence
+      - name: Build allowlisted public deployment
+        env:
+          FHL_ENVIRONMENT: preview
+          FHL_PUBLIC_SITE_URL: http://127.0.0.1:4174/
+        run: npm run build:public
+
+      - name: Validate generated public deployment
+        run: npm run validate:public-build
+
+      - name: Run generated public deployment desktop and mobile tests
+        run: npm run test:public-build-browser
+
+      - name: Upload browser reports and failure evidence
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6
         with:
@@ -47,5 +59,8 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            playwright-public-report/
+            test-results-public/
+            dist/build-manifest.json
           if-no-files-found: ignore
           retention-days: 14

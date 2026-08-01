@@ -1,20 +1,46 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.110.8';
 
-const allowedOrigins = new Set([
+const DEFAULT_ALLOWED_ORIGINS = [
   'https://withnati.github.io',
   'https://raw.githack.com',
   'http://127.0.0.1:4173',
   'http://localhost:4173'
-]);
+];
 
-function response(origin: string, status: number, body: Record<string, unknown> | null) {
+function configuredOrigins() {
+  const configured = Deno.env.get('FHL_ALLOWED_ORIGINS') || '';
+  const values = configured.trim().length > 0
+    ? configured.split(',')
+    : DEFAULT_ALLOWED_ORIGINS;
+  return new Set(
+    values
+      .map((value) => value.trim())
+      .filter((value) => value.length > 0)
+  );
+}
+
+function readNamedProjectKey(mapName: string, legacyName: string) {
+  const mapped = Deno.env.get(mapName);
+  if (mapped) {
+    try {
+      const parsed = JSON.parse(mapped) as Record<string, unknown>;
+      const value = parsed.default;
+      if (typeof value === 'string' && value.trim().length > 0) return value;
+    } catch {
+      console.error(JSON.stringify({ error: 'invalid_project_key_map', mapName }));
+    }
+  }
+  return Deno.env.get(legacyName);
+}
+
+function response(origin: string | undefined, status: number, body: Record<string, unknown> | null) {
   const headers = new Headers({
-    'Access-Control-Allow-Origin': origin,
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'Cache-Control': 'no-store',
-    'Vary': 'Origin'
+    'Vary': 'Origin, Authorization'
   });
+  if (origin) headers.set('Access-Control-Allow-Origin', origin);
   if (body === null) return new Response(null, { status, headers });
   headers.set('Content-Type', 'application/json; charset=utf-8');
   return new Response(JSON.stringify(body), { status, headers });
@@ -22,8 +48,9 @@ function response(origin: string, status: number, body: Record<string, unknown> 
 
 Deno.serve(async (request) => {
   const origin = request.headers.get('origin') || '';
-  if (!allowedOrigins.has(origin)) {
-    return response('null', 403, { error: 'Origin is not allowed.' });
+  const allowedOrigins = configuredOrigins();
+  if (!origin || !allowedOrigins.has(origin)) {
+    return response(undefined, 403, { error: 'Origin is not allowed.' });
   }
   if (request.method === 'OPTIONS') return response(origin, 204, null);
   if (request.method !== 'POST') return response(origin, 405, { error: 'Method not allowed.' });
@@ -44,8 +71,8 @@ Deno.serve(async (request) => {
   }
 
   const projectUrl = Deno.env.get('SUPABASE_URL');
-  const publishableKey = Deno.env.get('SUPABASE_ANON_KEY');
-  const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  const publishableKey = readNamedProjectKey('SUPABASE_PUBLISHABLE_KEYS', 'SUPABASE_ANON_KEY');
+  const serviceRoleKey = readNamedProjectKey('SUPABASE_SECRET_KEYS', 'SUPABASE_SERVICE_ROLE_KEY');
   if (!projectUrl || !publishableKey || !serviceRoleKey) {
     console.error('Required Supabase function environment variables are unavailable.');
     return response(origin, 503, { error: 'Account deletion is temporarily unavailable.' });

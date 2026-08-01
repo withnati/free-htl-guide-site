@@ -1,43 +1,117 @@
 # Free HTL Guide
 
-Free HTL Guide is an account-ready HT/HTL learning platform in active development. The current public GitHub Pages build contains seven learning modules, module quizzes, a six-week study plan, cumulative practice, a 50-question mock exam backed by a 150-record development bank, Targeted Practice, and a private local-progress dashboard.
+Free HTL Guide is an HT/HTL learning and certification-preparation platform in active development. It combines structured histotechnology lessons, quizzes, mock exams, targeted practice, verified learner accounts, and cloud-backed progress.
+
+The current public GitHub Pages deployment remains a development preview. Premium-designated content is still publicly retrievable in the existing static repository and deployment and must not be treated as securely protected until Layer 14 staging, review, and cutover are complete.
 
 ## Product direction
 
 The project is transitioning from a static study guide into a subscription learning platform.
 
-- **Public launch content:** homepage, instructor and editorial information, course outline, the complete Fixation lesson, a sample quiz, feature previews, pricing, and signup.
-- **Premium-designated content:** lessons 2–7, full module quizzes, the 150-record question bank, mock exams, targeted practice, complete progress history, and weak-domain recommendations.
-- **Account features:** verified identity, cloud-backed learning progress, resumable sessions, progress export, and account deletion.
+- **Public launch content:** homepage, instructor and editorial information, course outline, the complete Fixation lesson, selected sample questions, limited study resources, feature previews, pricing, and signup.
+- **Free account experience:** verified identity, basic cloud progress, cross-device continuity for free learning, account settings, progress export/reset, and account deletion.
+- **Premium experience:** lessons 2–7, full quizzes, the complete question bank, mock exams, Targeted Practice, detailed explanations, advanced history, weak-domain recommendations, and future premium learning tools.
 
-The current deployment is a development preview. Access metadata does not provide security, and browser storage cannot grant a paid entitlement. Premium content must be moved behind authenticated, server-authorized delivery before a paid launch.
+Authentication proves identity only. Browser metadata, profile fields, URL parameters, or local storage may not grant premium access. Protected content must be authorized by a server before delivery.
 
 ## Current architecture
 
-- Static frontend deployed through GitHub Pages during development
+### Completed Layer 13 foundation
+
+- Static frontend currently deployed through GitHub Pages during development
+- Supabase Auth with signup, email verification, sign-in, sign-out, recovery, and password reset
+- Controlled authentication callbacks using PKCE
+- Versioned learner-progress record and central progress-service contract
+- Anonymous local-browser progress
+- Explicit anonymous-to-account progress import or account-only mode
+- Normalized PostgreSQL cloud progress across ten relational tables
+- Row Level Security and two-user ownership tests
+- Cross-device synchronization
+- Offline pending-write recovery
+- Revision-based conflict protection for mutable sessions
+- Stable and idempotent completed attempts
+- Secure account deletion through a Supabase Edge Function
 - Privacy-first, consent-gated analytics
-- Versioned learner-progress record
-- Replaceable progress-storage adapter
-- Stable question and selected-option IDs
-- Premium/public access metadata
-- Supabase Auth and PostgreSQL foundation under Layer 13 development
-- PostgreSQL Row Level Security contract and two-user ownership tests
-- Automated Python contract validation
-- Desktop and mobile Playwright browser testing
+- Automated Site, Browser, and Database Quality workflows
+
+### Approved Layer 14 architecture
+
+- Cloudflare Pages for previews, production hosting, custom domains, TLS, security headers, and rollback
+- Supabase Auth for learner identity
+- Supabase PostgreSQL for learner progress and server-controlled entitlement records
+- Supabase Edge Functions for authenticated entitlement checks
+- Private Supabase Storage for protected lessons, question payloads, explanations, answer keys, and downloads
+- Stripe or another approved payment provider later in Layer 15
 
 ## Current development status
 
-- Layers 1–12 are merged into `main`.
-- Layer 13 authentication and cloud progress is under development in draft PR #18.
-- The Layer 13 branch includes the relational database/RLS foundation, a browser-safe Supabase development configuration, and private signup, verification, sign-in, recovery, callback, and settings pages.
-- The cloud progress adapter, anonymous-progress import, privacy operations, and end-to-end live account verification remain in progress.
-- Layers 14–16 will cover protected premium content, payments/paywall, and the launch funnel.
+- Layers 1–13 are complete and merged into `main`.
+- Layer 12 Targeted Practice merged through PR #17 as `a130066847650988181e1d0c452f920bb7cf252b`.
+- Layer 13 authentication and cloud progress merged through PR #18 as `405686a2193282d246d2c2878b9bafb015617aea`.
+- Layer 14 production hosting and protected delivery is active in draft PR #19 on `layer-14-production-protected-delivery`.
+- Layer 15 will connect payment-provider state to server-controlled entitlements.
+- Layer 16 will complete the launch funnel, conversion path, and product optimization.
 
 The 150-record development bank contains 70 authority-reviewed base questions and 80 alternate scenarios that still require final manual scientific and editorial review.
 
+## Layer 14 security boundary
+
+The public browser may receive public pages, free learning content, account interfaces, upgrade states, and non-sensitive content identifiers.
+
+The browser must not receive premium lesson payloads, full question banks, explanations, answer keys, or protected downloads unless a server or Edge Function has:
+
+1. validated the Supabase session;
+2. derived the user from the verified token;
+3. checked a server-controlled entitlement;
+4. validated the requested content identifier; and
+5. authorized delivery from private storage.
+
+Existing public premium-designated material is treated as development-preview content. Revised or newly created launch-premium content must remain private from creation onward.
+
+## Allowlisted public deployment
+
+Production hosting must deploy the generated `dist/` directory, never the repository root.
+
+The public build:
+
+- copies only approved public and account-shell files;
+- keeps the complete Fixation lesson as the public acquisition hook;
+- replaces premium lesson, practice, mock-exam, and Targeted Practice routes with noindex preview shells;
+- excludes premium question-bank JSON, explanations, answer-key material, server code, migrations, tests, documentation, and unapproved downloads;
+- generates environment-specific browser-safe Supabase configuration;
+- generates the approved sitemap, robots file, and Cloudflare `_headers` rules;
+- scans the output for protected paths, question-bank identifiers, credentials, and premium leakage.
+
+Build and validate a local preview:
+
+```bash
+npm run build:public
+npm run validate:public-build
+```
+
+For staging and production, set explicit browser-safe values before building:
+
+```bash
+FHL_ENVIRONMENT=staging \
+FHL_PUBLIC_SITE_URL=https://staging.example.test/ \
+FHL_SUPABASE_URL=https://example-project.supabase.co \
+FHL_SUPABASE_PUBLISHABLE_KEY=replace-with-browser-safe-publishable-key \
+npm run build:public
+
+npm run validate:public-build
+```
+
+Do not place a service-role key, database password, secret key, deployment token, signing secret, or payment secret in the build environment or frontend configuration.
+
+Cloudflare Pages target configuration:
+
+- build command: `npm run build:public && npm run validate:public-build`
+- output directory: `dist`
+- repository root is not a deployable output directory
+
 ## Local validation
 
-Run the static and contract checks:
+Run static and contract checks:
 
 ```bash
 python -m unittest discover -s tests -p "test_*.py" -v
@@ -48,38 +122,52 @@ python scripts/validate_seo.py --root .
 python scripts/validate_analytics.py --root .
 python scripts/validate_progress.py --root .
 python scripts/validate_targeted_practice.py --root .
-```
-
-On the Layer 13 branch, also run:
-
-```bash
 python scripts/validate_cloud_progress.py --root .
 python scripts/validate_auth.py --root .
+python scripts/validate_cloud_adapter.py --root .
+python scripts/validate_layer14_security.py --root .
+```
+
+Run database checks with the Supabase CLI:
+
+```bash
 supabase db start
 supabase db lint --level warning --fail-on error
 supabase test db
+supabase stop --no-backup
 ```
 
 Run browser tests:
 
 ```bash
-npm install
+npm ci --ignore-scripts --no-audit --no-fund
 npx playwright install chromium
 npm run test:browser
 ```
 
+The committed `package-lock.json` and Browser Quality workflow use deterministic `npm ci` installation.
+
 ## Key project documents
 
+- `docs/ROADMAP.md`
 - `docs/LAYER_11_ACCOUNT_READY_PROGRESS.md`
 - `docs/LAYER_12_TARGETED_PRACTICE.md`
-- `docs/LAYER_13_AUTH_CLOUD_PROGRESS.md` on the Layer 13 branch
-- `docs/LAYER_13_SUPABASE_SETUP.md` on the Layer 13 branch
+- `docs/LAYER_13_AUTH_CLOUD_PROGRESS.md`
+- `docs/LAYER_13_SUPABASE_SETUP.md`
+- `docs/LAYER_14_ARCHITECTURE_DECISION.md`
+- `docs/LAYER_14_ENVIRONMENT_PLAN.md`
+- `docs/LAYER_14_CONTENT_BOUNDARY.md`
+- `docs/LAYER_14_ENTITLEMENTS_AND_PROOF.md`
+- `docs/LAYER_14_OPERATIONS.md`
 - `data/content-access.json`
 - `data/progress-schema.json`
 - `data/question-bank-manifest.json`
 - `editorial.html`
 - `privacy.html`
+- `terms.html`
 
 ## Repository workflow
 
-Major product layers are developed on dedicated branches and opened as draft pull requests. A layer should not be merged until Site Quality, Browser Quality, and any layer-specific security/database workflows pass and explicit approval is given.
+Major product layers are developed on dedicated branches and opened as draft pull requests. A layer must not be merged until its automated workflows pass, its security boundaries are reviewed, desktop and mobile behavior is verified, staging evidence is complete, and explicit merge approval is given.
+
+Layer 14 must remain in draft until Site Quality, Browser Quality, Database Quality, protected-delivery security checks, public-build leakage scans, staging verification, and owner approval are complete.
