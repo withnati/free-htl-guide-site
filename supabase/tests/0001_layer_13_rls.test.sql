@@ -152,33 +152,13 @@ select is(
   'Learner A sees only their own completed attempts'
 );
 
-select is(
-  (
-    with changed as (
-      update public.module_progress
-      set last_section_id = 'blocked-cross-user-update'
-      where user_id = '22222222-2222-4222-8222-222222222222'
-      returning 1
-    )
-    select count(*) from changed
-  ),
-  0::bigint,
-  'Learner A cannot update Learner B progress'
-);
+update public.module_progress
+set last_section_id = 'blocked-cross-user-update'
+where user_id = '22222222-2222-4222-8222-222222222222';
 
-select is(
-  (
-    with changed as (
-      update public.module_progress
-      set last_section_id = 'learner-a-update'
-      where user_id = '11111111-1111-4111-8111-111111111111'
-      returning 1
-    )
-    select count(*) from changed
-  ),
-  1::bigint,
-  'Learner A can update their own progress'
-);
+update public.module_progress
+set last_section_id = 'learner-a-update'
+where user_id = '11111111-1111-4111-8111-111111111111';
 
 reset role;
 
@@ -190,7 +170,29 @@ select is(
       and module_id = 'processing-v3'
   ),
   'overview',
-  'Cross-user update did not change Learner B data'
+  'Learner A cannot update Learner B progress'
+);
+
+select is(
+  (
+    select last_section_id
+    from public.module_progress
+    where user_id = '11111111-1111-4111-8111-111111111111'
+      and module_id = 'fixation-v3'
+  ),
+  'learner-a-update',
+  'Learner A can update their own progress'
+);
+
+select is(
+  (
+    select revision
+    from public.module_progress
+    where user_id = '11111111-1111-4111-8111-111111111111'
+      and module_id = 'fixation-v3'
+  ),
+  2::bigint,
+  'Own mutable progress update increments the server revision'
 );
 
 set local role authenticated;
