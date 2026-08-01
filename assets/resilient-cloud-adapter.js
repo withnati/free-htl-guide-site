@@ -206,7 +206,7 @@
       const merged = cloud.mergeRecords(remote, pending, this.userId);
       if (strategy === 'remote') {
         merged.activeSessions = clone(remote.activeSessions || {});
-      } else {
+      } else if (strategy === 'local') {
         SESSION_TYPES.forEach((sessionType) => {
           if (pending.activeSessions?.[sessionType]) {
             merged.activeSessions[sessionType] = clone(pending.activeSessions[sessionType]);
