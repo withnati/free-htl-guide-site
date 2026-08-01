@@ -61,6 +61,7 @@
       if (signIn) {
         signIn.hidden = false;
         signIn.href = signInUrl();
+        signIn.textContent = name === 'expired' ? 'Sign in again' : 'Sign in to continue';
       }
     }
     if (name === 'upgrade-required' && upgrade) upgrade.hidden = false;
@@ -103,17 +104,14 @@
     for (const section of payload.sections) {
       const card = document.createElement('section');
       card.className = 'card premium-content-section';
-
       const heading = document.createElement('h3');
       heading.textContent = section.heading;
       card.append(heading);
-
       for (const paragraph of section.paragraphs || []) {
         const element = document.createElement('p');
         element.textContent = paragraph;
         card.append(element);
       }
-
       if (section.bullets?.length) {
         const list = document.createElement('ul');
         list.className = 'premium-content-list';
@@ -124,7 +122,6 @@
         }
         card.append(list);
       }
-
       contentSections.append(card);
     }
   }
@@ -138,14 +135,11 @@
   }
 
   async function loadProtectedContent() {
-    setState('loading', 'Checking your account session and protected-content access.', {
-      label: 'Checking…'
-    });
+    setState('loading', 'Loading your lesson…', { label: 'Loading…' });
 
     if (!auth || auth.initializationError || !config?.projectUrl || !config?.publishableKey) {
-      setState('error', 'The protected-content service could not be initialized. Please try again later.', {
-        label: 'Unavailable',
-        alert: true
+      setState('error', 'We could not load this lesson. Please try again later. Your progress has not been changed.', {
+        label: 'Could not load lesson', alert: true
       });
       return;
     }
@@ -154,17 +148,14 @@
     try {
       session = await auth.ready;
     } catch {
-      setState('error', 'The account service could not be reached. Check your connection and try again.', {
-        label: 'Connection problem',
-        alert: true
+      setState('error', 'We could not reach the account service. Check your connection and try again. Your progress has not been changed.', {
+        label: 'Connection problem', alert: true
       });
       return;
     }
 
     if (!session?.access_token) {
-      setState('signed-out', 'Sign in with a verified learner account before requesting this protected lesson.', {
-        label: 'Sign in required'
-      });
+      setState('signed-out', 'Sign in to continue learning.', { label: 'Sign in required' });
       return;
     }
 
@@ -173,87 +164,58 @@
     let response;
     try {
       response = await fetch(`${config.projectUrl}/functions/v1/premium-content`, {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'omit',
-        cache: 'no-store',
-        signal: controller.signal,
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-          apikey: config.publishableKey,
-          'Content-Type': 'application/json'
-        },
+        method: 'POST', mode: 'cors', credentials: 'omit', cache: 'no-store', signal: controller.signal,
+        headers: { Authorization: `Bearer ${session.access_token}`, apikey: config.publishableKey, 'Content-Type': 'application/json' },
         body: JSON.stringify({ contentId })
       });
     } catch (error) {
       const timedOut = error?.name === 'AbortError';
-      setState(
-        'error',
-        timedOut
-          ? 'The protected-content request timed out. Please try again.'
-          : 'The protected-content service could not be reached. Check your connection and try again.',
-        { label: timedOut ? 'Timed out' : 'Connection problem', alert: true }
-      );
+      setState('error', timedOut
+        ? 'This lesson took too long to load. Please try again. Your progress has not been changed.'
+        : 'We could not load this lesson. Check your connection and try again. Your progress has not been changed.',
+      { label: timedOut ? 'Timed out' : 'Connection problem', alert: true });
       return;
     } finally {
       window.clearTimeout(timeout);
     }
 
     const payload = await responseBody(response);
-    const requestId = typeof payload.requestId === 'string'
-      ? payload.requestId
-      : response.headers.get('X-FHL-Request-Id') || '';
+    const requestId = typeof payload.requestId === 'string' ? payload.requestId : response.headers.get('X-FHL-Request-Id') || '';
 
     if (response.status === 401) {
-      setState('expired', 'Your account session is missing, invalid, or expired. Sign in again to continue.', {
-        label: 'Session expired',
-        requestId
-      });
+      setState('expired', 'Your session ended. Sign in again to continue.', { label: 'Sign in again', requestId });
       return;
     }
 
     if (response.status === 403 && payload.code === 'upgrade_required') {
-      setState('upgrade-required', 'Your account is verified, but it does not currently include this premium lesson.', {
-        label: 'Premium required',
-        requestId
+      setState('upgrade-required', 'This lesson is included with Premium. See what Premium includes to continue preparing.', {
+        label: 'Included with Premium', requestId
       });
       return;
     }
 
     if (!response.ok) {
-      setState('error', 'Protected content is temporarily unavailable. Please try again without changing your account or progress.', {
-        label: 'Temporary problem',
-        requestId,
-        alert: true
+      setState('error', 'We could not load this lesson. Please try again. Your progress has not been changed.', {
+        label: 'Could not load lesson', requestId, alert: true
       });
       return;
     }
 
     if (!validatePayload(payload)) {
-      setState('error', 'The protected lesson response was not in the expected format. No content was saved.', {
-        label: 'Invalid response',
-        requestId,
-        alert: true
+      setState('error', 'We could not load this lesson. Please try again. Your progress has not been changed.', {
+        label: 'Could not load lesson', requestId, alert: true
       });
       return;
     }
 
     renderPayload(payload);
-    setState('authorized', 'Your account and premium entitlement were verified. The protected lesson is ready.', {
-      label: 'Access granted',
-      requestId
-    });
+    setState('authorized', 'Your lesson is ready.', { label: 'Lesson ready', requestId });
     window.requestAnimationFrame(() => contentTitle?.focus());
   }
 
   retry?.addEventListener('click', loadProtectedContent);
   auth?.onAuthStateChange?.((_event, session) => {
-    if (!session) {
-      setState('signed-out', 'Sign in with a verified learner account before requesting this protected lesson.', {
-        label: 'Sign in required'
-      });
-    }
+    if (!session) setState('signed-out', 'Sign in to continue learning.', { label: 'Sign in required' });
   });
-
   loadProtectedContent();
 })();
