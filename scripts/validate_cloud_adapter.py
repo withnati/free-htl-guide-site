@@ -15,8 +15,10 @@ def validate(root: Path) -> list[str]:
     errors: list[str] = []
     paths = {
         'adapter': root / 'assets/cloud-progress-adapter.js',
+        'resilience': root / 'assets/resilient-cloud-adapter.js',
         'controller': root / 'assets/cloud-progress-controller.js',
         'bootstrap': root / 'assets/cloud-sync-bootstrap.js',
+        'sync_style': root / 'assets/cloud-sync.css',
         'shared_loader': root / 'assets/authority.js',
         'dashboard': root / 'assets/dashboard.js',
         'page': root / 'my-progress.html',
@@ -28,8 +30,10 @@ def validate(root: Path) -> list[str]:
         return errors
 
     adapter = paths['adapter'].read_text(encoding='utf-8')
+    resilience = paths['resilience'].read_text(encoding='utf-8')
     controller = paths['controller'].read_text(encoding='utf-8')
     bootstrap = paths['bootstrap'].read_text(encoding='utf-8')
+    sync_style = paths['sync_style'].read_text(encoding='utf-8')
     shared_loader = paths['shared_loader'].read_text(encoding='utf-8')
     dashboard = paths['dashboard'].read_text(encoding='utf-8')
     page = paths['page'].read_text(encoding='utf-8')
@@ -38,7 +42,7 @@ def validate(root: Path) -> list[str]:
         if table not in adapter:
             errors.append(f'Cloud adapter does not reference required table: {table}')
     for token in FORBIDDEN:
-        if any(token.lower() in content.lower() for content in (adapter, controller, bootstrap)):
+        if any(token.lower() in content.lower() for content in (adapter, resilience, controller, bootstrap)):
             errors.append(f'Forbidden cloud-progress token found: {token}')
 
     required_adapter_tokens = (
@@ -50,10 +54,25 @@ def validate(root: Path) -> list[str]:
         if token not in adapter:
             errors.append(f'Cloud adapter is missing contract token: {token}')
 
+    required_resilience_tokens = (
+        'class ResilientCloudAdapter',
+        'free-htl-cloud-pending-v1:',
+        'free-htl-cloud-cache-v1:',
+        "emit('saving'",
+        "emit('saved'",
+        "return this.save(pending)",
+        'hasPending()',
+        'navigator.onLine'
+    )
+    for token in required_resilience_tokens:
+        if token not in resilience:
+            errors.append(f'Resilient cloud adapter is missing contract token: {token}')
+
     required_flow_tokens = (
         'data-cloud-import', 'Importing and reconciling', 'hasCompletedMigration',
         'Use account progress only', 'reconnectAfterReset', 'localStorage.removeItem',
-        DECISION_KEY, "mode === 'imported'", "'account-only'"
+        DECISION_KEY, "mode === 'imported'", "'account-only'",
+        'ResilientCloudAdapter', 'adapter.hasPending()'
     )
     combined = controller + page + dashboard
     for token in required_flow_tokens:
@@ -63,18 +82,23 @@ def validate(root: Path) -> list[str]:
     required_bootstrap_tokens = (
         DECISION_KEY,
         'CloudProgressAdapter',
+        'ResilientCloudAdapter',
         'service.useAdapter(adapter)',
         'session.user.id !== decision.userId',
         "emit('signed-out')",
         "emit('account-mismatch')",
         "emit('connected'",
         'mergeRecords(remoteRecord, localRecord',
-        'lastLocalSyncAt'
+        'lastLocalSyncAt',
+        'cloud-sync.css',
+        'data-cloud-sync-indicator'
     )
     for token in required_bootstrap_tokens:
         if token not in bootstrap:
             errors.append(f'Site-wide cloud bootstrap is missing contract token: {token}')
 
+    if '.cloud-sync-indicator' not in sync_style or 'data-state="offline"' not in sync_style:
+        errors.append('Cloud sync stylesheet must define the visible status indicator and offline state.')
     if 'cloud-sync-bootstrap.js' not in shared_loader or DECISION_KEY not in shared_loader:
         errors.append('The shared site runtime must conditionally load cloud-sync-bootstrap.js after an approved decision.')
     if "pageKey === 'account'" not in shared_loader or "pageKey === 'my-progress'" not in shared_loader:
@@ -82,7 +106,8 @@ def validate(root: Path) -> list[str]:
 
     scripts = (
         'supabase-config.js', 'auth-service.js', 'progress-service.js',
-        'cloud-progress-adapter.js', 'cloud-progress-controller.js', 'dashboard.js'
+        'cloud-progress-adapter.js', 'resilient-cloud-adapter.js',
+        'cloud-progress-controller.js', 'dashboard.js'
     )
     positions = [page.find(script) for script in scripts]
     if any(position < 0 for position in positions):
@@ -105,7 +130,7 @@ def main() -> int:
     if errors:
         print('\n'.join(f'ERROR: {error}' for error in errors))
         return 1
-    print('Layer 13 cloud adapter, explicit import, and site-wide activation contract validated.')
+    print('Layer 13 cloud adapter, explicit import, site-wide activation, and resilience contract validated.')
     return 0
 
 
