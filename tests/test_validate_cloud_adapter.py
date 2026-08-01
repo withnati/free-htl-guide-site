@@ -18,8 +18,10 @@ class CloudAdapterValidationTests(unittest.TestCase):
     def copy_contract_files(self, destination: Path):
         for relative in (
             'assets/cloud-progress-adapter.js',
+            'assets/resilient-cloud-adapter.js',
             'assets/cloud-progress-controller.js',
             'assets/cloud-sync-bootstrap.js',
+            'assets/cloud-sync.css',
             'assets/authority.js',
             'assets/dashboard.js',
             'my-progress.html',
@@ -57,6 +59,18 @@ class CloudAdapterValidationTests(unittest.TestCase):
             )
             errors = MODULE.validate(root)
             self.assertTrue(any('session.user.id !== decision.userId' in error for error in errors))
+
+    def test_rejects_missing_pending_queue(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.copy_contract_files(root)
+            resilience = root / 'assets/resilient-cloud-adapter.js'
+            resilience.write_text(
+                resilience.read_text(encoding='utf-8').replace('free-htl-cloud-pending-v1:', 'removed-pending-key:'),
+                encoding='utf-8'
+            )
+            errors = MODULE.validate(root)
+            self.assertTrue(any('free-htl-cloud-pending-v1:' in error for error in errors))
 
 
 if __name__ == '__main__':
