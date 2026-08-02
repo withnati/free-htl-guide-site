@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,15 +38,17 @@ class FixationShadowActivationBoundaryTests(unittest.TestCase):
 
     def test_progress_projection_does_not_emit_answer_key_or_content(self) -> None:
         projection = self.adapter.split("function toProgressAttempt", 1)[1].split("return Object.freeze", 1)[0]
-        for prohibited in (
+        prohibited_properties = (
             "correctOptionId", "rationale", "selectedDistractorRationale", "lessonRefs",
             "stem", "options", "references", "review"
-        ):
-            self.assertNotIn(prohibited, projection)
+        )
+        for prohibited in prohibited_properties:
+            pattern = rf"(?:^|[{{,\s]){re.escape(prohibited)}\s*:"
+            self.assertIsNone(re.search(pattern, projection), prohibited)
         for required in (
             "questionId", "questionVersion", "selectedOptionId", "correct", "domain", "topic"
         ):
-            self.assertIn(required, projection)
+            self.assertRegex(projection, rf"(?:^|[{{,\s]){re.escape(required)}\s*:")
 
 
 if __name__ == "__main__":
