@@ -26,13 +26,24 @@ _RUNTIME_FILES = {
     Path("assets/fixation-runtime-activation.js"),
     Path("data/fixation-runtime-bank.json"),
 }
+
+_ANALYTICS_FILES = {
+    Path("assets/analytics.js"),
+    Path("assets/analytics-consent.css"),
+    Path("assets/signup.js"),
+    Path("assets/authority.js"),
+    Path("assets/seo.js"),
+    Path("data/analytics-config.json"),
+}
+
+_EXPLICIT_PUBLIC_FILES = _RUNTIME_FILES | _ANALYTICS_FILES
 _original_dependency_closure = build_public_site.dependency_closure
 _original_rewrite_html = build_public_site.rewrite_html
 
 
 def dependency_closure(root: Path) -> set[Path]:
-    """Include the approved public Fixation runtime projection in generated builds."""
-    return _original_dependency_closure(root) | _RUNTIME_FILES
+    """Include generated-build runtime and JavaScript-loaded public dependencies."""
+    return _original_dependency_closure(root) | _EXPLICIT_PUBLIC_FILES
 
 
 def rewrite_html(content: str, route: str, site_url: str) -> str:
