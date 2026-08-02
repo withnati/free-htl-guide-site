@@ -46,12 +46,11 @@ jobs:
       - name: Validate generated public deployment
         run: npm run validate:public-build
 
-      - name: Reject premium source payloads in deployment artifact
+      - name: Reject premium data and downloads in deployment artifact
         shell: bash
         run: |
           set -euo pipefail
           forbidden=(
-            "data-correct="
             "question-bank-extension.json"
             "question-bank-manifest.json"
             "mock-exam-blueprint.json"
@@ -62,8 +61,12 @@ jobs:
             "Decalc_Endpoint_SOP.pdf"
           )
           for token in "${forbidden[@]}"; do
-            if grep -RIl --exclude='_headers' --exclude='_redirects' -- "$token" dist >/dev/null; then
+            if find dist -type f -print0 | xargs -0 grep -Il -- "$token" >/dev/null 2>&1; then
               echo "Forbidden premium payload found in dist: $token" >&2
+              exit 1
+            fi
+            if find dist -type f -name "$(basename "$token")" -print -quit | grep -q .; then
+              echo "Forbidden premium file found in dist: $token" >&2
               exit 1
             fi
           done
@@ -85,8 +88,13 @@ jobs:
             study-plan.html
           )
           for route in "${routes[@]}"; do
-            test -f "dist/$route"
-            grep -q "Included with Premium\|Premium core lesson\|Premium HTL lesson" "dist/$route"
+            file="dist/$route"
+            test -f "$file"
+            grep -Eq "Included with Premium|Premium core lesson|Premium HTL lesson" "$file"
+            if grep -Eq "data-correct=|data-expl=|all-processing-downloads\.zip|Processing_Schedules_Templates\.pdf|Decalc_Methods_Comparison\.pdf|Decalc_Endpoint_SOP\.pdf" "$file"; then
+              echo "Premium source payload leaked into preview route: $route" >&2
+              exit 1
+            fi
           done
 
       - name: Configure GitHub Pages
