@@ -1,0 +1,32 @@
+{
+  "event_id": "rev-question-id-scientific-v1-reviewer-date",
+  "question_id": "replace-with-question-id",
+  "question_version": 1,
+  "content_digest": "sha256:replace-with-generated-digest",
+  "review_type": "scientific",
+  "decision": "changes_requested",
+  "reviewer": {
+    "id": "replace-with-reviewer-id",
+    "display_name": "Replace with reviewer name",
+    "role_note": "Describe relevant HT/HTL, histotechnology, pathology, or subject-matter qualification"
+  },
+  "reviewed_at": "2026-08-02T00:00:00Z",
+  "confidence": "medium",
+  "checklist": {
+    "single_best_answer": false,
+    "no_competing_correct_option": false,
+    "scientific_accuracy": false,
+    "terminology_current": false,
+    "domain_topic_alignment": false,
+    "difficulty_alignment": false,
+    "learning_objective_alignment": false,
+    "rationales_complete": false,
+    "references_verified": false,
+    "independent_content": false,
+    "claims_compliant": false
+  },
+  "verified_references": [],
+  "comments": "Record required revisions or approval notes for this exact version and digest.",
+  "issue_codes": ["review_not_complete"],
+  "supersedes_event_id": null
+}
