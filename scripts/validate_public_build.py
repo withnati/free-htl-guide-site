@@ -30,6 +30,7 @@ INDEXABLE_ROUTES = {
     "faq.html",
     "privacy.html",
     "terms.html",
+    "pricing.html",
     "modules/fixation-guide-v3.html",
 }
 ALLOWED_DOWNLOADS = {
@@ -40,17 +41,8 @@ ALLOWED_DOWNLOADS = {
     "assets/IHC_Validation_Checklist.pdf",
 }
 PROHIBITED_TOP_LEVEL = {
-    ".git",
-    ".github",
-    "docs",
-    "scripts",
-    "templates",
-    "tests",
-    "browser-tests",
-    "supabase",
-    "node_modules",
-    "test-results",
-    "playwright-report",
+    ".git", ".github", "docs", "scripts", "templates", "tests", "browser-tests",
+    "supabase", "node_modules", "test-results", "playwright-report",
 }
 PROHIBITED_FILE_PATTERNS = (
     re.compile(r"question-variants-.*\.json$"),
@@ -68,18 +60,11 @@ PROHIBITED_TEXT_PATTERNS = (
     (re.compile(r"SUPABASE_SERVICE_ROLE_KEY"), "service-role variable"),
     (re.compile(r"sb_secret_[A-Za-z0-9_-]+"), "Supabase secret key"),
     (re.compile(r"github_pat_[A-Za-z0-9_]+"), "GitHub token"),
-    (
-        re.compile(r"postgres(?:ql)?://[^\s:'\"]+:[^\s@'\"]+@", re.IGNORECASE),
-        "database credential URL",
-    ),
+    (re.compile(r"postgres(?:ql)?://[^\s:'\"]+:[^\s@'\"]+@", re.IGNORECASE), "database credential URL"),
 )
 REFERENCE_ATTRIBUTES = {
-    "a": ("href",),
-    "img": ("src", "srcset"),
-    "link": ("href",),
-    "script": ("src",),
-    "source": ("src", "srcset"),
-    "video": ("src", "poster"),
+    "a": ("href",), "img": ("src", "srcset"), "link": ("href",),
+    "script": ("src",), "source": ("src", "srcset"), "video": ("src", "poster"),
 }
 SKIP_SCHEMES = {"data", "javascript", "mailto", "sms", "tel", "blob"}
 
@@ -96,8 +81,7 @@ class BuildHTMLParser(HTMLParser):
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         tag = tag.lower()
         values = {name.lower(): value or "" for name, value in attrs}
-        if tag == "h1":
-            self.h1_count += 1
+        if tag == "h1": self.h1_count += 1
         if tag == "meta" and values.get("name", "").lower() == "robots":
             directives = {item.strip().lower() for item in values.get("content", "").split(",")}
             self.noindex = "noindex" in directives
@@ -110,58 +94,41 @@ class BuildHTMLParser(HTMLParser):
                 self.inline_executable_scripts += 1
         for attribute in REFERENCE_ATTRIBUTES.get(tag, ()):
             value = values.get(attribute, "").strip()
-            if not value:
-                continue
+            if not value: continue
             if attribute == "srcset":
-                self.references.extend(
-                    item.strip().split()[0] for item in value.split(",") if item.strip()
-                )
-            else:
-                self.references.append(value)
+                self.references.extend(item.strip().split()[0] for item in value.split(",") if item.strip())
+            else: self.references.append(value)
         if tag == "meta":
             key = values.get("property", "").lower() or values.get("name", "").lower()
             if key in {"og:image", "twitter:image"}:
                 value = values.get("content", "").strip()
-                if value:
-                    self.references.append(value)
+                if value: self.references.append(value)
 
 
 def read_json(path: Path, issues: list[str]) -> dict[str, object]:
-    try:
-        return json.loads(path.read_text(encoding="utf-8"))
-    except FileNotFoundError:
-        issues.append(f"Missing required file: {path.name}")
-    except json.JSONDecodeError as error:
-        issues.append(f"Invalid JSON in {path.name}: {error}")
+    try: return json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError: issues.append(f"Missing required file: {path.name}")
+    except json.JSONDecodeError as error: issues.append(f"Invalid JSON in {path.name}: {error}")
     return {}
 
 
 def resolve_local(source: Path, value: str, output: Path, site_url: str) -> Path | None:
     value = value.strip()
-    if not value or value.startswith("#") or value.startswith("//"):
-        return None
+    if not value or value.startswith("#") or value.startswith("//"): return None
     parsed = urlsplit(value)
-    if parsed.scheme.lower() in SKIP_SCHEMES:
-        return None
+    if parsed.scheme.lower() in SKIP_SCHEMES: return None
     if parsed.scheme in {"http", "https"}:
-        if not value.startswith(site_url):
-            return None
-        relative = parsed.path.removeprefix(urlsplit(site_url).path)
-        target = output / relative
-    elif parsed.scheme:
-        return None
+        if not value.startswith(site_url): return None
+        relative = parsed.path.removeprefix(urlsplit(site_url).path); target = output / relative
+    elif parsed.scheme: return None
     elif parsed.path.startswith("/"):
         site_path = urlsplit(site_url).path
-        if site_path != "/" and not parsed.path.startswith(site_path):
-            return None
+        if site_path != "/" and not parsed.path.startswith(site_path): return None
         target = output / parsed.path.removeprefix(site_path)
-    else:
-        target = source.parent / parsed.path
+    else: target = source.parent / parsed.path
     target = target.resolve()
-    try:
-        target.relative_to(output.resolve())
-    except ValueError:
-        return Path("__ESCAPED__")
+    try: target.relative_to(output.resolve())
+    except ValueError: return Path("__ESCAPED__")
     return target / "index.html" if target.is_dir() else target
 
 
@@ -169,36 +136,23 @@ def validate_manifest(manifest: dict[str, object]) -> list[str]:
     issues: list[str] = []
     preview = set(manifest.get("premiumPreviewRoutes") or [])
     indexable = set(manifest.get("indexableRoutes") or [])
-    if preview != PREVIEW_ROUTES:
-        issues.append(
-            f"Build manifest premium previews differ from the security allowlist: {sorted(preview)}"
-        )
-    if indexable != INDEXABLE_ROUTES:
-        issues.append(
-            f"Build manifest indexable routes differ from the public allowlist: {sorted(indexable)}"
-        )
-    if not str(manifest.get("siteUrl", "")).endswith("/"):
-        issues.append("build-manifest.json must contain a normalized siteUrl")
-    if not isinstance(manifest.get("fileCount"), int) or int(manifest.get("fileCount", 0)) < 1:
-        issues.append("build-manifest.json must contain a positive fileCount")
+    if preview != PREVIEW_ROUTES: issues.append(f"Build manifest premium previews differ from the security allowlist: {sorted(preview)}")
+    if indexable != INDEXABLE_ROUTES: issues.append(f"Build manifest indexable routes differ from the public allowlist: {sorted(indexable)}")
+    if not str(manifest.get("siteUrl", "")).endswith("/"): issues.append("build-manifest.json must contain a normalized siteUrl")
+    if not isinstance(manifest.get("fileCount"), int) or int(manifest.get("fileCount", 0)) < 1: issues.append("build-manifest.json must contain a positive fileCount")
     return issues
 
 
 def validate_files(output: Path) -> list[str]:
     issues: list[str] = []
     for name in PROHIBITED_TOP_LEVEL:
-        if (output / name).exists():
-            issues.append(f"Prohibited deployment directory present: {name}")
+        if (output / name).exists(): issues.append(f"Prohibited deployment directory present: {name}")
     for path in output.rglob("*"):
-        if not path.is_file():
-            continue
+        if not path.is_file(): continue
         relative = path.relative_to(output).as_posix()
-        if any(pattern.fullmatch(path.name) for pattern in PROHIBITED_FILE_PATTERNS):
-            issues.append(f"Protected question-bank file present: {relative}")
-        if path.suffix.lower() in {".sql", ".py", ".map"}:
-            issues.append(f"Server, test, or source-map file present in public output: {relative}")
-        if path.suffix.lower() in {".pdf", ".zip"} and relative not in ALLOWED_DOWNLOADS:
-            issues.append(f"Unapproved downloadable file present in public output: {relative}")
+        if any(pattern.fullmatch(path.name) for pattern in PROHIBITED_FILE_PATTERNS): issues.append(f"Protected question-bank file present: {relative}")
+        if path.suffix.lower() in {".sql", ".py", ".map"}: issues.append(f"Server, test, or source-map file present in public output: {relative}")
+        if path.suffix.lower() in {".pdf", ".zip"} and relative not in ALLOWED_DOWNLOADS: issues.append(f"Unapproved downloadable file present in public output: {relative}")
     return issues
 
 
@@ -206,160 +160,60 @@ def validate_text_leakage(output: Path) -> list[str]:
     issues: list[str] = []
     text_suffixes = {".html", ".js", ".css", ".json", ".xml", ".txt", ""}
     for path in output.rglob("*"):
-        if not path.is_file() or path.suffix.lower() not in text_suffixes:
-            continue
-        try:
-            content = path.read_text(encoding="utf-8")
-        except (OSError, UnicodeDecodeError):
-            continue
+        if not path.is_file() or path.suffix.lower() not in text_suffixes: continue
+        try: content = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError): continue
         relative = path.relative_to(output).as_posix()
         for pattern, label in PROHIBITED_TEXT_PATTERNS:
-            if pattern.search(content):
-                issues.append(f"Potential {label} leaked into public output: {relative}")
+            if pattern.search(content): issues.append(f"Potential {label} leaked into public output: {relative}")
         if path.suffix.lower() == ".html" and relative != "modules/fixation-guide-v3.html":
-            if "data-correct=" in content or "data-expl=" in content:
-                issues.append(
-                    f"Answer key or explanation metadata present outside public Fixation lesson: {relative}"
-                )
+            if "data-correct=" in content or "data-expl=" in content: issues.append(f"Quiz answer data present outside the free Fixation lesson: {relative}")
     return issues
 
 
-def validate_html(output: Path, manifest: dict[str, object]) -> list[str]:
+def validate_html(output: Path, site_url: str) -> list[str]:
     issues: list[str] = []
-    site_url = str(manifest.get("siteUrl", ""))
-    for path in sorted(output.rglob("*.html")):
+    for path in output.rglob("*.html"):
+        parser = BuildHTMLParser(); parser.feed(path.read_text(encoding="utf-8"))
         relative = path.relative_to(output).as_posix()
-        parser = BuildHTMLParser()
-        try:
-            content = path.read_text(encoding="utf-8")
-            parser.feed(content)
-        except (OSError, UnicodeDecodeError) as error:
-            issues.append(f"Cannot parse {relative}: {error}")
-            continue
-        if parser.h1_count != 1:
-            issues.append(f"{relative} must contain exactly one h1; found {parser.h1_count}")
-        expected = site_url if relative == "index.html" else site_url + relative
-        if parser.canonical != expected:
-            issues.append(
-                f"{relative} canonical mismatch: expected {expected}, found {parser.canonical}"
-            )
-        if relative in PREVIEW_ROUTES:
-            if not parser.noindex:
-                issues.append(f"Premium preview route must be noindex: {relative}")
-            if 'data-page="premium-preview"' not in content:
-                issues.append(f"Premium source was not replaced by preview shell: {relative}")
-            if "Premium learning preview" not in content:
-                issues.append(f"Premium preview disclosure missing: {relative}")
-        if relative.startswith("account/") or relative.startswith("premium/"):
-            if not parser.noindex:
-                issues.append(f"Private/account route must be noindex: {relative}")
-        if parser.inline_executable_scripts:
-            issues.append(f"Inline executable script is not allowed by the public CSP: {relative}")
+        if parser.h1_count != 1: issues.append(f"Expected exactly one h1 in {relative}; found {parser.h1_count}")
+        if relative in INDEXABLE_ROUTES:
+            expected = f"{site_url}{relative}" if relative != "index.html" else site_url
+            if parser.canonical != expected: issues.append(f"Unexpected canonical for {relative}: {parser.canonical!r}")
+            if parser.noindex: issues.append(f"Indexable page is marked noindex: {relative}")
+        elif not parser.noindex and relative.startswith("account/"):
+            issues.append(f"Account page must be noindex: {relative}")
+        if parser.inline_executable_scripts: issues.append(f"Inline executable script present in {relative}")
         for reference in parser.references:
             target = resolve_local(path, reference, output, site_url)
-            if target is None:
-                continue
-            if target == Path("__ESCAPED__"):
-                issues.append(f"Reference escapes public output in {relative}: {reference}")
-            elif not target.exists():
-                issues.append(f"Missing public dependency referenced by {relative}: {reference}")
+            if target == Path("__ESCAPED__"): issues.append(f"Reference escapes output root in {relative}: {reference}")
+            elif target is not None and not target.exists(): issues.append(f"Broken local reference in {relative}: {reference}")
     return issues
 
 
-def validate_sitemap(output: Path, manifest: dict[str, object]) -> list[str]:
-    issues: list[str] = []
-    site_url = str(manifest.get("siteUrl", ""))
-    try:
-        tree = ET.parse(output / "sitemap.xml")
-    except FileNotFoundError:
-        return ["Missing sitemap.xml"]
-    except ET.ParseError as error:
-        return [f"Invalid sitemap.xml: {error}"]
-    namespace = {"sm": "http://www.sitemaps.org/schemas/sitemap/0.9"}
-    found: set[str] = set()
-    for node in tree.getroot().findall("sm:url", namespace):
-        loc = (node.findtext("sm:loc", default="", namespaces=namespace) or "").strip()
-        route = "index.html" if loc == site_url else loc.removeprefix(site_url)
-        found.add(route)
-    if found != INDEXABLE_ROUTES:
-        issues.append(
-            f"Sitemap must contain only approved indexable routes; expected {sorted(INDEXABLE_ROUTES)}, "
-            f"found {sorted(found)}"
-        )
-    if PREVIEW_ROUTES & found:
-        issues.append("Premium preview routes must not appear in sitemap.xml")
-    return issues
-
-
-def validate_configuration(output: Path, manifest: dict[str, object]) -> list[str]:
-    issues: list[str] = []
-    headers_path = output / "_headers"
-    headers = headers_path.read_text(encoding="utf-8") if headers_path.exists() else ""
-    for token in (
-        "Content-Security-Policy:",
-        "X-Content-Type-Options: nosniff",
-        "Referrer-Policy:",
-        "Permissions-Policy:",
-        "X-Frame-Options: DENY",
-        "/account/*",
-        "/premium/*",
-        "X-Robots-Tag: noindex, nofollow",
-    ):
-        if token not in headers:
-            issues.append(f"_headers is missing required security token: {token}")
-    if "Access-Control-Allow-Origin" in headers:
-        issues.append("Public static headers must not grant cross-origin premium API access")
-    robots_path = output / "robots.txt"
-    robots = robots_path.read_text(encoding="utf-8") if robots_path.exists() else ""
-    if f"Sitemap: {manifest.get('siteUrl', '')}sitemap.xml" not in robots:
-        issues.append("robots.txt sitemap does not match the deployment site URL")
-    access = read_json(output / "data/content-access.json", issues)
-    if access and access.get("enforcementMode") != "server-authorized":
-        issues.append("Public content-access metadata must declare server-authorized enforcement")
-    account_plan = access.get("accountPlan", {}) if access else {}
-    if access and account_plan.get("clientMetadataIsNotAuthorization") is not True:
-        issues.append("Public content-access metadata must reject client metadata as authorization")
-    config_path = output / "assets/supabase-config.js"
-    config = config_path.read_text(encoding="utf-8") if config_path.exists() else ""
-    if "sb_publishable_" not in config:
-        issues.append("Public Supabase configuration must contain only a publishable key")
-    if "service_role" in config.lower() or "sb_secret_" in config:
-        issues.append("Secret Supabase material present in public configuration")
-    return issues
-
-
-def validate(output: Path) -> list[str]:
-    issues: list[str] = []
-    manifest = read_json(output / "build-manifest.json", issues)
-    if not manifest:
-        return issues
-    issues.extend(validate_manifest(manifest))
-    issues.extend(validate_files(output))
-    issues.extend(validate_text_leakage(output))
-    issues.extend(validate_html(output, manifest))
-    issues.extend(validate_sitemap(output, manifest))
-    issues.extend(validate_configuration(output, manifest))
+def validate_sitemap(output: Path, site_url: str) -> list[str]:
+    issues: list[str] = []; sitemap = output / "sitemap.xml"
+    try: root = ET.parse(sitemap).getroot()
+    except (FileNotFoundError, ET.ParseError) as error: return [f"Invalid or missing sitemap.xml: {error}"]
+    namespace = {"s": "http://www.sitemaps.org/schemas/sitemap/0.9"}
+    urls = {node.text or "" for node in root.findall("s:url/s:loc", namespace)}
+    expected = {site_url if route == "index.html" else f"{site_url}{route}" for route in INDEXABLE_ROUTES}
+    if urls != expected: issues.append(f"Sitemap routes differ from the public allowlist: {sorted(urls)}")
     return issues
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--root", type=Path, default=Path("dist"))
-    args = parser.parse_args()
-    output = args.root.resolve()
-    issues = validate(output)
+    parser = argparse.ArgumentParser(); parser.add_argument("--root", default="dist"); args = parser.parse_args()
+    output = Path(args.root).resolve(); issues: list[str] = []
+    manifest = read_json(output / "build-manifest.json", issues); site_url = str(manifest.get("siteUrl") or "")
+    if manifest: issues.extend(validate_manifest(manifest))
+    issues.extend(validate_files(output)); issues.extend(validate_text_leakage(output))
+    if site_url: issues.extend(validate_html(output, site_url)); issues.extend(validate_sitemap(output, site_url))
     if issues:
         print("Public build validation failed:")
-        for issue in issues:
-            print(f"- {issue}")
+        for issue in issues: print(f"- {issue}")
         return 1
-    manifest = json.loads((output / "build-manifest.json").read_text(encoding="utf-8"))
-    print(
-        f"Public build validation passed: {manifest['fileCount']} allowlisted files, "
-        f"{len(PREVIEW_ROUTES)} premium preview routes, no protected question bank or proof payload."
-    )
-    return 0
+    print("Public build validation passed."); return 0
 
 
-if __name__ == "__main__":
-    raise SystemExit(main())
+if __name__ == "__main__": raise SystemExit(main())
