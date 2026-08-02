@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "status": "migration_inventory",
+  "sources": [
+    {
+      "module_id": "fixation-v3",
+      "source_path": "modules/fixation-guide-v3.html",
+      "source_type": "module_quiz_html",
+      "domain": "fixation",
+      "expected_records": 10,
+      "access_review": "mixed",
+      "current_claim": "authority_reviewed_base",
+      "migration_priority": 1,
+      "notes": "First runtime pilot. Confirm which records remain public samples before canonical publication."
+    },
+    {
+      "module_id": "processing-v3",
+      "source_path": "modules/processing-guide-v3.html",
+      "source_type": "module_quiz_html",
+      "domain": "processing",
+      "expected_records": 10,
+      "access_review": "premium",
+      "current_claim": "authority_reviewed_base",
+      "migration_priority": 2,
+      "notes": "Premium boundary must remain intact during extraction and runtime adoption."
+    },
+    {
+      "module_id": "embedding-v3",
+      "source_path": "modules/embedding-guide-v3.html",
+      "source_type": "module_quiz_html",
+      "domain": "embedding",
+      "expected_records": 10,
+      "access_review": "premium",
+      "current_claim": "authority_reviewed_base",
+      "migration_priority": 3,
+      "notes": "Topic classification must distinguish embedding from microtomy concepts."
+    },
+    {
+      "module_id": "he-guide",
+      "source_path": "modules/staining-he-guide.html",
+      "source_type": "module_quiz_html",
+      "domain": "staining",
+      "expected_records": 10,
+      "access_review": "premium",
+      "current_claim": "authority_reviewed_base",
+      "migration_priority": 4,
+      "notes": "Map H&E questions into controlled staining topics during review."
+    },
+    {
+      "module_id": "special-stains",
+      "source_path": "modules/special-stains-guide.html",
+      "source_type": "module_quiz_html",
+      "domain": "staining",
+      "expected_records": 10,
+      "access_review": "premium",
+      "current_claim": "authority_reviewed_base",
+      "migration_priority": 5,
+      "notes": "Preserve stain names, targets, controls, and troubleshooting wording exactly during extraction."
+    },
+    {
+      "module_id": "ihc-ish",
+      "source_path": "modules/ihc-ish-guide.html",
+      "source_type": "module_quiz_html",
+      "domain": "special_procedures",
+      "expected_records": 10,
+      "access_review": "premium",
+      "current_claim": "authority_reviewed_base",
+      "migration_priority": 6,
+      "notes": "Final domain assignment requires controlled taxonomy review."
+    },
+    {
+      "module_id": "lab-operations",
+      "source_path": "modules/lab-operations-guide.html",
+      "source_type": "module_quiz_html",
+      "domain": "laboratory_operations",
+      "expected_records": 10,
+      "access_review": "premium",
+      "current_claim": "authority_reviewed_base",
+      "migration_priority": 7,
+      "notes": "Safety, quality, and regulatory topics require precise subtopic classification."
+    },
+    {
+      "module_id": "alternate-scenarios",
+      "source_path": "data/question-bank-extension.json",
+      "source_type": "answer_key_free_variant_manifest",
+      "domain": "mixed",
+      "expected_records": 80,
+      "access_review": "premium",
+      "current_claim": "final_scientific_and_editorial_review",
+      "migration_priority": 8,
+      "notes": "Variants inherit source choices and keyed answers at runtime but do not inherit approval status automatically."
+    }
+  ]
+}
