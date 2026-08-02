@@ -6,14 +6,18 @@ on:
     paths:
       - "supabase/**"
       - "scripts/validate_cloud_progress.py"
+      - "scripts/subscription_state.py"
       - "tests/test_cloud_progress.py"
+      - "tests/test_subscription_state.py"
       - ".github/workflows/database-quality.yml"
   push:
     branches: [main]
     paths:
       - "supabase/**"
       - "scripts/validate_cloud_progress.py"
+      - "scripts/subscription_state.py"
       - "tests/test_cloud_progress.py"
+      - "tests/test_subscription_state.py"
       - ".github/workflows/database-quality.yml"
   workflow_dispatch:
 
@@ -33,6 +37,14 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Run subscription lifecycle tests
+        run: python -m unittest tests.test_subscription_state
 
       - name: Set up Supabase CLI
         uses: supabase/setup-cli@v2
