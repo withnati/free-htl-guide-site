@@ -51,7 +51,7 @@ class FixationRuntimeActivationTests(unittest.TestCase):
             self.assertEqual(legacy["stem"], canonical["stem"])
             self.assertEqual(legacy["options"], [item["text"] for item in canonical["options"]])
             self.assertEqual(option_ids[legacy["correct_index"]], canonical["correct_option_id"])
-            self.assertEqual(legacy["explanation"], canonical["rationale"])
+            self.assertEqual(legacy["rationale"], canonical["rationale"])
 
     def test_every_incorrect_option_has_a_distractor_rationale(self) -> None:
         for question in self.bank:
