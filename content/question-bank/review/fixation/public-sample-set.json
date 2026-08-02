@@ -1,0 +1,19 @@
+{
+  "set_id": "fixation-public-sample-v1",
+  "status": "candidate_pending_approval",
+  "access": "sample",
+  "lesson_id": "fixation-v3",
+  "question_ids": [
+    "legacy-fixation-guide-v3-fixation-v3-1-f0faf8851500",
+    "legacy-fixation-guide-v3-fixation-v3-2-168f3a26042e",
+    "legacy-fixation-guide-v3-fixation-v3-3-79d7ffc2755b",
+    "legacy-fixation-guide-v3-fixation-v3-4-69f195d85eb4",
+    "legacy-fixation-guide-v3-fixation-v3-5-e266aa829f16",
+    "legacy-fixation-guide-v3-fixation-v3-6-700b0fa0a2cd",
+    "legacy-fixation-guide-v3-fixation-v3-7-c005c83b35f8",
+    "legacy-fixation-guide-v3-fixation-v3-8-86a2b18646f6",
+    "legacy-fixation-guide-v3-fixation-v3-9-266ecda712c7",
+    "legacy-fixation-guide-v3-fixation-v3-10-3393091b9c66"
+  ],
+  "notes": "All ten questions are existing public Fixation quiz records. This manifest confirms the intended sample set but does not grant publication approval or runtime eligibility."
+}
