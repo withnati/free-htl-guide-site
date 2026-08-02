@@ -59,12 +59,33 @@ test('public homepage leads with HT and HTL exam preparation', async ({ page }) 
   await expectNoHorizontalOverflow(page);
 });
 
-test('complete public Fixation lesson remains usable in the generated deployment', async ({ page }) => {
+test('complete public Fixation lesson uses the canonical runtime in the generated deployment', async ({ page }) => {
   await page.goto('/modules/fixation-guide-v3.html');
 
   await expect(page.locator('body')).toHaveAttribute('data-page', 'fixation-v3');
+  await expect(page.locator('body')).toHaveAttribute('data-fixation-runtime', 'active');
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Fixation');
-  await expect(page.locator('fieldset[data-correct]')).toHaveCount(10);
+  await expect(page.locator('#fixQuiz fieldset[data-question-id]')).toHaveCount(10);
+  await expect(page.locator('#fixQuiz fieldset[data-question-version="1"]')).toHaveCount(10);
+  await expect(page.locator('#fixQuiz fieldset[data-correct]')).toHaveCount(0);
+
+  const firstChoice = page.locator('#fixQuiz input[type="radio"]').first();
+  await firstChoice.check();
+  await page.locator('[data-grade="fixQuiz"]').click();
+  await expect(page.locator('#quizResult')).toBeVisible();
+  await expect(page.locator('#quizResult')).toContainText(/Score: \d+\/10/);
+  await expect(page.locator('#fixQuiz .explanation:not([hidden])')).toHaveCount(10);
+
+  const progress = await page.evaluate(() => JSON.parse(localStorage.getItem('free-htl-progress-v1')));
+  expect(progress.quizAttempts).toHaveLength(1);
+  expect(progress.quizAttempts[0].page).toBe('fixation-v3');
+  expect(progress.quizAttempts[0].quizId).toBe('fixQuiz');
+  expect(progress.quizAttempts[0].total).toBe(10);
+
+  await page.locator('[data-grade="fixQuiz"]').click();
+  const afterDuplicateClick = await page.evaluate(() => JSON.parse(localStorage.getItem('free-htl-progress-v1')));
+  expect(afterDuplicateClick.quizAttempts).toHaveLength(1);
+
   await expect(page.getByRole('link', { name: 'Download resources' })).toHaveAttribute(
     'href',
     /assets\/all-fixation-downloads\.zip$/
