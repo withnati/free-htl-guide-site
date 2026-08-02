@@ -12,19 +12,19 @@ test('pricing page offers one Premium product with monthly and annual billing', 
   await expect(page).toHaveTitle(/HT and HTL Exam Preparation Pricing/);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Start free');
   await expect(page.getByRole('button', { name: 'Monthly' })).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.getByText('$19.99')).toBeVisible();
+  await expect(page.getByText('$19.99', { exact: true })).toBeVisible();
 
   await page.getByRole('button', { name: 'Annual' }).click();
   await expect(page.getByRole('button', { name: 'Annual' })).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.getByText('$191.99')).toBeVisible();
-  await expect(page.getByText(/same features/i)).toBeVisible();
+  await expect(page.getByText('$191.99', { exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Monthly and annual plans include the same features' })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
 
 test('upgrade placeholder collects no payment and grants no access', async ({ page }) => {
   await page.goto('/pricing.html');
   await page.getByRole('button', { name: 'Choose monthly Premium' }).click();
-  await expect(page.getByText('Premium enrollment is not open yet.')).toBeVisible();
+  await expect(page.getByText('Premium enrollment is not open yet.', { exact: true })).toBeVisible();
   await expect(page.locator('input[type="text"], input[type="number"], input[autocomplete="cc-number"]')).toHaveCount(0);
   await expect(page.locator('body')).not.toHaveAttribute('data-premium', 'true');
 });
