@@ -11,11 +11,11 @@ test('pricing page offers one Premium product with monthly and annual billing', 
   await page.goto('/pricing.html');
   await expect(page).toHaveTitle(/HT and HTL Exam Preparation Pricing/);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Start free');
-  await expect(page.getByRole('button', { name: 'Monthly' })).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.getByRole('button', { name: 'Monthly', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.getByText('$19.99', { exact: true })).toBeVisible();
 
-  await page.getByRole('button', { name: 'Annual' }).click();
-  await expect(page.getByRole('button', { name: 'Annual' })).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: 'Annual', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Annual', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(page.getByText('$191.99', { exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Monthly and annual plans include the same features' })).toBeVisible();
   await expectNoHorizontalOverflow(page);
