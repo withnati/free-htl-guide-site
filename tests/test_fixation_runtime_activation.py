@@ -73,6 +73,19 @@ class FixationRuntimeActivationTests(unittest.TestCase):
         self.assertEqual(1, rendered.count("fixation-runtime-activation.js"))
         self.assertIn('<script src="../assets/fixation-runtime-activation.js" defer></script>', rendered)
 
+    def test_generated_build_includes_analytics_and_dynamic_dependencies(self) -> None:
+        required = BUILD.dependency_closure(ROOT)
+        for path in (
+            Path("assets/analytics.js"),
+            Path("assets/analytics-consent.css"),
+            Path("assets/signup.js"),
+            Path("assets/authority.js"),
+            Path("assets/seo.js"),
+            Path("data/analytics-config.json"),
+        ):
+            self.assertIn(path, required)
+            self.assertTrue((ROOT / path).is_file(), path)
+
     def test_other_pages_do_not_receive_fixation_activation(self) -> None:
         source = (ROOT / "index.html").read_text(encoding="utf-8")
         rendered = BUILD.rewrite_html(source, "index.html", "https://example.test/")
