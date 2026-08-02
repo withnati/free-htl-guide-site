@@ -1,0 +1,117 @@
+name: Deploy protected public site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build allowlisted public deployment
+        env:
+          FHL_ENVIRONMENT: production
+          FHL_PUBLIC_SITE_URL: ${{ vars.FHL_PUBLIC_SITE_URL }}
+          FHL_SUPABASE_URL: ${{ vars.FHL_SUPABASE_URL }}
+          FHL_SUPABASE_PUBLISHABLE_KEY: ${{ vars.FHL_SUPABASE_PUBLISHABLE_KEY }}
+        run: npm run build:public
+
+      - name: Validate generated public deployment
+        run: npm run validate:public-build
+
+      - name: Reject premium data and downloads in deployment artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          forbidden=(
+            "question-bank-extension.json"
+            "question-bank-manifest.json"
+            "mock-exam-blueprint.json"
+            "targeted-practice-config.json"
+            "all-processing-downloads.zip"
+            "Processing_Schedules_Templates.pdf"
+            "Decalc_Methods_Comparison.pdf"
+            "Decalc_Endpoint_SOP.pdf"
+          )
+          for token in "${forbidden[@]}"; do
+            if find dist -type f -print0 | xargs -0 grep -Il -- "$token" >/dev/null 2>&1; then
+              echo "Forbidden premium payload found in dist: $token" >&2
+              exit 1
+            fi
+            if find dist -type f -name "$(basename "$token")" -print -quit | grep -q .; then
+              echo "Forbidden premium file found in dist: $token" >&2
+              exit 1
+            fi
+          done
+
+      - name: Verify premium routes are preview shells
+        shell: bash
+        run: |
+          set -euo pipefail
+          routes=(
+            modules/processing-guide-v3.html
+            modules/embedding-guide-v3.html
+            modules/staining-he-guide.html
+            modules/special-stains-guide.html
+            modules/lab-operations-guide.html
+            modules/ihc-ish-guide.html
+            practice.html
+            mock-exam.html
+            targeted-practice.html
+            study-plan.html
+          )
+          for route in "${routes[@]}"; do
+            file="dist/$route"
+            test -f "$file"
+            grep -Eq "Included with Premium|Premium core lesson|Premium HTL lesson" "$file"
+            if grep -Eq "data-correct=|data-expl=|all-processing-downloads\.zip|Processing_Schedules_Templates\.pdf|Decalc_Methods_Comparison\.pdf|Decalc_Endpoint_SOP\.pdf" "$file"; then
+              echo "Premium source payload leaked into preview route: $route" >&2
+              exit 1
+            fi
+          done
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload generated dist only
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy generated artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
