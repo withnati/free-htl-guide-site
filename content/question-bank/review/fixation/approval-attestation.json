@@ -1,0 +1,55 @@
+{
+  "attestation_id": "fixation-v1-owner-approval-2026-08-02",
+  "approved_at": "2026-08-02T21:39:00Z",
+  "reviewer": {
+    "id": "natnale-mengesha",
+    "display_name": "Natnale Mengesha",
+    "role_note": "HTL(ASCP), FHL owner and content reviewer"
+  },
+  "scope": "All ten canonical public Fixation sample questions, including newly authored distractor rationales.",
+  "decision": "approved",
+  "confidence": "high",
+  "question_ids": [
+    "legacy-fixation-guide-v3-fixation-v3-1-f0faf8851500",
+    "legacy-fixation-guide-v3-fixation-v3-2-168f3a26042e",
+    "legacy-fixation-guide-v3-fixation-v3-3-79d7ffc2755b",
+    "legacy-fixation-guide-v3-fixation-v3-4-69f195d85eb4",
+    "legacy-fixation-guide-v3-fixation-v3-5-e266aa829f16",
+    "legacy-fixation-guide-v3-fixation-v3-6-700b0fa0a2cd",
+    "legacy-fixation-guide-v3-fixation-v3-7-c005c83b35f8",
+    "legacy-fixation-guide-v3-fixation-v3-8-86a2b18646f6",
+    "legacy-fixation-guide-v3-fixation-v3-9-266ecda712c7",
+    "legacy-fixation-guide-v3-fixation-v3-10-3393091b9c66"
+  ],
+  "scientific_checklist": {
+    "single_best_answer": true,
+    "no_competing_correct_option": true,
+    "scientific_accuracy": true,
+    "terminology_current": true,
+    "domain_topic_alignment": true,
+    "difficulty_alignment": true,
+    "learning_objective_alignment": true,
+    "rationales_complete": true,
+    "references_verified": true,
+    "independent_content": true,
+    "claims_compliant": true
+  },
+  "editorial_checklist": {
+    "stem_clear_complete": true,
+    "one_defined_task": true,
+    "options_parallel": true,
+    "options_plausible": true,
+    "no_answer_cueing": true,
+    "negative_wording_controlled": true,
+    "style_consistent": true,
+    "learner_centered_rationales": true,
+    "reading_load_appropriate": true,
+    "accessible_language": true,
+    "scientific_meaning_unchanged": true
+  },
+  "verified_references": [
+    "modules/fixation-guide-v3.html",
+    "data/module-authority.json#modules.fixation-v3"
+  ],
+  "comments": "Owner confirmed that the ten Fixation questions passed scientific and editorial review. Approval applies to the exact canonical versions and content digests generated from the review-candidate files."
+}
