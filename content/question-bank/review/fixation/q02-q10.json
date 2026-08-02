@@ -1,0 +1,335 @@
+[
+  {
+    "id": "legacy-fixation-guide-v3-fixation-v3-2-168f3a26042e",
+    "status": "scientific_review",
+    "access": "sample",
+    "certification_scope": "HT_HTL",
+    "domain": "fixation",
+    "topic": "tissue_handling",
+    "difficulty": "applied",
+    "cognitive_level": "analysis",
+    "stem": "Preserved edges with an autolyzed center most strongly suggests:",
+    "options": [
+      {"id": "A", "text": "Excess bluing"},
+      {"id": "B", "text": "A dull microtome blade"},
+      {"id": "C", "text": "Excess specimen thickness"},
+      {"id": "D", "text": "Coverslip bubbles"}
+    ],
+    "correct_option_id": "C",
+    "rationale": "A thick specimen fixes from the surface inward and may remain underfixed centrally.",
+    "distractor_rationales": {
+      "A": "Bluing affects hematoxylin color after staining and does not produce central autolysis with preserved tissue edges.",
+      "B": "A dull microtome blade causes sectioning artifacts such as compression or chatter, not incomplete fixation centered within the specimen.",
+      "D": "Coverslip bubbles are mounting artifacts visible after staining and cannot explain autolysis confined to the specimen center."
+    },
+    "learning_objective": "Identify excessive specimen thickness from the pattern of preserved edges and central autolysis.",
+    "lesson_refs": ["fixation-v3"],
+    "references": [
+      {"label": "Reviewed FHL Fixation lesson", "locator": "modules/fixation-guide-v3.html#quiz-2", "notes": "Stem, options, key, and correct-answer explanation preserved from the reviewed learner-facing quiz."},
+      {"label": "FHL module authority record", "locator": "data/module-authority.json#modules.fixation-v3", "notes": "Lists the module review date, exam alignment, and supporting histotechnology references."}
+    ],
+    "review": {
+      "scientific": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Complete rationales authored; final qualified reviewer approval required."},
+      "editorial": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Ready for controlled editorial review after scientific approval."}
+    },
+    "version": 1,
+    "created_at": "2026-08-02T21:35:00Z",
+    "updated_at": "2026-08-02T21:35:00Z"
+  },
+  {
+    "id": "legacy-fixation-guide-v3-fixation-v3-3-79d7ffc2755b",
+    "status": "scientific_review",
+    "access": "sample",
+    "certification_scope": "HT_HTL",
+    "domain": "fixation",
+    "topic": "fixation_mechanisms",
+    "difficulty": "foundational",
+    "cognitive_level": "recall",
+    "stem": "The main action of formaldehyde is:",
+    "options": [
+      {"id": "A", "text": "Protein crosslinking"},
+      {"id": "B", "text": "Complete lipid preservation"},
+      {"id": "C", "text": "Calcium removal"},
+      {"id": "D", "text": "Paraffin infiltration"}
+    ],
+    "correct_option_id": "A",
+    "rationale": "Formaldehyde primarily stabilizes proteins through crosslink formation.",
+    "distractor_rationales": {
+      "B": "Formaldehyde does not completely preserve lipids; many lipids are extracted during routine processing.",
+      "C": "Calcium removal is decalcification and is not the principal chemical action of formaldehyde.",
+      "D": "Paraffin infiltration is a later processing step and is unrelated to formaldehyde's primary fixation mechanism."
+    },
+    "learning_objective": "Identify protein crosslinking as the principal fixation mechanism of formaldehyde.",
+    "lesson_refs": ["fixation-v3"],
+    "references": [
+      {"label": "Reviewed FHL Fixation lesson", "locator": "modules/fixation-guide-v3.html#quiz-3", "notes": "Stem, options, key, and correct-answer explanation preserved from the reviewed learner-facing quiz."},
+      {"label": "FHL module authority record", "locator": "data/module-authority.json#modules.fixation-v3", "notes": "Lists the module review date, exam alignment, and supporting histotechnology references."}
+    ],
+    "review": {
+      "scientific": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Complete rationales authored; final qualified reviewer approval required."},
+      "editorial": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Ready for controlled editorial review after scientific approval."}
+    },
+    "version": 1,
+    "created_at": "2026-08-02T21:35:00Z",
+    "updated_at": "2026-08-02T21:35:00Z"
+  },
+  {
+    "id": "legacy-fixation-guide-v3-fixation-v3-4-69f195d85eb4",
+    "status": "scientific_review",
+    "access": "sample",
+    "certification_scope": "HT_HTL",
+    "domain": "fixation",
+    "topic": "decalcification",
+    "difficulty": "applied",
+    "cognitive_level": "application",
+    "stem": "Preferred decalcifier for an IHC/ISH-heavy bone specimen:",
+    "options": [
+      {"id": "A", "text": "Concentrated nitric acid"},
+      {"id": "B", "text": "Hydrochloric acid without validation"},
+      {"id": "C", "text": "Picric acid"},
+      {"id": "D", "text": "EDTA"}
+    ],
+    "correct_option_id": "D",
+    "rationale": "EDTA is slower but generally preserves antigens and nucleic acids better than strong mineral acids.",
+    "distractor_rationales": {
+      "A": "Concentrated nitric acid decalcifies rapidly but can damage morphology, antigens, and nucleic acids needed for IHC and ISH.",
+      "B": "Unvalidated hydrochloric acid may compromise antigenicity and nucleic-acid preservation and is not preferred for an IHC/ISH-heavy specimen.",
+      "C": "Picric acid is not the preferred routine choice when preservation of antigens and nucleic acids is the primary concern."
+    },
+    "learning_objective": "Select a decalcification method that better preserves antigens and nucleic acids for IHC and ISH.",
+    "lesson_refs": ["fixation-v3"],
+    "references": [
+      {"label": "Reviewed FHL Fixation lesson", "locator": "modules/fixation-guide-v3.html#quiz-4", "notes": "Stem, options, key, and correct-answer explanation preserved from the reviewed learner-facing quiz."},
+      {"label": "FHL module authority record", "locator": "data/module-authority.json#modules.fixation-v3", "notes": "Lists the module review date, exam alignment, and supporting histotechnology references."}
+    ],
+    "review": {
+      "scientific": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Complete rationales authored; final qualified reviewer approval required."},
+      "editorial": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Ready for controlled editorial review after scientific approval."}
+    },
+    "version": 1,
+    "created_at": "2026-08-02T21:35:00Z",
+    "updated_at": "2026-08-02T21:35:00Z"
+  },
+  {
+    "id": "legacy-fixation-guide-v3-fixation-v3-5-e266aa829f16",
+    "status": "scientific_review",
+    "access": "sample",
+    "certification_scope": "HT_HTL",
+    "domain": "fixation",
+    "topic": "fixation_artifacts",
+    "difficulty": "foundational",
+    "cognitive_level": "recall",
+    "stem": "Brown-black pigment associated with acidic formalin is:",
+    "options": [
+      {"id": "A", "text": "Hemosiderin"},
+      {"id": "B", "text": "Formalin hematin"},
+      {"id": "C", "text": "Melanin"},
+      {"id": "D", "text": "Carbon"}
+    ],
+    "correct_option_id": "B",
+    "rationale": "Acid formalin hematin forms in acidic formalin, especially in blood-rich tissue.",
+    "distractor_rationales": {
+      "A": "Hemosiderin is an iron-storage pigment and is not specifically produced by acidic formalin.",
+      "C": "Melanin is an endogenous pigment made by melanocytes and is not caused by acidic formalin fixation.",
+      "D": "Carbon is an exogenous black pigment and is unrelated to the acid-formalin hematin artifact."
+    },
+    "learning_objective": "Recognize formalin hematin as the brown-black pigment associated with acidic formalin.",
+    "lesson_refs": ["fixation-v3"],
+    "references": [
+      {"label": "Reviewed FHL Fixation lesson", "locator": "modules/fixation-guide-v3.html#quiz-5", "notes": "Stem, options, key, and correct-answer explanation preserved from the reviewed learner-facing quiz."},
+      {"label": "FHL module authority record", "locator": "data/module-authority.json#modules.fixation-v3", "notes": "Lists the module review date, exam alignment, and supporting histotechnology references."}
+    ],
+    "review": {
+      "scientific": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Complete rationales authored; final qualified reviewer approval required."},
+      "editorial": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Ready for controlled editorial review after scientific approval."}
+    },
+    "version": 1,
+    "created_at": "2026-08-02T21:35:00Z",
+    "updated_at": "2026-08-02T21:35:00Z"
+  },
+  {
+    "id": "legacy-fixation-guide-v3-fixation-v3-6-700b0fa0a2cd",
+    "status": "scientific_review",
+    "access": "sample",
+    "certification_scope": "HT_HTL",
+    "domain": "fixation",
+    "topic": "fixation_time_and_volume",
+    "difficulty": "foundational",
+    "cognitive_level": "recall",
+    "stem": "A commonly taught minimum fixative-to-tissue volume is:",
+    "options": [
+      {"id": "A", "text": "1:10"},
+      {"id": "B", "text": "1:1"},
+      {"id": "C", "text": "10:1"},
+      {"id": "D", "text": "100:1 for every specimen"}
+    ],
+    "correct_option_id": "C",
+    "rationale": "A generous fixative volume, often around 10:1, helps prevent depletion and dilution.",
+    "distractor_rationales": {
+      "A": "A 1:10 ratio reverses the intended relationship by providing less fixative than tissue.",
+      "B": "A 1:1 ratio provides too little fixative for routine use and is readily depleted or diluted by tissue fluids.",
+      "D": "A 100:1 ratio may be generous but is not the commonly taught minimum for every routine specimen."
+    },
+    "learning_objective": "Recall the commonly taught approximate fixative-to-tissue volume used for routine fixation.",
+    "lesson_refs": ["fixation-v3"],
+    "references": [
+      {"label": "Reviewed FHL Fixation lesson", "locator": "modules/fixation-guide-v3.html#quiz-6", "notes": "Stem, options, key, and correct-answer explanation preserved from the reviewed learner-facing quiz."},
+      {"label": "FHL module authority record", "locator": "data/module-authority.json#modules.fixation-v3", "notes": "Lists the module review date, exam alignment, and supporting histotechnology references."}
+    ],
+    "review": {
+      "scientific": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Complete rationales authored; final qualified reviewer approval required."},
+      "editorial": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Ready for controlled editorial review after scientific approval."}
+    },
+    "version": 1,
+    "created_at": "2026-08-02T21:35:00Z",
+    "updated_at": "2026-08-02T21:35:00Z"
+  },
+  {
+    "id": "legacy-fixation-guide-v3-fixation-v3-7-c005c83b35f8",
+    "status": "scientific_review",
+    "access": "sample",
+    "certification_scope": "HT_HTL",
+    "domain": "fixation",
+    "topic": "fixation_artifacts",
+    "difficulty": "foundational",
+    "cognitive_level": "recall",
+    "stem": "Mercury pigment is classically removed with:",
+    "options": [
+      {"id": "A", "text": "Iodine then sodium thiosulfate"},
+      {"id": "B", "text": "Acid alcohol then bluing"},
+      {"id": "C", "text": "Hydrogen peroxide only"},
+      {"id": "D", "text": "Xylene then paraffin"}
+    ],
+    "correct_option_id": "A",
+    "rationale": "Iodine followed by sodium thiosulfate is the classic mercury-pigment removal sequence.",
+    "distractor_rationales": {
+      "B": "Acid alcohol and bluing are used in hematoxylin differentiation and color development, not for mercury pigment removal.",
+      "C": "Hydrogen peroxide is commonly used to bleach some pigments or block endogenous peroxidase, but it is not the classic mercury-pigment sequence.",
+      "D": "Xylene and paraffin are processing reagents and do not chemically remove mercury pigment."
+    },
+    "learning_objective": "Identify the classic reagent sequence used to remove mercury pigment.",
+    "lesson_refs": ["fixation-v3"],
+    "references": [
+      {"label": "Reviewed FHL Fixation lesson", "locator": "modules/fixation-guide-v3.html#quiz-7", "notes": "Stem, options, key, and correct-answer explanation preserved from the reviewed learner-facing quiz."},
+      {"label": "FHL module authority record", "locator": "data/module-authority.json#modules.fixation-v3", "notes": "Lists the module review date, exam alignment, and supporting histotechnology references."}
+    ],
+    "review": {
+      "scientific": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Complete rationales authored; final qualified reviewer approval required."},
+      "editorial": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Ready for controlled editorial review after scientific approval."}
+    },
+    "version": 1,
+    "created_at": "2026-08-02T21:35:00Z",
+    "updated_at": "2026-08-02T21:35:00Z"
+  },
+  {
+    "id": "legacy-fixation-guide-v3-fixation-v3-8-86a2b18646f6",
+    "status": "scientific_review",
+    "access": "sample",
+    "certification_scope": "HT_HTL",
+    "domain": "fixation",
+    "topic": "tissue_handling",
+    "difficulty": "advanced",
+    "cognitive_level": "analysis",
+    "stem": "Best response to variable IHC caused by inconsistent fixation:",
+    "options": [
+      {"id": "A", "text": "Always double antibody concentration"},
+      {"id": "B", "text": "Always use the highest-pH retrieval"},
+      {"id": "C", "text": "Ignore fixation if the positive control stains"},
+      {"id": "D", "text": "Standardize preanalytics and validate retrieval"}
+    ],
+    "correct_option_id": "D",
+    "rationale": "Preanalytic variables and assay controls must be standardized; retrieval cannot reliably reverse every fixation problem.",
+    "distractor_rationales": {
+      "A": "Automatically increasing antibody concentration may increase background and does not correct uncontrolled fixation variability.",
+      "B": "Using the highest-pH retrieval for every assay is not evidence based and can damage tissue or worsen nonspecific staining.",
+      "C": "A staining positive control does not eliminate the interpretive risk created by inconsistent specimen fixation."
+    },
+    "learning_objective": "Select the best corrective strategy when inconsistent fixation produces variable IHC results.",
+    "lesson_refs": ["fixation-v3"],
+    "references": [
+      {"label": "Reviewed FHL Fixation lesson", "locator": "modules/fixation-guide-v3.html#quiz-8", "notes": "Stem, options, key, and correct-answer explanation preserved from the reviewed learner-facing quiz."},
+      {"label": "FHL module authority record", "locator": "data/module-authority.json#modules.fixation-v3", "notes": "Lists the module review date, exam alignment, and supporting histotechnology references."}
+    ],
+    "review": {
+      "scientific": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Complete rationales authored; final qualified reviewer approval required."},
+      "editorial": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Ready for controlled editorial review after scientific approval."}
+    },
+    "version": 1,
+    "created_at": "2026-08-02T21:35:00Z",
+    "updated_at": "2026-08-02T21:35:00Z"
+  },
+  {
+    "id": "legacy-fixation-guide-v3-fixation-v3-9-266ecda712c7",
+    "status": "scientific_review",
+    "access": "sample",
+    "certification_scope": "HT_HTL",
+    "domain": "fixation",
+    "topic": "fixative_selection",
+    "difficulty": "foundational",
+    "cognitive_level": "recall",
+    "stem": "A major limitation of glutaraldehyde is:",
+    "options": [
+      {"id": "A", "text": "It never crosslinks protein"},
+      {"id": "B", "text": "Slow penetration and strong crosslinking"},
+      {"id": "C", "text": "It dissolves all paraffin"},
+      {"id": "D", "text": "It is a decalcifier"}
+    ],
+    "correct_option_id": "B",
+    "rationale": "Glutaraldehyde preserves ultrastructure well but penetrates slowly and can increase autofluorescence.",
+    "distractor_rationales": {
+      "A": "Glutaraldehyde does crosslink proteins strongly, so the statement that it never crosslinks protein is incorrect.",
+      "C": "Glutaraldehyde does not dissolve paraffin and is used before routine processing rather than as a deparaffinizing reagent.",
+      "D": "Glutaraldehyde is a fixative, not a decalcifying agent."
+    },
+    "learning_objective": "Recognize slow penetration and strong crosslinking as major limitations of glutaraldehyde.",
+    "lesson_refs": ["fixation-v3"],
+    "references": [
+      {"label": "Reviewed FHL Fixation lesson", "locator": "modules/fixation-guide-v3.html#quiz-9", "notes": "Stem, options, key, and correct-answer explanation preserved from the reviewed learner-facing quiz."},
+      {"label": "FHL module authority record", "locator": "data/module-authority.json#modules.fixation-v3", "notes": "Lists the module review date, exam alignment, and supporting histotechnology references."}
+    ],
+    "review": {
+      "scientific": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Complete rationales authored; final qualified reviewer approval required."},
+      "editorial": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Ready for controlled editorial review after scientific approval."}
+    },
+    "version": 1,
+    "created_at": "2026-08-02T21:35:00Z",
+    "updated_at": "2026-08-02T21:35:00Z"
+  },
+  {
+    "id": "legacy-fixation-guide-v3-fixation-v3-10-3393091b9c66",
+    "status": "scientific_review",
+    "access": "sample",
+    "certification_scope": "HT_HTL",
+    "domain": "fixation",
+    "topic": "tissue_handling",
+    "difficulty": "applied",
+    "cognitive_level": "application",
+    "stem": "A specimen arrives after a major fixation delay. The best action is to:",
+    "options": [
+      {"id": "A", "text": "Hide the delay"},
+      {"id": "B", "text": "Extend every stain automatically"},
+      {"id": "C", "text": "Document and escalate the deviation per SOP"},
+      {"id": "D", "text": "Discard it without authorization"}
+    ],
+    "correct_option_id": "C",
+    "rationale": "Documenting the deviation and following the laboratory escalation process protects interpretation and quality.",
+    "distractor_rationales": {
+      "A": "Concealing a fixation delay prevents proper interpretation, quality review, and corrective action.",
+      "B": "Automatically extending every stain is not a validated response and does not reverse preanalytic tissue damage.",
+      "D": "Discarding a specimen without authorization bypasses laboratory policy, clinical review, and documented disposition procedures."
+    },
+    "learning_objective": "Apply documentation and escalation requirements when a specimen has a major fixation delay.",
+    "lesson_refs": ["fixation-v3"],
+    "references": [
+      {"label": "Reviewed FHL Fixation lesson", "locator": "modules/fixation-guide-v3.html#quiz-10", "notes": "Stem, options, key, and correct-answer explanation preserved from the reviewed learner-facing quiz."},
+      {"label": "FHL module authority record", "locator": "data/module-authority.json#modules.fixation-v3", "notes": "Lists the module review date, exam alignment, and supporting histotechnology references."}
+    ],
+    "review": {
+      "scientific": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Complete rationales authored; final qualified reviewer approval required."},
+      "editorial": {"status": "pending", "reviewer": null, "reviewed_at": null, "notes": "Ready for controlled editorial review after scientific approval."}
+    },
+    "version": 1,
+    "created_at": "2026-08-02T21:35:00Z",
+    "updated_at": "2026-08-02T21:35:00Z"
+  }
+]
