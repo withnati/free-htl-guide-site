@@ -3,11 +3,12 @@ from __future__ import annotations
 import importlib.util
 import json
 from pathlib import Path
-import tempfile
+import sys
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPTS = ROOT / "scripts"
+sys.path.insert(0, str(SCRIPTS))
 
 BUILD_SPEC = importlib.util.spec_from_file_location(
     "build_subscription_site_entry", SCRIPTS / "build_subscription_site_entry.py"
