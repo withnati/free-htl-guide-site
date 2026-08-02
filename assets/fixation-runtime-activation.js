@@ -23,7 +23,9 @@
   }
 
   function resultElement(form) {
-    return form.parentElement?.querySelector('.quiz-result') || document.getElementById('quizResult');
+    const result = form.parentElement?.querySelector('.quiz-result') || document.getElementById('quizResult');
+    if (result && !result.id) result.id = 'quizResult';
+    return result;
   }
 
   function setBest(percent) {
@@ -94,6 +96,7 @@
       adapter.renderIntoForm(form, session);
       form.dataset.runtimeSource = 'canonical';
       document.body.dataset.fixationRuntime = 'active';
+      resultElement(form);
 
       document.addEventListener('click', (event) => {
         const gradeButton = event.target.closest('[data-grade="fixQuiz"]');
