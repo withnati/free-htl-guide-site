@@ -72,19 +72,24 @@ test('complete public Fixation lesson uses the canonical runtime in the generate
   const firstChoice = page.locator('#fixQuiz input[type="radio"]').first();
   await firstChoice.check();
   await page.locator('[data-grade="fixQuiz"]').click();
-  await expect(page.locator('#quizResult')).toBeVisible();
-  await expect(page.locator('#quizResult')).toContainText(/Score: \d+\/10/);
+  await expect(page.locator('.quiz-result')).toBeVisible();
+  await expect(page.locator('.quiz-result')).toContainText(/Score: \d+\/10/);
   await expect(page.locator('#fixQuiz .explanation:not([hidden])')).toHaveCount(10);
 
+  await expect.poll(async () => page.evaluate(() => {
+    const stored = JSON.parse(localStorage.getItem('free-htl-progress-v1') || 'null');
+    return stored?.quizAttempts?.length || 0;
+  })).toBe(1);
   const progress = await page.evaluate(() => JSON.parse(localStorage.getItem('free-htl-progress-v1')));
-  expect(progress.quizAttempts).toHaveLength(1);
   expect(progress.quizAttempts[0].page).toBe('fixation-v3');
   expect(progress.quizAttempts[0].quizId).toBe('fixQuiz');
   expect(progress.quizAttempts[0].total).toBe(10);
 
   await page.locator('[data-grade="fixQuiz"]').click();
-  const afterDuplicateClick = await page.evaluate(() => JSON.parse(localStorage.getItem('free-htl-progress-v1')));
-  expect(afterDuplicateClick.quizAttempts).toHaveLength(1);
+  await expect.poll(async () => page.evaluate(() => {
+    const stored = JSON.parse(localStorage.getItem('free-htl-progress-v1') || 'null');
+    return stored?.quizAttempts?.length || 0;
+  })).toBe(1);
 
   await expect(page.getByRole('link', { name: 'Download resources' })).toHaveAttribute(
     'href',
