@@ -50,8 +50,9 @@ class FixationRuntimePilotTests(unittest.TestCase):
         self.assertIn("question 2 stem differs", errors)
         self.assertIn("question 2 options differs", errors)
 
-    def test_dormant_adapter_uses_approved_sample_records_only(self) -> None:
-        bank = [
+    @staticmethod
+    def sample_bank() -> list[dict]:
+        return [
             {
                 "id": "fix-approved-1", "version": 1, "status": "approved", "access": "sample",
                 "certification_scope": "HT_HTL", "domain": "fixation", "topic": "fixation_mechanisms",
@@ -62,7 +63,16 @@ class FixationRuntimePilotTests(unittest.TestCase):
                 "lesson_refs": ["fixation-v3"],
             },
             {
-                "id": "fix-draft-2", "version": 1, "status": "draft", "access": "sample",
+                "id": "fix-approved-2", "version": 3, "status": "approved", "access": "sample",
+                "certification_scope": "HT_HTL", "domain": "fixation", "topic": "fixation_artifacts",
+                "difficulty": "applied", "cognitive_level": "application", "stem": "Second approved sample question.",
+                "options": [{"id": key, "text": key} for key in "ABCD"], "correct_option_id": "C",
+                "rationale": "Second approved rationale long enough for this isolated adapter test.",
+                "distractor_rationales": {"A": "Wrong A explanation.", "B": "Wrong B explanation.", "D": "Wrong D explanation."},
+                "lesson_refs": ["fixation-v3"],
+            },
+            {
+                "id": "fix-draft-3", "version": 1, "status": "draft", "access": "sample",
                 "certification_scope": "HT_HTL", "domain": "fixation", "topic": "fixation_artifacts",
                 "difficulty": "applied", "cognitive_level": "application", "stem": "Draft question must not load.",
                 "options": [{"id": key, "text": key} for key in "ABCD"], "correct_option_id": "A",
@@ -70,19 +80,72 @@ class FixationRuntimePilotTests(unittest.TestCase):
                 "lesson_refs": ["fixation-v3"],
             },
         ]
+
+    def run_node(self, body: str) -> dict:
         script = textwrap.dedent(
             f"""
             global.FreeHTLQuestionRuntime = require({json.dumps(str(ROOT / 'assets/question-runtime.js'))});
             const adapter = require({json.dumps(str(ROOT / 'assets/fixation-canonical-adapter.js'))});
-            const session = adapter.createPilotSession({json.dumps(bank)}, 'pilot');
-            process.stdout.write(JSON.stringify(session));
+            const bank = {json.dumps(self.sample_bank())};
+            {body}
             """
         )
         result = subprocess.run(["node", "-e", script], cwd=ROOT, text=True, capture_output=True, check=True)
-        session = json.loads(result.stdout)
-        self.assertEqual(1, session["count"])
-        self.assertEqual("fix-approved-1", session["questions"][0]["id"])
-        self.assertNotIn("correct_option_id", session["questions"][0])
+        return json.loads(result.stdout)
+
+    def test_dormant_adapter_uses_approved_sample_records_only(self) -> None:
+        session = self.run_node(
+            "const session = adapter.createPilotSession(bank, 'pilot'); process.stdout.write(JSON.stringify(session));"
+        )
+        self.assertEqual(2, session["count"])
+        self.assertEqual({"fix-approved-1", "fix-approved-2"}, {item["id"] for item in session["questions"]})
+        for question in session["questions"]:
+            self.assertNotIn("correct_option_id", question)
+            self.assertNotIn("rationale", question)
+            self.assertNotIn("distractor_rationales", question)
+
+    def test_progress_projection_contains_only_allowlisted_result_metadata(self) -> None:
+        attempt = self.run_node(
+            """
+            const results = [
+              {...FreeHTLQuestionRuntime.gradeSubmission(bank, {questionId: 'fix-approved-1', questionVersion: 1, selectedOptionId: 'A'}), omitted: false},
+              {...FreeHTLQuestionRuntime.gradeSubmission(bank, {questionId: 'fix-approved-2', questionVersion: 3, selectedOptionId: 'B'}), omitted: false}
+            ];
+            process.stdout.write(JSON.stringify(adapter.toProgressAttempt(results, {attemptId: 'attempt-1', completedAt: '2026-08-02T21:45:00Z'})));
+            """
+        )
+        self.assertEqual(1, attempt["score"])
+        self.assertEqual(2, attempt["total"])
+        self.assertEqual(50, attempt["percent"])
+        self.assertFalse(attempt["targetMet"])
+        self.assertEqual("attempt-1", attempt["attemptId"])
+        self.assertEqual(2, len(attempt["questionResults"]))
+        allowed = {
+            "questionId", "questionVersion", "moduleId", "domain", "topic", "difficulty",
+            "selectedOptionId", "correct", "omitted", "flagged"
+        }
+        for item in attempt["questionResults"]:
+            self.assertEqual(allowed, set(item))
+            self.assertNotIn("correctOptionId", item)
+            self.assertNotIn("rationale", item)
+            self.assertNotIn("selectedDistractorRationale", item)
+            self.assertNotIn("lessonRefs", item)
+
+    def test_progress_projection_preserves_omitted_question_identity(self) -> None:
+        attempt = self.run_node(
+            """
+            const results = [{
+              questionId: 'fix-approved-2', questionVersion: 3, selectedOptionId: null,
+              correct: false, omitted: true, domain: 'fixation', topic: 'fixation_artifacts', difficulty: 'applied'
+            }];
+            process.stdout.write(JSON.stringify(adapter.toProgressAttempt(results)));
+            """
+        )
+        result = attempt["questionResults"][0]
+        self.assertTrue(result["omitted"])
+        self.assertIsNone(result["selectedOptionId"])
+        self.assertEqual(3, result["questionVersion"])
+        self.assertEqual("fixation_artifacts", result["topic"])
 
 
 if __name__ == "__main__":
