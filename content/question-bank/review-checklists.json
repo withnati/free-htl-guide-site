@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "scientific": {
+    "single_best_answer": "The keyed answer is defensibly the single best answer.",
+    "no_competing_correct_option": "No distractor is also correct under the facts provided.",
+    "scientific_accuracy": "Stem, options, answer, and rationales are scientifically accurate.",
+    "terminology_current": "Terminology is current and appropriate for HT/HTL preparation.",
+    "domain_topic_alignment": "Domain and topic assignments match the tested concept.",
+    "difficulty_alignment": "Difficulty and cognitive level match the work required.",
+    "learning_objective_alignment": "The item directly assesses the stated learning objective.",
+    "rationales_complete": "The correct rationale and all distractor rationales are complete and accurate.",
+    "references_verified": "At least one listed source and locator was directly verified.",
+    "independent_content": "The item contains no official, proprietary, unpublished, or patient-identifiable content.",
+    "claims_compliant": "The item makes no unsupported endorsement, passage, or score-prediction claim."
+  },
+  "editorial": {
+    "stem_clear_complete": "The stem is clear, complete, and contains the information needed to answer.",
+    "one_defined_task": "The item tests one defined concept or decision.",
+    "options_parallel": "Answer choices are grammatically and conceptually parallel.",
+    "options_plausible": "Distractors are plausible without being misleading or partly correct.",
+    "no_answer_cueing": "Length, grammar, repetition, and formatting do not reveal the answer.",
+    "negative_wording_controlled": "Negative wording is avoided or clearly emphasized when necessary.",
+    "style_consistent": "Capitalization, punctuation, abbreviations, and terminology follow the style guide.",
+    "learner_centered_rationales": "Rationales teach the principle directly and concisely.",
+    "reading_load_appropriate": "Reading burden is appropriate for the intended difficulty.",
+    "accessible_language": "Language is accessible without weakening scientific precision.",
+    "scientific_meaning_unchanged": "Editorial changes did not alter scientific meaning or the keyed answer."
+  }
+}
