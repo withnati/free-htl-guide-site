@@ -81,10 +81,15 @@
     assertRuntime();
     return collectSubmission(form).map((submission) => {
       if (!submission.selectedOptionId) {
+        const question = bank.find((item) => item.id === submission.questionId && item.version === submission.questionVersion);
+        if (!question) throw new Error(`Question ${submission.questionId} version ${submission.questionVersion} was not found.`);
         return {
           ...submission,
           correct: false,
           omitted: true,
+          domain: question.domain,
+          topic: question.topic,
+          difficulty: question.difficulty,
         };
       }
       return {
@@ -94,11 +99,41 @@
     });
   }
 
+  function toProgressAttempt(results, options = {}) {
+    if (!Array.isArray(results) || !results.length) throw new Error('At least one graded result is required.');
+    const score = results.filter((result) => result.correct).length;
+    const total = results.length;
+    const percent = Math.round((score / total) * 100);
+    return {
+      page: options.page || 'fixation-v3',
+      quizId: options.quizId || 'fixQuiz',
+      attemptId: options.attemptId || null,
+      completedAt: options.completedAt || null,
+      score,
+      total,
+      percent,
+      targetMet: percent >= 80,
+      questionResults: results.map((result) => ({
+        questionId: result.questionId,
+        questionVersion: result.questionVersion,
+        moduleId: options.page || 'fixation-v3',
+        domain: result.domain || 'fixation',
+        topic: result.topic || null,
+        difficulty: result.difficulty || null,
+        selectedOptionId: result.selectedOptionId || null,
+        correct: Boolean(result.correct),
+        omitted: Boolean(result.omitted),
+        flagged: false,
+      })),
+    };
+  }
+
   return Object.freeze({
     collectSubmission,
     createPilotSession,
     gradeForm,
     renderIntoForm,
     toLegacyModel,
+    toProgressAttempt,
   });
 });
