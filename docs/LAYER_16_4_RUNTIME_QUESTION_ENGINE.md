@@ -115,20 +115,34 @@ Each submitted response records:
 - The grading layer must use the canonical server-side record rather than a client-supplied answer key.
 - Session responses must use no-store or appropriately private caching for protected content.
 
+## Fixation pilot status
+
+The first pilot is implemented in **shadow mode**:
+
+- the existing learner-facing Fixation quiz remains active;
+- the neutral migration source is compared against the legacy HTML for exact stem, option, keyed-answer, and explanation parity;
+- a dormant canonical adapter can render and grade approved sample records;
+- the adapter is not loaded by the Fixation page;
+- no draft record is promoted or published;
+- activation remains blocked until distractor rationales, scientific review, editorial review, and public-sample confirmation are complete.
+
+This proves the technical migration path without misrepresenting review status or changing the learner experience prematurely.
+
 ## Runtime adoption sequence
 
 1. Pure engine and contract tests.
-2. Approved public sample bank pilot.
-3. Free Fixation quiz adapter with exact regression comparison.
-4. Mixed-practice adapter.
-5. Mock-exam blueprint adapter.
-6. Targeted Practice and missed-question adapters.
-7. Premium server delivery after payment and entitlement integration.
+2. Fixation shadow-mode parity validation.
+3. Complete and approve selected public Fixation sample records.
+4. Activate the canonical Fixation adapter with exact browser regression coverage.
+5. Mixed-practice adapter.
+6. Mock-exam blueprint adapter.
+7. Targeted Practice and missed-question adapters.
+8. Premium server delivery after payment and entitlement integration.
 
 ## Exclusions
 
 - Live database or Edge Function deployment
-- Replacing current learner-visible quizzes in this initial checkpoint
+- Replacing current learner-visible quizzes before content approval
 - Authoring or approving question content
 - Stripe integration
 - Adaptive psychometric selection
