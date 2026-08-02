@@ -5,7 +5,13 @@ from __future__ import annotations
 import build_public_site
 import build_public_site_entry  # noqa: F401 - applies canonical learner-facing overrides
 
-for route in ("pricing.html", "account/subscription.html"):
+for route in (
+    "pricing.html",
+    "account/subscription.html",
+    "account/payment-pending.html",
+    "account/checkout-canceled.html",
+    "account/subscription-confirmed.html",
+):
     if route not in build_public_site.PUBLIC_SOURCE_HTML:
         build_public_site.PUBLIC_SOURCE_HTML += (route,)
 
