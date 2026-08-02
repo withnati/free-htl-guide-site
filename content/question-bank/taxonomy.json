@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "domains": {
+    "fixation": {
+      "label": "Fixation",
+      "topics": [
+        "fixative_selection",
+        "fixation_mechanisms",
+        "fixation_artifacts",
+        "fixation_time_and_volume",
+        "decalcification",
+        "tissue_handling"
+      ]
+    },
+    "processing": {
+      "label": "Processing",
+      "topics": [
+        "dehydration",
+        "clearing",
+        "infiltration",
+        "processing_schedules",
+        "processing_artifacts",
+        "reagent_management"
+      ]
+    },
+    "embedding": {
+      "label": "Embedding",
+      "topics": [
+        "orientation",
+        "embedding_media",
+        "mold_selection",
+        "embedding_artifacts",
+        "tissue_identification"
+      ]
+    },
+    "microtomy": {
+      "label": "Microtomy",
+      "topics": [
+        "microtome_operation",
+        "blade_selection",
+        "section_thickness",
+        "section_artifacts",
+        "water_bath",
+        "cryotomy"
+      ]
+    },
+    "staining": {
+      "label": "Staining",
+      "topics": [
+        "hematoxylin_and_eosin",
+        "stain_mechanisms",
+        "differentiation_and_bluing",
+        "staining_artifacts",
+        "special_stains",
+        "immunohistochemistry"
+      ]
+    },
+    "laboratory_operations": {
+      "label": "Laboratory Operations",
+      "topics": [
+        "quality_control",
+        "laboratory_safety",
+        "instrument_maintenance",
+        "reagent_preparation",
+        "documentation",
+        "specimen_tracking"
+      ]
+    },
+    "special_procedures": {
+      "label": "Special Procedures",
+      "topics": [
+        "enzyme_histochemistry",
+        "immunofluorescence",
+        "in_situ_hybridization",
+        "electron_microscopy",
+        "molecular_methods",
+        "muscle_and_nerve"
+      ]
+    }
+  },
+  "difficulty": {
+    "foundational": "Direct knowledge or recognition expected early in preparation.",
+    "applied": "Use knowledge in a routine laboratory scenario.",
+    "advanced": "Integrate multiple facts, troubleshoot, or select the best action in a complex scenario."
+  },
+  "cognitive_levels": {
+    "recall": "Remember or recognize a fact, term, sequence, or purpose.",
+    "application": "Apply knowledge to a realistic laboratory situation.",
+    "analysis": "Interpret evidence, distinguish causes, or select a corrective action."
+  }
+}

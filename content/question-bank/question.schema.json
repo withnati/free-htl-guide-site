@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://freehtlguide.com/schemas/question.schema.json",
+  "title": "FHL HT/HTL Question",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id", "status", "access", "certification_scope", "domain", "topic",
+    "difficulty", "cognitive_level", "stem", "options", "correct_option_id",
+    "rationale", "distractor_rationales", "learning_objective", "lesson_refs",
+    "references", "review", "version", "created_at", "updated_at"
+  ],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$", "minLength": 8, "maxLength": 96},
+    "status": {"enum": ["draft", "scientific_review", "editorial_review", "approved", "retired"]},
+    "access": {"enum": ["sample", "premium"]},
+    "certification_scope": {"enum": ["HT", "HTL", "HT_HTL"]},
+    "domain": {"enum": ["fixation", "processing", "embedding", "microtomy", "staining", "laboratory_operations", "special_procedures"]},
+    "topic": {"type": "string", "pattern": "^[a-z0-9]+(?:_[a-z0-9]+)*$", "minLength": 3, "maxLength": 80},
+    "difficulty": {"enum": ["foundational", "applied", "advanced"]},
+    "cognitive_level": {"enum": ["recall", "application", "analysis"]},
+    "stem": {"type": "string", "minLength": 20, "maxLength": 1200},
+    "options": {
+      "type": "array", "minItems": 4, "maxItems": 4,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "text"],
+        "properties": {
+          "id": {"enum": ["A", "B", "C", "D"]},
+          "text": {"type": "string", "minLength": 1, "maxLength": 500}
+        }
+      }
+    },
+    "correct_option_id": {"enum": ["A", "B", "C", "D"]},
+    "rationale": {"type": "string", "minLength": 30, "maxLength": 2400},
+    "distractor_rationales": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "A": {"type": "string", "minLength": 10, "maxLength": 1200},
+        "B": {"type": "string", "minLength": 10, "maxLength": 1200},
+        "C": {"type": "string", "minLength": 10, "maxLength": 1200},
+        "D": {"type": "string", "minLength": 10, "maxLength": 1200}
+      }
+    },
+    "learning_objective": {"type": "string", "minLength": 15, "maxLength": 500},
+    "lesson_refs": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"}},
+    "references": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["label", "locator"],
+        "properties": {
+          "label": {"type": "string", "minLength": 3, "maxLength": 300},
+          "locator": {"type": "string", "minLength": 1, "maxLength": 300},
+          "notes": {"type": "string", "maxLength": 800}
+        }
+      }
+    },
+    "review": {
+      "type": "object", "additionalProperties": false,
+      "required": ["scientific", "editorial"],
+      "properties": {
+        "scientific": {"$ref": "#/$defs/reviewRecord"},
+        "editorial": {"$ref": "#/$defs/reviewRecord"}
+      }
+    },
+    "version": {"type": "integer", "minimum": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "updated_at": {"type": "string", "format": "date-time"}
+  },
+  "$defs": {
+    "reviewRecord": {
+      "type": "object", "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["pending", "approved", "changes_requested"]},
+        "reviewer": {"type": ["string", "null"], "maxLength": 120},
+        "reviewed_at": {"type": ["string", "null"], "format": "date-time"},
+        "notes": {"type": "string", "maxLength": 1200}
+      }
+    }
+  }
+}
