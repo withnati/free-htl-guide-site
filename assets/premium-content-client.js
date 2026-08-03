@@ -19,11 +19,18 @@
   const contentSummary = document.querySelector('[data-premium-summary]');
   const contentSections = document.querySelector('[data-premium-sections]');
   const loader = document.querySelector('.premium-loader');
+  const OFFLINE_MESSAGE = 'You are offline. Reconnect, then try again to securely open this lesson.';
 
   function signInUrl() {
     const url = new URL('../account/sign-in.html', window.location.href);
-    url.searchParams.set('next', window.location.href);
+    url.searchParams.set('next', `${window.location.origin}${window.location.pathname}`);
     return url.href;
+  }
+
+  function clearRenderedPayload() {
+    if (contentTitle) contentTitle.textContent = '';
+    if (contentSummary) contentSummary.textContent = '';
+    contentSections?.replaceChildren();
   }
 
   function resetActions() {
@@ -45,7 +52,11 @@
   }
 
   function setState(name, text, options = {}) {
-    if (statePanel) statePanel.dataset.state = name;
+    page.dataset.premiumContentState = name;
+    if (statePanel) {
+      statePanel.dataset.state = name;
+      statePanel.setAttribute('aria-busy', String(name === 'loading'));
+    }
     if (message) {
       message.textContent = text;
       message.setAttribute('role', options.alert ? 'alert' : 'status');
@@ -54,6 +65,7 @@
     if (statusLabel) statusLabel.textContent = options.label || name;
     if (loader) loader.hidden = name !== 'loading';
     if (content) content.hidden = name !== 'authorized';
+    if (name !== 'authorized') clearRenderedPayload();
     resetActions();
     setRequestReference(options.requestId || '');
 
@@ -65,7 +77,19 @@
       }
     }
     if (name === 'upgrade-required' && upgrade) upgrade.hidden = false;
-    if (name === 'error' && retry) retry.hidden = false;
+    if ((name === 'error' || name === 'offline') && retry) retry.hidden = false;
+  }
+
+  function setConnectionFailure(error = null) {
+    const offline = navigator.onLine === false;
+    const timedOut = error?.name === 'AbortError';
+    const text = offline
+      ? OFFLINE_MESSAGE
+      : timedOut
+        ? 'This lesson took too long to load. Please try again. Your progress has not been changed.'
+        : 'We could not load this lesson. Check your connection and try again. Your progress has not been changed.';
+    const label = offline ? 'Offline' : timedOut ? 'Timed out' : 'Connection problem';
+    setState(offline ? 'offline' : 'error', text, { label, alert: true });
   }
 
   function validText(value, maximum = 5000) {
@@ -148,14 +172,19 @@
     try {
       session = await auth.ready;
     } catch {
-      setState('error', 'We could not reach the account service. Check your connection and try again. Your progress has not been changed.', {
-        label: 'Connection problem', alert: true
-      });
+      setConnectionFailure();
       return;
     }
 
     if (!session?.access_token) {
       setState('signed-out', 'Sign in to continue learning.', { label: 'Sign in required' });
+      return;
+    }
+
+    if (navigator.onLine === false) {
+      setState('offline', OFFLINE_MESSAGE, {
+        label: 'Offline', alert: true
+      });
       return;
     }
 
@@ -169,11 +198,7 @@
         body: JSON.stringify({ contentId })
       });
     } catch (error) {
-      const timedOut = error?.name === 'AbortError';
-      setState('error', timedOut
-        ? 'This lesson took too long to load. Please try again. Your progress has not been changed.'
-        : 'We could not load this lesson. Check your connection and try again. Your progress has not been changed.',
-      { label: timedOut ? 'Timed out' : 'Connection problem', alert: true });
+      setConnectionFailure(error);
       return;
     } finally {
       window.clearTimeout(timeout);

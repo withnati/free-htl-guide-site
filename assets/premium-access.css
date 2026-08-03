@@ -38,7 +38,8 @@
 }
 
 .premium-state[data-state="signed-out"],
-.premium-state[data-state="upgrade-required"] {
+.premium-state[data-state="upgrade-required"],
+.premium-state[data-state="offline"] {
   border-inline-start: 0.35rem solid #b7791f;
 }
 

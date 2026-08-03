@@ -13,7 +13,10 @@ async function mockSupabase(page, session = null) {
           auth: {
             getSession: () => ok({ session }),
             getUser: () => ok({ user: session ? { id: 'user-a' } : null }),
-            onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
+            onAuthStateChange: (callback) => {
+              window.__freeHTLEmitAuthState = (event, nextSession) => callback(event, nextSession);
+              return { data: { subscription: { unsubscribe() {} } } };
+            },
             signOut: () => ok({})
           },
           from: () => ({ update: () => ({ eq: () => ok({}) }) }),
@@ -54,6 +57,9 @@ async function mockPremiumEndpoint(page, response) {
       headers: request.headers(),
       body: request.postDataJSON()
     });
+    if (response.delayMs) {
+      await new Promise((resolve) => setTimeout(resolve, response.delayMs));
+    }
     await route.fulfill({
       status: response.status,
       headers: corsHeaders(),
@@ -71,8 +77,9 @@ test('signed-out learner sees a clear sign-in state without requesting lesson co
     body: { error: 'This response should not be reached.' }
   });
 
-  await page.goto('/premium/processing-proof.html');
+  await page.goto('/premium/processing-proof.html?private_token=do-not-forward#lesson');
 
+  await expect(page.locator('body')).toHaveAttribute('data-premium-content-state', 'signed-out');
   await expect(page.locator('[data-premium-status-label]')).toHaveText('Sign in required');
   await expect(page.locator('[data-premium-message]')).toHaveText('Sign in to continue learning.');
   await expect(page.locator('[data-premium-sign-in]')).toHaveText('Sign in to continue');
@@ -80,6 +87,7 @@ test('signed-out learner sees a clear sign-in state without requesting lesson co
   await expect(page.locator('[data-premium-content]')).toBeHidden();
   expect(calls).toHaveLength(0);
   await expect(page.locator('[data-premium-sign-in]')).toHaveAttribute('href', /account\/sign-in\.html\?next=/);
+  await expect(page.locator('[data-premium-sign-in]')).not.toHaveAttribute('href', /private_token|do-not-forward|#lesson/);
 });
 
 test('verified free learner receives a learner-facing Premium state', async ({ page }, testInfo) => {
@@ -142,6 +150,80 @@ test('invalid or expired session fails safely and asks the learner to sign in ag
   await expect(page.locator('[data-premium-request-reference]')).toContainText('request-expired-1');
 });
 
+test('loading and server-error states remain explicit and keep protected payload fields empty', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium');
+  await mockSupabase(page, {
+    access_token: 'premium-session-token',
+    user: { id: 'user-a' }
+  });
+  await mockPremiumEndpoint(page, {
+    delayMs: 1500,
+    status: 503,
+    body: {
+      error: 'Temporary staging failure.',
+      requestId: 'request-error-1'
+    }
+  });
+
+  await page.goto('/premium/processing-proof.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-content-state', 'loading');
+  await expect(page.locator('[data-premium-state]')).toHaveAttribute('aria-busy', 'true');
+  await expect(page.locator('.premium-loader')).toBeVisible();
+  await expect(page.locator('[data-premium-content]')).toBeHidden();
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-content-state', 'error');
+  await expect(page.locator('[data-premium-state]')).toHaveAttribute('aria-busy', 'false');
+  await expect(page.locator('[data-premium-status-label]')).toHaveText('Could not load lesson');
+  await expect(page.locator('[data-premium-retry]')).toBeVisible();
+  await expect(page.locator('[data-premium-request-reference]')).toContainText('request-error-1');
+  await expect(page.locator('[data-premium-title]')).toBeEmpty();
+  await expect(page.locator('[data-premium-summary]')).toBeEmpty();
+  await expect(page.locator('[data-premium-sections]')).toBeEmpty();
+});
+
+test('offline learner sees a secure retry state without requesting or retaining lesson content', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile-chromium');
+  await page.addInitScript(() => {
+    window.__freeHTLOnline = false;
+    Object.defineProperty(navigator, 'onLine', {
+      configurable: true,
+      get: () => window.__freeHTLOnline
+    });
+  });
+  await mockSupabase(page, {
+    access_token: 'premium-session-token',
+    user: { id: 'user-a' }
+  });
+  const calls = await mockPremiumEndpoint(page, {
+    status: 200,
+    body: {
+      schemaVersion: 1,
+      contentId: 'processing-proof-v1',
+      title: 'Processing and Decalcification: Core Review',
+      summary: 'Secure retry response.',
+      sections: []
+    }
+  });
+
+  await page.goto('/premium/processing-proof.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-content-state', 'offline');
+  await expect(page.locator('[data-premium-status-label]')).toHaveText('Offline');
+  await expect(page.locator('[data-premium-message]')).toContainText('Reconnect');
+  await expect(page.locator('[data-premium-retry]')).toBeVisible();
+  await expect(page.locator('[data-premium-content]')).toBeHidden();
+  await expect(page.locator('[data-premium-title]')).toBeEmpty();
+  await expect(page.locator('[data-premium-sections]')).toBeEmpty();
+  expect(calls).toHaveLength(0);
+
+  await page.evaluate(() => { window.__freeHTLOnline = true; });
+  await page.locator('[data-premium-retry]').click();
+  await expect(page.locator('body')).toHaveAttribute('data-premium-content-state', 'authorized');
+  await expect(page.locator('[data-premium-title]')).toHaveText('Processing and Decalcification: Core Review');
+  expect(calls).toHaveLength(1);
+});
+
 test('entitled learner receives and renders a learner-facing lesson on mobile', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'mobile-chromium');
   await mockSupabase(page, {
@@ -183,4 +265,12 @@ test('entitled learner receives and renders a learner-facing lesson on mobile', 
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
   expect(overflow).toBeLessThanOrEqual(1);
+
+  await page.evaluate(() => window.__freeHTLEmitAuthState('SIGNED_OUT', null));
+  await expect(page.locator('body')).toHaveAttribute('data-premium-content-state', 'signed-out');
+  await expect(page.locator('[data-premium-content]')).toBeHidden();
+  await expect(page.locator('[data-premium-title]')).toBeEmpty();
+  await expect(page.locator('[data-premium-summary]')).toBeEmpty();
+  await expect(page.locator('[data-premium-sections]')).toBeEmpty();
+  await expect(page.getByText('Dehydration removes water.')).toHaveCount(0);
 });
