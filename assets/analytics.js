@@ -274,7 +274,7 @@
         <p data-analytics-state></p>
         <p class="small muted">When enabled, analytics measures page and feature use. It does not collect email addresses, personal notes, quiz answers, or question-level responses.</p>
         <div class="analytics-choice-actions" data-analytics-actions>
-          <button type="button" class="btn btn-primary" data-analytics-consent="granted">Allow analytics</button>
+          <button type="button" class="btn" data-analytics-consent="granted">Allow analytics</button>
           <button type="button" class="btn" data-analytics-consent="denied">Decline analytics</button>
         </div>
         <p class="small"><a data-analytics-privacy-link href="privacy.html">Read the privacy policy</a></p>
@@ -283,11 +283,14 @@
     footer.appendChild(openButton);
     document.body.appendChild(dialog);
 
-    openButton.addEventListener('click', () => {
+    const openPrivacyDialog = () => {
       renderPrivacyState();
+      if (dialog.open) return;
       if (typeof dialog.showModal === 'function') dialog.showModal();
       else dialog.setAttribute('open', '');
-    });
+    };
+
+    openButton.addEventListener('click', openPrivacyDialog);
 
     dialog.addEventListener('click', (event) => {
       const button = event.target.closest('[data-analytics-consent]');
@@ -313,7 +316,7 @@
           <p>Optional analytics can measure page and feature use. No email addresses, personal notes, or quiz answers are collected.</p>
         </div>
         <div class="analytics-banner-actions">
-          <button type="button" class="btn btn-primary" data-analytics-consent="granted">Allow analytics</button>
+          <button type="button" class="btn" data-analytics-consent="granted">Allow analytics</button>
           <button type="button" class="btn" data-analytics-consent="denied">Decline analytics</button>
           <button type="button" class="btn" data-analytics-open-banner>Details</button>
         </div>`;
@@ -323,13 +326,9 @@
         const consentButton = event.target.closest('[data-analytics-consent]');
         if (consentButton) {
           setConsent(consentButton.dataset.analyticsConsent);
-          return;
-        }
-        if (event.target.closest('[data-analytics-open-banner]')) {
-          if (typeof dialog.showModal === 'function') dialog.showModal();
-          else dialog.setAttribute('open', '');
         }
       });
+      banner.querySelector('[data-analytics-open-banner]').addEventListener('click', openPrivacyDialog);
     }
 
     renderPrivacyState();

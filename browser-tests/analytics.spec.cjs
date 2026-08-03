@@ -49,7 +49,7 @@ test('activated analytics remains blocked before consent and exposes equal choic
   await expect(page.locator('[data-analytics-banner] [data-analytics-consent="granted"]')).toBeVisible();
   await expect(page.locator('[data-analytics-banner] [data-analytics-consent="denied"]')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Privacy choices' }).click();
+  await page.locator('[data-analytics-open-banner]').click();
   await expect(page.locator('[data-analytics-dialog]')).toBeVisible();
   await expect(page.locator('[data-analytics-state]')).toHaveText('No analytics choice has been saved on this device.');
   await expect(page.locator('[data-analytics-actions]')).toBeVisible();
@@ -58,6 +58,46 @@ test('activated analytics remains blocked before consent and exposes equal choic
   const debugEvents = await page.evaluate(() => window.FreeHTLAnalytics.debugEvents);
   expect(debugEvents.some((entry) => entry.eventName === 'page_view')).toBeFalsy();
   expect(googleRequests).toEqual([]);
+});
+
+test('mobile consent sheet keeps the lesson visible and presents equal choices', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'mobile-chromium');
+  await mockEnabledAnalytics(page);
+  await page.goto('/', { waitUntil: 'networkidle' });
+
+  const metrics = await page.evaluate(() => {
+    const banner = document.querySelector('[data-analytics-banner]');
+    const main = document.querySelector('main');
+    const allow = banner.querySelector('[data-analytics-consent="granted"]').getBoundingClientRect();
+    const decline = banner.querySelector('[data-analytics-consent="denied"]').getBoundingClientRect();
+    const bounds = banner.getBoundingClientRect();
+    return {
+      bannerHeight: bounds.height,
+      bannerBottom: window.innerHeight - bounds.bottom,
+      bannerTop: bounds.top,
+      viewportHeight: window.innerHeight,
+      backgroundColor: getComputedStyle(banner).backgroundColor,
+      mainPaddingTop: Number.parseFloat(getComputedStyle(main).paddingTop) || 0,
+      allowWidth: allow.width,
+      declineWidth: decline.width,
+      allowHeight: allow.height,
+      declineHeight: decline.height,
+    };
+  });
+
+  expect(metrics.bannerHeight).toBeLessThanOrEqual(240);
+  expect(metrics.bannerTop).toBeGreaterThan(metrics.viewportHeight / 2);
+  expect(metrics.bannerBottom).toBeGreaterThanOrEqual(0);
+  expect(metrics.bannerBottom).toBeLessThanOrEqual(24);
+  expect(metrics.backgroundColor).toBe('rgb(255, 255, 255)');
+  expect(metrics.mainPaddingTop).toBeLessThan(100);
+  expect(Math.abs(metrics.allowWidth - metrics.declineWidth)).toBeLessThanOrEqual(1);
+  expect(Math.abs(metrics.allowHeight - metrics.declineHeight)).toBeLessThanOrEqual(1);
+
+  await page.locator('[data-analytics-open-banner]').click();
+  await expect(page.locator('[data-analytics-dialog]')).toBeVisible();
+  await expect(page.locator('[data-analytics-dialog] [data-analytics-consent="granted"]')).toBeVisible();
+  await expect(page.locator('[data-analytics-dialog] [data-analytics-consent="denied"]')).toBeVisible();
 });
 
 test('declining analytics persists without loading any Google tag', async ({ page }) => {
