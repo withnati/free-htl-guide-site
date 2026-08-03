@@ -58,6 +58,19 @@ class PublicBuildTests(unittest.TestCase):
                 content,
             )
 
+    def test_premium_learning_library_is_deployed_without_protected_content(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = self.build_preview(directory)
+            page = output / "premium/index.html"
+            self.assertTrue(page.is_file())
+            content = page.read_text(encoding="utf-8")
+            self.assertIn('data-page="premium-hub"', content)
+            self.assertIn('content="noindex,nofollow"', content)
+            self.assertIn("Secure release in progress", content)
+            self.assertIn("premium-ui.js", content)
+            self.assertNotIn("data-correct=", content)
+            self.assertNotIn("data-expl=", content)
+
     def test_extensionless_preview_routes_receive_private_headers(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = self.build_preview(directory)

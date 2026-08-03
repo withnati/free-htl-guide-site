@@ -5,6 +5,8 @@
   const rootUrl = script ? new URL('../', script.src) : new URL('./', window.location.href);
   const auth = window.FreeHTLAuth;
   const billing = window.FreeHTLBilling;
+  let resolveReady;
+  const ready = new Promise((resolve) => { resolveReady = resolve; });
 
   function siteUrl(path) {
     return new URL(path.replace(/^\//, ''), rootUrl).href;
@@ -33,8 +35,8 @@
     });
     signUpLinks.forEach((link) => {
       const premium = state === 'premium' || state === 'attention';
-      link.href = siteUrl(premium ? 'account/subscription.html' : 'pricing.html');
-      link.textContent = premium ? 'Premium active' : 'View Premium';
+      link.href = siteUrl(premium ? 'premium/index.html' : 'pricing.html');
+      link.textContent = premium ? 'Premium library' : 'View Premium';
       link.classList.toggle('premium-account-link', premium);
     });
   }
@@ -50,6 +52,7 @@
       document.querySelectorAll('[data-premium-route-link]').forEach((link) => {
         link.textContent = link.dataset.premiumLabel || 'Open Premium';
       });
+      setVisible('[data-premium-library-action]', true);
       return;
     }
     if (state === 'free') {
@@ -65,6 +68,7 @@
     if (state === 'error') {
       setText('[data-premium-availability]', 'We could not confirm your account access. Free study remains available; refresh to check Premium again.');
     }
+    setVisible('[data-premium-library-action]', false);
   }
 
   function applyPreviewState(state) {
@@ -118,12 +122,62 @@
     return status.state === 'free' ? 'free' : 'ended';
   }
 
-  function applyState(state) {
+  function applyHubState(state) {
+    const premium = state === 'premium' || state === 'attention';
+    setVisible('[data-premium-hub-library]', premium);
+    setVisible('[data-premium-hub-sign-in]', state === 'signed-out');
+    setVisible('[data-premium-hub-upgrade]', state === 'free' || state === 'ended');
+    setVisible('[data-premium-hub-error]', state === 'error');
+    if (premium) {
+      setText('[data-premium-hub-label]', state === 'attention' ? 'Premium access · Billing attention' : 'Premium access confirmed');
+      setText('[data-premium-hub-message]', state === 'attention'
+        ? 'Your Premium learning library is available. Review billing soon to avoid an interruption.'
+        : 'Your Premium learning library is ready. Continue with available secure lessons and track what is coming next.');
+      setVisible('[data-premium-hub-loading]', false);
+      return;
+    }
+    if (state === 'signed-out') {
+      setText('[data-premium-hub-label]', 'Sign in required');
+      setText('[data-premium-hub-message]', 'Sign in to confirm the Premium access attached to your account.');
+    } else if (state === 'free') {
+      setText('[data-premium-hub-label]', 'Free account');
+      setText('[data-premium-hub-message]', 'Your account is active, but it does not currently include Premium learning access.');
+    } else if (state === 'ended') {
+      setText('[data-premium-hub-label]', 'Premium ended');
+      setText('[data-premium-hub-message]', 'Your Premium access has ended. Your account and eligible study history remain available.');
+    } else if (state === 'error') {
+      setText('[data-premium-hub-label]', 'Access check unavailable');
+      setText('[data-premium-hub-message]', 'We could not confirm your Premium access. Refresh the page or review your account status.');
+    }
+    setVisible('[data-premium-hub-loading]', false);
+  }
+
+  function applyDashboardState(state) {
+    const premium = state === 'premium' || state === 'attention';
+    if (!premium) return;
+    setText('[data-dashboard-account-heading]', state === 'attention' ? 'Premium access needs attention' : 'Premium learning account');
+    setText('[data-dashboard-account-copy]', state === 'attention'
+      ? 'Your Premium tools remain available. Review billing soon to avoid an interruption.'
+      : 'Your account includes Premium lessons and study tools. Open the Premium library to continue.');
+    setText('[data-account-status]', 'Premium learner account');
+    setText('[data-access-status]', 'Premium content');
+    setText('[data-dashboard-access-note]', 'Premium access is confirmed from trusted account records. Protected lesson and question content is still authorized by the server when opened.');
+    document.querySelectorAll('[data-premium-dashboard-continue]').forEach((link) => {
+      link.href = siteUrl('premium/index.html');
+      link.textContent = 'Open Premium library';
+    });
+  }
+
+  function applyState(state, status = null) {
     document.body.dataset.premiumUiState = state;
     replaceAccountLinks(state);
     if (document.querySelector('[data-premium-availability]')) applyHomeState(state);
     if (document.body.dataset.page === 'premium-preview') applyPreviewState(state);
-    window.dispatchEvent(new CustomEvent('fhl:premium-ui-ready', { detail: { state } }));
+    if (document.body.dataset.page === 'premium-hub') applyHubState(state);
+    if (document.body.dataset.page === 'my-progress') applyDashboardState(state);
+    const detail = { state, status };
+    window.dispatchEvent(new CustomEvent('fhl:premium-ui-ready', { detail }));
+    resolveReady(detail);
   }
 
   async function initialize() {
@@ -135,11 +189,13 @@
       const result = await billing.getSubscriptionStatus();
       if (result.requiresSignIn) return applyState('signed-out');
       if (result.error || !result.data) throw result.error || new Error('Premium status unavailable.');
-      applyState(projectState(result.data));
+      applyState(projectState(result.data), result.data);
     } catch {
       applyState('error');
     }
   }
 
+  window.FreeHTLPremiumUI = Object.freeze({ ready, siteUrl });
+  document.querySelector('[data-premium-hub-retry]')?.addEventListener('click', () => window.location.reload());
   initialize();
 })();

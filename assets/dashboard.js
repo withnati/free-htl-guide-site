@@ -59,6 +59,25 @@
       : '<div class="empty-state">Your recent lessons, quizzes, and practice attempts will appear here.</div>';
   }
 
+  function applyTrustedPremiumState(state) {
+    const premium = state === 'premium' || state === 'attention';
+    if (!premium) return;
+    $('[data-dashboard-account-heading]').textContent = state === 'attention'
+      ? 'Premium access needs attention'
+      : 'Premium learning account';
+    $('[data-dashboard-account-copy]').textContent = state === 'attention'
+      ? 'Your Premium tools remain available. Review billing soon to avoid an interruption.'
+      : 'Your account includes Premium lessons and study tools. Open the Premium library to continue.';
+    $('[data-account-status]').textContent = 'Premium learner account';
+    $('[data-access-status]').textContent = 'Premium content';
+    $('[data-dashboard-access-note]').textContent = 'Premium access is confirmed from trusted account records. Each protected lesson and practice experience checks access again when opened.';
+    document.querySelectorAll('[data-premium-dashboard-continue]').forEach((link) => {
+      link.href = 'premium/index.html';
+      link.textContent = 'Open Premium library';
+      link.hidden = false;
+    });
+  }
+
   function render(model) {
     latestModel = model;
     $('[data-summary-modules]').textContent = `${model.summary.modulesStarted}/${model.summary.totalModules}`;
@@ -75,12 +94,13 @@
 
     $('[data-account-status]').textContent = model.account.localOnly ? 'Using this device' : 'Free learner account';
     $('[data-storage-status]').textContent = model.account.localOnly ? 'On this device' : 'In your account';
-    $('[data-access-status]').textContent = model.account.entitlement.tier === 'public' ? 'Free content' : 'Premium content';
+    $('[data-access-status]').textContent = 'Free content';
     $('[data-migration-status]').textContent = model.account.localOnly ? 'Ready to add to an account' : 'Connected to this account';
 
     renderModules(model);
     renderDomains(model);
     renderActivity(model);
+    applyTrustedPremiumState(document.body.dataset.premiumUiState);
     document.body.dataset.progressDashboardLoaded = 'true';
   }
 
@@ -129,5 +149,6 @@
   });
 
   service?.subscribe(() => { void refresh(); });
+  window.addEventListener('fhl:premium-ui-ready', (event) => applyTrustedPremiumState(event.detail?.state));
   void refresh();
 })();

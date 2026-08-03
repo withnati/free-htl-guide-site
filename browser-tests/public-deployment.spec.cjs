@@ -55,6 +55,15 @@ async function mockPremiumSupabase(page, status = {
               invoke: async (name) => name === 'subscription-status'
                 ? ({ data: ${JSON.stringify(status)}, error: null })
                 : ({ data: {}, error: null })
+            },
+            from() {
+              const query = {
+                select: () => query,
+                eq: () => query,
+                limit: () => query,
+                then: (resolve, reject) => Promise.resolve({ data: [], error: null }).then(resolve, reject)
+              };
+              return query;
             }
           };
         }
@@ -161,11 +170,52 @@ test('Premium account receives an entitlement-aware homepage shell', async ({ pa
 
   await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'premium');
   await expect(page.getByText(/Your Premium access is active/)).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Premium active' }).first()).toHaveAttribute(
-    'href', /account\/subscription\.html$/
+  await expect(page.getByRole('link', { name: 'Premium library' }).first()).toHaveAttribute(
+    'href', /premium\/index\.html$/
   );
+  await expect(page.getByRole('link', { name: 'Open Premium library' }).last()).toBeVisible();
   await expect(page.getByRole('link', { name: 'Open lesson' }).first()).toBeVisible();
   await expect(page.getByText('Premium enrollment is not open yet.')).toHaveCount(0);
+  await expectNoHorizontalOverflow(page);
+});
+
+test('signed-out Premium library keeps learning content gated', async ({ page }) => {
+  await mockSignedOutSupabase(page);
+  await page.goto('/premium/index.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'signed-out');
+  await expect(page.getByRole('heading', { name: 'Sign in to open your library' })).toBeVisible();
+  await expect(page.locator('[data-premium-hub-library]')).toBeHidden();
+  await expect(page.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', /account\/sign-in\.html/);
+  await expectNoHorizontalOverflow(page);
+});
+
+test('Premium library shows only available and truthfully staged learning', async ({ page }) => {
+  await mockPremiumSupabase(page);
+  await page.goto('/premium/index.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'premium');
+  await expect(page.getByText('Premium access confirmed')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open lesson' })).toHaveAttribute('href', 'processing-proof.html');
+  await expect(page.getByText('Secure release in progress')).toHaveCount(4);
+  await expect(page.locator('[data-premium-hub-upgrade]')).toBeHidden();
+  await expect(page.locator('fieldset[data-correct]')).toHaveCount(0);
+  await expect(page.locator('[data-expl]')).toHaveCount(0);
+  await expectNoHorizontalOverflow(page);
+});
+
+test('Premium dashboard projects trusted access and links to the library', async ({ page }) => {
+  await mockPremiumSupabase(page);
+  await page.goto('/my-progress.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-progress-dashboard-loaded', 'true');
+  await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'premium');
+  await expect(page.getByText('Premium learning account')).toBeVisible();
+  await expect(page.locator('[data-account-status]')).toHaveText('Premium learner account');
+  await expect(page.locator('[data-access-status]')).toHaveText('Premium content');
+  await expect(page.getByRole('link', { name: 'Open Premium library' }).first()).toHaveAttribute(
+    'href', /premium\/index\.html$/
+  );
   await expectNoHorizontalOverflow(page);
 });
 
