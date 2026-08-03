@@ -41,6 +41,11 @@ class StripeFrontendContractTests(unittest.TestCase):
         self.assertNotIn("STRIPE_SECRET_KEY", PRICING + SUBSCRIPTION + BILLING + UI)
         self.assertNotIn("STRIPE_WEBHOOK_SECRET", PRICING + SUBSCRIPTION + BILLING + UI)
 
+    def test_existing_subscriber_is_sent_to_subscription_management(self) -> None:
+        self.assertIn('result.data?.manageSubscription === true', UI)
+        self.assertIn("siteUrl('account/subscription.html')", UI)
+        self.assertIn('You already have a subscription.', UI)
+
 
 if __name__ == "__main__":
     unittest.main()
