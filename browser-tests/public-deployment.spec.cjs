@@ -37,7 +37,7 @@ async function mockPremiumSupabase(page, status = {
   state: 'active', premiumAccess: true, billingCadence: 'annual',
   currentPeriodEnd: '2027-08-03T00:00:00.000Z', graceUntil: null,
   cancelAtPeriodEnd: false, canManageBilling: true
-}) {
+}, invokeError = null) {
   await page.route(sdkUrl, (route) => route.fulfill({
     status: 200,
     contentType: 'application/javascript',
@@ -53,7 +53,7 @@ async function mockPremiumSupabase(page, status = {
             },
             functions: {
               invoke: async (name) => name === 'subscription-status'
-                ? ({ data: ${JSON.stringify(status)}, error: null })
+                ? ({ data: ${JSON.stringify(status)}, error: ${JSON.stringify(invokeError)} })
                 : ({ data: {}, error: null })
             },
             from() {
@@ -203,6 +203,43 @@ test('Premium library shows only available and truthfully staged learning', asyn
   await expect(page.locator('[data-premium-hub-upgrade]')).toBeHidden();
   await expect(page.locator('fieldset[data-correct]')).toHaveCount(0);
   await expect(page.locator('[data-expl]')).toHaveCount(0);
+  await expectNoHorizontalOverflow(page);
+});
+
+test('offline Premium library stays gated without implying an entitlement change', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
+  });
+  await mockPremiumSupabase(page, null, { message: 'Failed to fetch' });
+  await page.goto('/premium/index.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'offline');
+  await expect(page.locator('[data-premium-hub-label]')).toHaveText('Offline');
+  await expect(page.getByRole('heading', { name: 'Reconnect to confirm your library' })).toBeVisible();
+  await expect(page.getByText('Your account and access have not been changed.')).toBeVisible();
+  await expect(page.locator('[data-premium-hub-library]')).toBeHidden();
+  await expect(page.locator('[data-premium-hub-upgrade]')).toBeHidden();
+  await expect(page.locator('[data-premium-hub-error-plan]')).toBeHidden();
+  await expect(page.locator('[data-premium-hub-retry]')).toBeVisible();
+  await expect(page.locator('fieldset[data-correct]')).toHaveCount(0);
+  await expect(page.locator('[data-expl]')).toHaveCount(0);
+  await expectNoHorizontalOverflow(page);
+});
+
+test('offline practice preview keeps protected tools locked without showing an upgrade prompt', async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
+  });
+  await mockPremiumSupabase(page, null, { message: 'Failed to fetch' });
+  await page.goto('/mock-exam.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'offline');
+  await expect(page.locator('[data-premium-preview-label]')).toHaveText('Offline');
+  await expect(page.locator('[data-premium-preview-message]')).toContainText('Reconnect to confirm access');
+  await expect(page.getByText('Your account has not been changed.')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Compare Premium plans' })).toBeHidden();
+  await expect(page.locator('[data-start-exam]')).toHaveCount(0);
+  await expect(page.locator('script[src*="mock-exam"]')).toHaveCount(0);
   await expectNoHorizontalOverflow(page);
 });
 
