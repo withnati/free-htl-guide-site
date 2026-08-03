@@ -2,7 +2,7 @@
 
 Free HTL Guide is an HT/HTL learning and certification-preparation platform in active development. It combines structured histotechnology lessons, quizzes, mock exams, targeted practice, verified learner accounts, and cloud-backed progress.
 
-The current public GitHub Pages deployment remains a development preview. Premium-designated content is still publicly retrievable in the existing static repository and deployment and must not be treated as securely protected until Layer 14 staging, review, and cutover are complete.
+The repository is at the V5.0 staging and sandbox checkpoint. Cloudflare preview deployment, protected-delivery containment, verified accounts, cloud progress, subscription lifecycle handling, and the Fixation runtime-question pilot are implemented and validated. This is not approval for a production cutover or live billing.
 
 ## Product direction
 
@@ -16,7 +16,7 @@ Authentication proves identity only. Browser metadata, profile fields, URL param
 
 ## Current architecture
 
-### Completed Layer 13 foundation
+### Completed account, progress, and protected-delivery foundation
 
 - Static frontend currently deployed through GitHub Pages during development
 - Supabase Auth with signup, email verification, sign-in, sign-out, recovery, and password reset
@@ -34,23 +34,23 @@ Authentication proves identity only. Browser metadata, profile fields, URL param
 - Privacy-first, consent-gated analytics
 - Automated Site, Browser, and Database Quality workflows
 
-### Approved Layer 14 architecture
+### Implemented staging architecture
 
 - Cloudflare Pages for previews, production hosting, custom domains, TLS, security headers, and rollback
 - Supabase Auth for learner identity
 - Supabase PostgreSQL for learner progress and server-controlled entitlement records
 - Supabase Edge Functions for authenticated entitlement checks
 - Private Supabase Storage for protected lessons, question payloads, explanations, answer keys, and downloads
-- Stripe or another approved payment provider later in Layer 15
+- Stripe sandbox billing with server-controlled entitlement updates and lifecycle reconciliation
 
 ## Current development status
 
-- Layers 1–13 are complete and merged into `main`.
+- Layers 1–16.9 represented by the V5.0 checkpoint are merged into `main`.
 - Layer 12 Targeted Practice merged through PR #17 as `a130066847650988181e1d0c452f920bb7cf252b`.
 - Layer 13 authentication and cloud progress merged through PR #18 as `405686a2193282d246d2c2878b9bafb015617aea`.
-- Layer 14 production hosting and protected delivery is active in draft PR #19 on `layer-14-production-protected-delivery`.
-- Layer 15 will connect payment-provider state to server-controlled entitlements.
-- Layer 16 will complete the launch funnel, conversion path, and product optimization.
+- Layer 14 hosting and protected delivery, Layer 15 subscription architecture/UX, and the Layer 16 question-runtime and sandbox-billing work are implemented on `main`.
+- Staging uses Cloudflare previews, Supabase staging services, and payment-provider sandbox/test mode only.
+- Live billing, production data/services, the canonical production domain, final legal/tax/refund wording, and production deployment remain owner-controlled launch gates.
 
 The 150-record development bank contains 70 authority-reviewed base questions and 80 alternate scenarios that still require final manual scientific and editorial review.
 
@@ -159,6 +159,9 @@ The committed `package-lock.json` and Browser Quality workflow use deterministic
 - `docs/LAYER_14_CONTENT_BOUNDARY.md`
 - `docs/LAYER_14_ENTITLEMENTS_AND_PROOF.md`
 - `docs/LAYER_14_OPERATIONS.md`
+- `docs/LIVE_BILLING_LAUNCH_READINESS.md`
+- `docs/LAYER_16_INTEGRATION_STATUS.md`
+- `docs/WHOLE_PRODUCT_REASSESSMENT_2026-08-03.md`
 - `data/content-access.json`
 - `data/progress-schema.json`
 - `data/question-bank-manifest.json`
@@ -170,4 +173,4 @@ The committed `package-lock.json` and Browser Quality workflow use deterministic
 
 Major product layers are developed on dedicated branches and opened as draft pull requests. A layer must not be merged until its automated workflows pass, its security boundaries are reviewed, desktop and mobile behavior is verified, staging evidence is complete, and explicit merge approval is given.
 
-Layer 14 must remain in draft until Site Quality, Browser Quality, Database Quality, protected-delivery security checks, public-build leakage scans, staging verification, and owner approval are complete.
+Every focused PR must remain unmerged until its applicable Site, Browser, Database, protected-delivery, public-build, and preview checks pass on the exact head SHA. Production deployment and live billing additionally require the owner-controlled gates in `docs/LIVE_BILLING_LAUNCH_READINESS.md`.

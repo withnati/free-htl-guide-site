@@ -1,8 +1,8 @@
 # FHL Website Product Roadmap
 
 **Project:** Free HTL Guide / FHL educational platform  
-**Current completed milestone:** Layer 13 — verified learner accounts and cloud-backed progress  
-**Current active milestone:** Layer 14 — production hosting and protected premium-content delivery
+**Current completed checkpoint:** V5.0 — staging deployment, protected delivery, subscription lifecycle, Fixation runtime pilot, and sandbox billing validation
+**Current active milestone:** launch-readiness closure without production cutover
 
 ## Product goal
 
@@ -82,11 +82,13 @@ Delivered:
 
 Merged through PR #18 as commit `405686a2193282d246d2c2878b9bafb015617aea`.
 
-## Active milestone
+## Implemented milestones after Layer 13
 
-### Layer 14 — production hosting and protected premium-content delivery
+### Layers 14–16.9 — protected delivery, subscriptions, question runtime, and sandbox billing
 
-Primary objective: create a production-capable hosting and authorization architecture that separates public acquisition content, free account content, premium content, and server-only operations.
+The V5.0 checkpoint implements and validates the following in staging/development and provider sandbox environments:
+
+This checkpoint preserves the milestone sequence: Layer 14 established protected delivery, Layer 15 established subscription architecture and learner UX, and Layer 16 established the question runtime and sandbox-billing integration.
 
 Approved architecture:
 
@@ -95,46 +97,34 @@ Approved architecture:
 - Supabase PostgreSQL for learner progress and server-controlled entitlements;
 - Supabase Edge Functions for session and entitlement checks;
 - private Supabase Storage for protected content;
-- payment processing deferred primarily to Layer 15.
+- server-created subscription checkout and billing-portal flows in sandbox;
+- idempotent lifecycle webhook processing and reconciliation;
+- subscription UX and duplicate-subscription prevention;
+- canonical question records, review workflow, and protected runtime delivery;
+- an approved Fixation runtime pilot with shadow verification and public fallback safety.
 
-Required deliverables:
+The following production gates remain deliberately incomplete:
 
-- architecture decision record;
-- local/staging/production environment plan;
-- public-versus-protected content inventory;
-- repository and build containment controls;
-- server-controlled entitlement schema and audit history;
-- one protected-content proof;
-- accessible signed-out, upgrade-required, expired, failure, and authorized states;
-- private storage and protected-delivery endpoint;
-- security headers;
-- public-build premium-leakage scanning;
-- entitlement, token, origin, revocation, direct-URL, desktop, mobile, and accessibility tests;
-- deployment, migration, rollback, incident-response, monitoring, secret-rotation, and smoke-test documentation;
-- complete staging evidence;
-- explicit approval before merge or production deployment.
+- canonical production domain and controlled Cloudflare production cutover;
+- separate approved production Supabase configuration and secrets;
+- live payment products, prices, tax posture, refund policy, legal wording, and owner authorization;
+- final scientific/editorial review of the 80 alternate question scenarios;
+- production smoke, rollback, monitoring, and incident evidence;
+- explicit owner approval before any live billing or production deployment.
 
-Layer 14 is not primarily a payment layer.
+## Launch-readiness workstreams
 
-## Planned milestones
+### Subscription production readiness
 
-### Layer 15 — subscription billing and entitlement automation
+Primary objective: promote the validated sandbox lifecycle to production only after every owner-controlled gate is satisfied.
 
-Primary objective: connect payment-provider state to the server-controlled entitlement foundation created in Layer 14.
-
-Planned scope:
+Remaining production scope:
 
 - final plan and pricing decision;
-- Stripe or approved payment-provider integration;
-- checkout session creation on the server;
-- customer and subscription linkage;
-- idempotent webhook processing;
-- billing portal;
-- trial, active, grace, canceled, expired, refunded, disputed, and revoked handling;
-- payment-event reconciliation and audit history;
-- accessible billing and subscription states;
 - cancellation and renewal communication;
 - tax, refund, privacy, and terms review;
+- approved live-provider products, prices, credentials, and webhook destination;
+- reconciliation and recovery rehearsal against production-like configuration;
 - production payment testing and rollback procedures.
 
 Security boundary:
@@ -144,7 +134,7 @@ Security boundary:
 - duplicate and out-of-order webhook events must be handled safely;
 - payment secrets remain server-only.
 
-### Layer 16 — launch funnel, conversion, and product optimization
+### Launch funnel, conversion, and product optimization
 
 Primary objective: turn the secure educational platform into a trusted, measurable, sustainable learning business.
 
@@ -217,12 +207,11 @@ These are not committed milestones and require separate prioritization:
 ## Current open items
 
 - Final scientific and editorial review of 80 alternate scenarios.
-- Complete Layer 14 protected-delivery work.
 - Select production domain and staging hostname.
-- Establish separate staging and production Supabase projects.
-- Connect the approved Cloudflare project.
+- Establish and approve the production Supabase project and secrets.
+- Authorize the controlled Cloudflare production cutover.
 - Decide repository privacy timing before new launch-premium content is added.
-- Add dependency lockfile and change browser CI to `npm ci`.
-- Update README and repository status for Layer 13 and Layer 14.
+- Configure enforceable GitHub branch protection and required checks for `main`.
 - Confirm public post-merge account routes before directing real learners to signup.
 - Consider CODEOWNERS before adding external collaborators.
+- Complete live-billing, pricing, tax, refund, legal, monitoring, and rollback gates in `LIVE_BILLING_LAUNCH_READINESS.md`.
