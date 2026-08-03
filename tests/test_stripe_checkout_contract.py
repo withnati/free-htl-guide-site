@@ -62,6 +62,16 @@ class StripeCheckoutContractTests(unittest.TestCase):
         self.assertIn("Cache-Control", self.function)
         self.assertIn("private, no-store", self.function)
 
+    def test_existing_billable_subscription_cannot_open_another_checkout(self) -> None:
+        self.assertIn(".from('billing_subscriptions')", self.function)
+        self.assertIn("['trialing', 'active', 'grace', 'past_due', 'unpaid']", self.function)
+        self.assertIn("subscription.normalized_state === 'canceled'", self.function)
+        self.assertIn('new Date(subscription.current_period_end).getTime() > now', self.function)
+        self.assertIn('manageSubscription: true', self.function)
+        lookup_index = self.function.index(".from('billing_subscriptions')")
+        checkout_index = self.function.index('stripe.checkout.sessions.create')
+        self.assertLess(lookup_index, checkout_index)
+
 
 if __name__ == "__main__":
     unittest.main()

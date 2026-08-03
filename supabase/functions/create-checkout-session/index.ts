@@ -99,6 +99,31 @@ Deno.serve(async (request) => {
   });
   const stripe = new Stripe(stripeSecretKey);
 
+  const { data: existingSubscriptions, error: subscriptionReadError } = await adminClient
+    .from('billing_subscriptions')
+    .select('normalized_state,current_period_end')
+    .eq('user_id', userData.user.id)
+    .eq('provider', 'stripe');
+
+  if (subscriptionReadError) {
+    console.error(JSON.stringify({ requestId, error: 'billing_subscription_lookup_failed' }));
+    return jsonResponse(origin, 503, { error: 'Checkout is temporarily unavailable.', requestId });
+  }
+
+  const now = Date.now();
+  const hasBillableSubscription = (existingSubscriptions || []).some((subscription) => {
+    if (['trialing', 'active', 'grace', 'past_due', 'unpaid'].includes(subscription.normalized_state)) {
+      return true;
+    }
+    return subscription.normalized_state === 'canceled'
+      && Boolean(subscription.current_period_end)
+      && new Date(subscription.current_period_end).getTime() > now;
+  });
+
+  if (hasBillableSubscription) {
+    return jsonResponse(origin, 200, { manageSubscription: true, requestId });
+  }
+
   const { data: existingCustomer, error: customerReadError } = await adminClient
     .from('billing_customers')
     .select('provider_customer_id')

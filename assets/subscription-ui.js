@@ -52,6 +52,11 @@
           window.location.assign(signInUrl());
           return;
         }
+        if (result.data?.manageSubscription === true) {
+          showNotice('You already have a subscription. Opening your billing settings…');
+          window.location.assign(window.FreeHTLAuth.siteUrl('account/subscription.html'));
+          return;
+        }
         const checkoutUrl = billing.approvedCheckoutUrl(result.data?.checkoutUrl);
         if (result.error || !checkoutUrl) throw result.error || new Error('Checkout URL unavailable.');
         window.location.assign(checkoutUrl);
