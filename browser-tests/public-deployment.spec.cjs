@@ -96,6 +96,8 @@ test('public homepage leads with HT and HTL exam preparation', async ({ page }) 
   const body = await page.locator('body').innerText();
   expect(body).not.toContain('server-controlled entitlement');
   expect(body).not.toContain('question payload');
+  await expect(page.locator('link[rel="icon"]')).toHaveAttribute('href', /\/assets\/app-icon\.svg$/);
+  await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', /\/site\.webmanifest$/);
   await expectNoHorizontalOverflow(page);
 });
 

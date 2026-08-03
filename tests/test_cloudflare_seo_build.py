@@ -41,6 +41,9 @@ class CloudflareSeoBuildTests(unittest.TestCase):
             )
             self.assertEqual(manifest["siteUrl"], seo["site"]["url"])
             self.assertIn("free-htl-auth-preview-v1", config)
+            seo_runtime = (output / "assets/seo.js").read_text(encoding="utf-8")
+            self.assertIn("new URL(data.site.icon, runtimeRoot)", seo_runtime)
+            self.assertIn("new URL(data.site.manifest, runtimeRoot)", seo_runtime)
 
     def test_generated_build_uses_deployment_origin_for_seo_and_manifest(self) -> None:
         environment = {

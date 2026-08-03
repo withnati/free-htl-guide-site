@@ -8,6 +8,7 @@
 
   const dataUrl = new URL('../data/site-seo.json', script.src);
   const stylesheetUrl = new URL('seo.css', script.src);
+  const runtimeRoot = new URL('../', script.src);
   const pageKey = document.body?.dataset?.page || '';
 
   function ensureStylesheet() {
@@ -96,7 +97,7 @@
       if (!related) return;
       const link = document.createElement('a');
       link.className = 'btn';
-      link.href = new URL(related.path, data.site.url).href;
+      link.href = new URL(related.path, runtimeRoot).href;
       link.textContent = pageLabel(data, relatedKey);
       list.appendChild(link);
     });
@@ -132,7 +133,7 @@
     status.setAttribute('role', 'status');
     status.setAttribute('aria-live', 'polite');
 
-    const shareUrl = new URL(data.site.sharePage, data.site.url);
+    const shareUrl = new URL(data.site.sharePage, runtimeRoot);
     shareUrl.searchParams.set('p', pageKey);
 
     shareButton.addEventListener('click', async () => {
@@ -253,8 +254,8 @@
       setMeta('property', 'article:modified_time', `${data.site.updated}T00:00:00Z`);
     }
 
-    ensureLink('manifest', new URL(data.site.manifest, data.site.url).href);
-    ensureLink('icon', new URL(data.site.icon, data.site.url).href, { type: 'image/svg+xml', sizes: 'any' });
+    ensureLink('manifest', new URL(data.site.manifest, runtimeRoot).href);
+    ensureLink('icon', new URL(data.site.icon, runtimeRoot).href, { type: 'image/svg+xml', sizes: 'any' });
 
     addBreadcrumbSchema(data, page, canonical);
     addPageSchema(data, page, title, description, canonical, image);
