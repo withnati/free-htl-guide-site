@@ -29,6 +29,7 @@
   let snapshot = null;
   let attempt = null;
   let questionById = new Map();
+  let saveQueue = Promise.resolve();
 
   const escapeHtml = (value) => String(value ?? '')
     .replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
@@ -72,8 +73,12 @@
       requestedCount: attempt.requestedCount, startedAt: attempt.startedAt, currentIndex: attempt.currentIndex,
       questionIds: [...attempt.questionIds], responses: { ...attempt.responses }, flags: [...attempt.flags], checked: [...attempt.checked]
     };
-    if (typeof progress?.recordTargetedPracticeSession === 'function') await progress.recordTargetedPracticeSession(detail);
-    else stateApi.dispatchState(attempt);
+    saveQueue = saveQueue.catch(() => {}).then(() => {
+      if (typeof progress?.recordTargetedPracticeSession === 'function') return progress.recordTargetedPracticeSession(detail);
+      stateApi.dispatchState(detail);
+      return undefined;
+    });
+    await saveQueue;
   }
 
   const currentQuestion = () => questionById.get(attempt.questionIds[attempt.currentIndex]);
