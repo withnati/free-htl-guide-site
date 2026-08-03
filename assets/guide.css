@@ -20,6 +20,7 @@ body {
   background: #fff;
   line-height: 1.6;
 }
+[hidden] { display: none !important; }
 
 a { color: var(--brand); }
 a:hover { text-decoration: underline; }
@@ -95,6 +96,8 @@ code { overflow-wrap: anywhere; word-break: break-word; }
 
 .btn:hover { text-decoration: none; border-color: #94a3b8; }
 .btn-primary { background: var(--brand); border-color: var(--brand); color: #fff; }
+.premium-account-link { background: #e8f7ef; border-color: #87c6a4; color: #145c38; font-weight: 800; }
+.dark .premium-account-link { background: #173d2d; border-color: #4b9b70; color: #c9f4dc; }
 .menu-btn { display: none; }
 .mobile-menu { display: none; border-top: 1px solid var(--line); padding: .7rem 1rem; background: #fff; }
 .mobile-menu.open { display: grid; gap: .65rem; }

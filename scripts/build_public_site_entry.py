@@ -51,7 +51,7 @@ LEARNER_PREVIEW_COPY: dict[str, dict[str, object]] = {
         "eyebrow": "Premium core lesson",
         "summary": "Prepare for processing questions involving dehydration, clearing, infiltration, processor variables, decalcification, artifacts, quality control, and safety.",
         "features": ["Complete lesson and troubleshooting tables", "Module quiz with explanations", "Processing schedules, comparison tools, and study downloads"],
-        "proof": False,
+        "proof": True,
     },
     "modules/embedding-guide-v3.html": {
         "title": "Embedding and Microtomy",
