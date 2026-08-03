@@ -73,11 +73,38 @@ test('Study mode gives immediate feedback and restores a saved set', async ({ pa
 
   await page.reload();
   await declineAnalytics(page);
+  await expect(page.locator('body')).toHaveAttribute('data-targeted-practice-ready', 'true');
   await expect(page.locator('[data-resume-practice]')).toBeVisible();
   await page.locator('[data-resume-practice]').click();
   await expect(page.locator('[data-practice-position]')).toHaveText('2 of 10');
   await page.locator('[data-practice-grid] button').first().click();
   await expect(page.locator('[data-question-mount] fieldset')).toHaveClass(/correct/);
+  await expect(page.locator('[data-practice-flag]')).toHaveAttribute('aria-pressed', 'true');
+});
+
+test('rapid practice actions persist in their invoked order before reload', async ({ page }) => {
+  await openPractice(page);
+  await startPractice(page);
+  await answerCurrentCorrectly(page);
+  await page.locator('[data-check-answer]').click();
+
+  await page.evaluate(() => {
+    document.querySelector('[data-practice-flag]').click();
+    document.querySelector('[data-practice-next]').click();
+  });
+
+  await expect.poll(() => page.evaluate(() => {
+    const record = JSON.parse(localStorage.getItem('free-htl-progress-v1'));
+    const active = record?.activeSessions?.['targeted-practice'];
+    return { currentIndex: active?.currentIndex, flags: active?.flags?.length };
+  })).toEqual({ currentIndex: 1, flags: 1 });
+
+  await page.reload();
+  await declineAnalytics(page);
+  await expect(page.locator('body')).toHaveAttribute('data-targeted-practice-ready', 'true');
+  await page.locator('[data-resume-practice]').click();
+  await expect(page.locator('[data-practice-position]')).toHaveText('2 of 10');
+  await page.locator('[data-practice-grid] button').first().click();
   await expect(page.locator('[data-practice-flag]')).toHaveAttribute('aria-pressed', 'true');
 });
 
