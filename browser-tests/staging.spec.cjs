@@ -22,7 +22,9 @@ test('live staging homepage presents the HT/HTL preparation journey', async ({ p
   await expect(page.getByRole('link', { name: 'Start the free Fixation lesson' }).first()).toBeVisible();
   await expect(page.getByText('Free', { exact: true })).toBeVisible();
   await expect(page.getByText('Premium', { exact: true }).first()).toBeVisible();
-  await expect(page.getByText(/Premium enrollment is open/)).toBeVisible();
+  // Live staging may still serve the previous green main deployment while a PR is under review.
+  // Exact copy for this commit is asserted by public-deployment.spec.cjs against the generated build.
+  await expect(page.getByText(/Premium enrollment is (?:open|not open yet)/)).toBeVisible();
   const visibleCopy = await page.locator('body').innerText();
   expect(visibleCopy).not.toContain('server-controlled entitlement');
   expect(visibleCopy).not.toContain('question payload');
@@ -37,7 +39,7 @@ test('live staging Premium route is a learner-facing preview', async ({ page }) 
   expect(response.headers()['cache-control'] || '').toContain('private');
   await expect(page.locator('body')).toHaveAttribute('data-page', 'premium-preview');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Processing and Decalcification');
-  await expect(page.getByText('Premium preview', { exact: true })).toBeVisible();
+  await expect(page.getByText(/^(?:Premium preview|Included with Premium)$/).first()).toBeVisible();
   await expect(page.getByRole('link', { name: 'Start the free Fixation lesson' })).toBeVisible();
   await expect(page.locator('fieldset[data-correct]')).toHaveCount(0);
   await expectNoHorizontalOverflow(page);
