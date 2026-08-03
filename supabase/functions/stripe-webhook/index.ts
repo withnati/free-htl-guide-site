@@ -36,6 +36,13 @@ function entitlementProjection(state: string, periodEnd: string | null, graceUnt
   return { status: 'expired', validUntil: periodEnd, graceUntil: null };
 }
 
+function invoiceSubscriptionId(invoice: Stripe.Invoice): string {
+  const parent = invoice.parent;
+  if (parent?.type !== 'subscription_details') return '';
+  const subscription = parent.subscription_details?.subscription;
+  return typeof subscription === 'string' ? subscription : subscription?.id || '';
+}
+
 Deno.serve(async (request) => {
   if (request.method !== 'POST') return json(405, { error: 'Method not allowed.' });
   if (!stripeSecretKey || !webhookSecret) return json(503, { error: 'Webhook configuration unavailable.' });
@@ -112,12 +119,24 @@ Deno.serve(async (request) => {
       return json(200, { received: true });
     }
 
-    if (
-      event.type === 'customer.subscription.created'
+    const isSubscriptionEvent = event.type === 'customer.subscription.created'
       || event.type === 'customer.subscription.updated'
-      || event.type === 'customer.subscription.deleted'
-    ) {
-      const subscription = event.data.object as Stripe.Subscription;
+      || event.type === 'customer.subscription.deleted';
+    const isInvoiceEvent = event.type === 'invoice.paid' || event.type === 'invoice.payment_failed';
+
+    if (isSubscriptionEvent || isInvoiceEvent) {
+      let subscription: Stripe.Subscription;
+      if (isSubscriptionEvent) {
+        subscription = event.data.object as Stripe.Subscription;
+      } else {
+        const invoice = event.data.object as Stripe.Invoice;
+        const subscriptionId = invoiceSubscriptionId(invoice);
+        if (!subscriptionId) {
+          await markEvent('processed');
+          return json(200, { received: true, ignored: true });
+        }
+        subscription = await stripe.subscriptions.retrieve(subscriptionId);
+      }
       const customerId = typeof subscription.customer === 'string'
         ? subscription.customer
         : subscription.customer.id;
@@ -148,7 +167,9 @@ Deno.serve(async (request) => {
         return json(200, { received: true, stale: true });
       }
 
-      const state = normalizeStripeSubscriptionStatus(subscription.status);
+      const state = event.type === 'invoice.payment_failed'
+        ? 'past_due'
+        : normalizeStripeSubscriptionStatus(subscription.status);
       const period = subscriptionPeriod(subscription);
       const periodStart = unixToIso(period.currentPeriodStart);
       const periodEnd = unixToIso(period.currentPeriodEnd);
@@ -223,6 +244,91 @@ Deno.serve(async (request) => {
         grants_premium: ['trialing', 'active'].includes(state) || (state === 'past_due' && Boolean(graceUntil)),
         effective_until: graceUntil || periodEnd,
         reason: `Stripe event ${event.type} projected to entitlement state ${projection.status}.`,
+        actor_type: 'webhook',
+      });
+
+      await markEvent('processed');
+      return json(200, { received: true });
+    }
+
+    if (event.type === 'charge.refunded' || event.type === 'charge.dispute.created') {
+      let charge: Stripe.Charge;
+      if (event.type === 'charge.refunded') {
+        charge = event.data.object as Stripe.Charge;
+        if (!charge.refunded) {
+          await markEvent('processed');
+          return json(200, { received: true, ignored: true, reason: 'partial_refund' });
+        }
+      } else {
+        const dispute = event.data.object as Stripe.Dispute;
+        const disputeChargeId = typeof dispute.charge === 'string' ? dispute.charge : dispute.charge?.id || '';
+        if (!disputeChargeId) throw new Error('billing_charge_unresolved');
+        charge = await stripe.charges.retrieve(disputeChargeId);
+      }
+
+      const customerId = typeof charge.customer === 'string' ? charge.customer : charge.customer?.id || '';
+      if (!customerId) throw new Error('billing_customer_unresolved');
+
+      const { data: billingCustomer, error: customerError } = await admin
+        .from('billing_customers')
+        .select('id,user_id')
+        .eq('provider', 'stripe')
+        .eq('provider_customer_id', customerId)
+        .maybeSingle();
+      if (customerError || !billingCustomer) throw new Error('billing_customer_unresolved');
+
+      const { data: billingSubscription, error: subscriptionLookupError } = await admin
+        .from('billing_subscriptions')
+        .select('id,provider_subscription_id,current_period_end,provider_event_created_at')
+        .eq('billing_customer_id', billingCustomer.id)
+        .eq('provider', 'stripe')
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (subscriptionLookupError || !billingSubscription) throw new Error('billing_subscription_unresolved');
+
+      const incomingCreatedAt = new Date(event.created * 1000).toISOString();
+      if (
+        billingSubscription.provider_event_created_at
+        && billingSubscription.provider_event_created_at > incomingCreatedAt
+      ) {
+        await markEvent('ignored_stale');
+        return json(200, { received: true, stale: true });
+      }
+
+      const terminalState = event.type === 'charge.refunded' ? 'refunded' : 'disputed';
+      const now = new Date().toISOString();
+      const { error: billingUpdateError } = await admin.from('billing_subscriptions').update({
+        normalized_state: terminalState,
+        provider_event_created_at: incomingCreatedAt,
+        updated_at: now,
+      }).eq('id', billingSubscription.id);
+      if (billingUpdateError) throw new Error('billing_subscription_terminal_update_failed');
+
+      const { error: entitlementError } = await admin.from('entitlements').upsert({
+        user_id: billingCustomer.user_id,
+        product_code: 'fhl-premium',
+        status: 'revoked',
+        valid_from: now,
+        valid_until: billingSubscription.current_period_end,
+        grace_until: null,
+        canceled_at: null,
+        revoked_at: now,
+        source: 'stripe',
+        source_reference: billingSubscription.provider_subscription_id,
+        updated_at: now,
+      }, { onConflict: 'user_id,product_code' });
+      if (entitlementError) throw new Error('entitlement_terminal_projection_failed');
+
+      await admin.from('billing_audit_log').insert({
+        user_id: billingCustomer.user_id,
+        subscription_id: billingSubscription.id,
+        billing_event_id: ledgerRow.id,
+        action: event.type === 'charge.refunded' ? 'stripe_full_refund_revoked' : 'stripe_dispute_revoked',
+        resulting_state: terminalState,
+        grants_premium: false,
+        effective_until: now,
+        reason: `Stripe event ${event.type} revoked Premium access.`,
         actor_type: 'webhook',
       });
 

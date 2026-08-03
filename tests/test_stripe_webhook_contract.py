@@ -70,6 +70,27 @@ class StripeWebhookContractTests(unittest.TestCase):
         self.assertIn("|| '0'", self.helpers)
         self.assertNotIn("days = 7", self.helpers)
 
+    def test_renewal_and_payment_failure_events_reconcile_from_stripe(self) -> None:
+        self.assertIn("event.type === 'invoice.paid'", self.webhook)
+        self.assertIn("event.type === 'invoice.payment_failed'", self.webhook)
+        self.assertIn('invoiceSubscriptionId(invoice)', self.webhook)
+        self.assertIn('stripe.subscriptions.retrieve(subscriptionId)', self.webhook)
+        self.assertIn("event.type === 'invoice.payment_failed'\n        ? 'past_due'", self.webhook)
+
+    def test_full_refunds_and_disputes_revoke_but_partial_refunds_do_not(self) -> None:
+        self.assertIn("event.type === 'charge.refunded'", self.webhook)
+        self.assertIn("event.type === 'charge.dispute.created'", self.webhook)
+        self.assertIn("reason: 'partial_refund'", self.webhook)
+        self.assertIn("terminalState = event.type === 'charge.refunded' ? 'refunded' : 'disputed'", self.webhook)
+        self.assertIn("status: 'revoked'", self.webhook)
+        self.assertIn('grants_premium: false', self.webhook)
+
+    def test_terminal_payment_events_preserve_ordering_and_auditability(self) -> None:
+        self.assertIn("billingSubscription.provider_event_created_at > incomingCreatedAt", self.webhook)
+        self.assertIn("action: event.type === 'charge.refunded'", self.webhook)
+        self.assertIn("'stripe_full_refund_revoked'", self.webhook)
+        self.assertIn("'stripe_dispute_revoked'", self.webhook)
+
 
 if __name__ == "__main__":
     unittest.main()
