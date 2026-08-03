@@ -28,7 +28,7 @@
     const isAnnual = value === 'annual';
     monthly.setAttribute('aria-pressed', String(!isAnnual));
     annual.setAttribute('aria-pressed', String(isAnnual));
-    if (amount) amount.textContent = isAnnual ? '$191.99' : '$19.99';
+    if (amount) amount.textContent = isAnnual ? '$99.99' : '$9.99';
     if (cadence) cadence.textContent = isAnnual ? 'per year' : 'per month';
     if (savings) savings.hidden = !isAnnual;
     upgradeButtons.forEach((button) => {
