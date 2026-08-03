@@ -48,10 +48,10 @@ for (const absoluteUrl of sitemapUrls) {
       'content',
       `${seoData.site.url}${seoData.site.defaultImage}`
     );
-    await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', `${seoData.site.url}${seoData.site.manifest}`);
+    await expect(page.locator('link[rel="manifest"]')).toHaveAttribute('href', /\/site\.webmanifest$/);
     await expect(page.locator('link[rel="icon"][type="image/svg+xml"]')).toHaveAttribute(
       'href',
-      `${seoData.site.url}${seoData.site.icon}`
+      /\/assets\/app-icon\.svg$/
     );
 
     const pageSchema = JSON.parse(await page.locator('#free-htl-page-schema').textContent());
@@ -102,9 +102,8 @@ test('share and copy controls use safe controlled URLs', async ({ page }) => {
 
   await page.getByRole('button', { name: 'Share', exact: true }).click();
   await expect(page.locator('.seo-share-status')).toHaveText('Share-preview link copied.');
-  expect(await page.evaluate(() => window.__copiedSeoUrl)).toBe(
-    'https://withnati.github.io/free-htl-guide-site/share.html?p=fixation-v3'
-  );
+  const sameOriginShareUrl = new URL('/share.html?p=fixation-v3', page.url()).href;
+  expect(await page.evaluate(() => window.__copiedSeoUrl)).toBe(sameOriginShareUrl);
 });
 
 test('static share bridge redirects only to a known controlled page', async ({ page }) => {

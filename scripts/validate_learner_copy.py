@@ -54,6 +54,7 @@ LEARNER_HTML = (
     "account/sign-up.html",
     "account/verify-email.html",
     "premium/processing-proof.html",
+    "premium/index.html",
     "templates/premium-preview.html",
     "templates/premium-preview.tpl",
 )
@@ -63,6 +64,7 @@ LEARNER_JS = (
     "assets/cloud-progress-controller.js",
     "assets/dashboard.js",
     "assets/premium-content-client.js",
+    "assets/premium-ui.js",
 )
 
 JS_STRING_PATTERNS = (

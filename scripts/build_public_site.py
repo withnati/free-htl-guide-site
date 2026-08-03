@@ -224,8 +224,15 @@ def normalized_site_url(value: str) -> str:
 
 
 def environment_values() -> tuple[str, str, str, str]:
-    environment = os.environ.get("FHL_ENVIRONMENT", "local").strip().lower() or "local"
-    site_url = normalized_site_url(os.environ.get("FHL_PUBLIC_SITE_URL", DEFAULT_SITE_URL))
+    cloudflare_url = os.environ.get("CF_PAGES_URL", "").strip()
+    environment = os.environ.get("FHL_ENVIRONMENT", "").strip().lower()
+    if not environment:
+        environment = "preview" if cloudflare_url else "local"
+    site_url = normalized_site_url(
+        os.environ.get("FHL_PUBLIC_SITE_URL", "").strip()
+        or cloudflare_url
+        or DEFAULT_SITE_URL
+    )
     supabase_url = os.environ.get("FHL_SUPABASE_URL", DEFAULT_SUPABASE_URL).strip()
     publishable_key = os.environ.get(
         "FHL_SUPABASE_PUBLISHABLE_KEY", DEFAULT_PUBLISHABLE_KEY

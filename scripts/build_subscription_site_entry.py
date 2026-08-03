@@ -38,13 +38,18 @@ _ANALYTICS_FILES = {
     Path("data/analytics-config.json"),
 }
 
+_CLOUD_SYNC_FILES = {
+    Path("assets/cloud-sync-bootstrap.js"),
+    Path("assets/cloud-sync.css"),
+}
+
 _SEO_FILES = {
     Path("assets/seo.css"),
     Path("assets/app-icon.svg"),
     Path("assets/og-home.png"),
 }
 
-_EXPLICIT_PUBLIC_FILES = _RUNTIME_FILES | _ANALYTICS_FILES | _SEO_FILES
+_EXPLICIT_PUBLIC_FILES = _RUNTIME_FILES | _ANALYTICS_FILES | _CLOUD_SYNC_FILES | _SEO_FILES
 _original_dependency_closure = build_public_site.dependency_closure
 _original_rewrite_html = build_public_site.rewrite_html
 _original_build = build_public_site.build

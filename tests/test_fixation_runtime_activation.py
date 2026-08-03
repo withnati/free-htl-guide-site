@@ -82,6 +82,8 @@ class FixationRuntimeActivationTests(unittest.TestCase):
             Path("assets/authority.js"),
             Path("assets/seo.js"),
             Path("data/analytics-config.json"),
+            Path("assets/cloud-sync-bootstrap.js"),
+            Path("assets/cloud-sync.css"),
         ):
             self.assertIn(path, required)
             self.assertTrue((ROOT / path).is_file(), path)

@@ -10,6 +10,7 @@ if "404.html" not in build_public_site.PUBLIC_SOURCE_HTML:
 
 for route in (
     "pricing.html",
+    "premium/index.html",
     "account/subscription.html",
     "account/payment-pending.html",
     "account/checkout-canceled.html",
