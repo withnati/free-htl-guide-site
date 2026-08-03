@@ -101,6 +101,42 @@ test('dark mode persists after reload', async ({ page }, testInfo) => {
   await expect(page.locator('html')).toHaveClass(/dark/);
 });
 
+test('dark theme links, keyboard focus, and reduced motion remain accessible', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium');
+  await page.emulateMedia({ colorScheme: 'dark', reducedMotion: 'reduce' });
+  await page.goto('/');
+  await page.evaluate(() => localStorage.setItem('htl-theme', 'dark'));
+  await page.reload();
+
+  const accessibilityStyles = await page.evaluate(() => {
+    const link = document.querySelector('.feature-card a');
+    const button = document.querySelector('.hero-actions .btn');
+    button.focus();
+    const linkStyle = getComputedStyle(link);
+    const buttonStyle = getComputedStyle(button);
+    const bodyStyle = getComputedStyle(document.body);
+    return {
+      background: bodyStyle.backgroundColor,
+      linkColor: linkStyle.color,
+      outlineStyle: buttonStyle.outlineStyle,
+      outlineWidth: buttonStyle.outlineWidth,
+      scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior,
+    };
+  });
+
+  function luminance(color) {
+    const channels = color.match(/\d+/g).slice(0, 3).map((value) => Number(value) / 255)
+      .map((value) => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
+    return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+  }
+  const lighter = Math.max(luminance(accessibilityStyles.linkColor), luminance(accessibilityStyles.background));
+  const darker = Math.min(luminance(accessibilityStyles.linkColor), luminance(accessibilityStyles.background));
+  expect((lighter + 0.05) / (darker + 0.05)).toBeGreaterThanOrEqual(4.5);
+  expect(accessibilityStyles.outlineStyle).not.toBe('none');
+  expect(Number.parseFloat(accessibilityStyles.outlineWidth)).toBeGreaterThanOrEqual(3);
+  expect(accessibilityStyles.scrollBehavior).toBe('auto');
+});
+
 test('study-plan progress persists locally', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/study-plan.html');

@@ -24,6 +24,10 @@ body {
 a { color: var(--brand); }
 a:hover { text-decoration: underline; }
 button, input, textarea, select { font: inherit; max-width: 100%; }
+:where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 3px;
+}
 img, svg, video, canvas { max-width: 100%; height: auto; }
 pre { max-width: 100%; overflow-x: auto; }
 code { overflow-wrap: anywhere; word-break: break-word; }
@@ -200,6 +204,7 @@ code { overflow-wrap: anywhere; word-break: break-word; }
 .status { max-width: 100%; font-size: .78rem; font-weight: 800; border-radius: 999px; padding: .2rem .55rem; background: #e0f2fe; color: #075985; overflow-wrap: anywhere; }
 
 .dark body { background: #0b1220; color: #e5e7eb; }
+.dark a { color: #93c5fd; }
 .dark .site-header, .dark .mobile-menu { background: rgba(15,23,42,.94); border-color: #334155; }
 .dark .nav a, .dark .breadcrumbs { color: #cbd5e1; }
 .dark .hero { background: linear-gradient(180deg,#111827,#0b1220); border-color: #334155; }
@@ -216,6 +221,16 @@ code { overflow-wrap: anywhere; word-break: break-word; }
 .dark .quiz fieldset.incorrect { background: #450a0a; }
 .dark .notes textarea { background: #111827; color: #fff; border-color: #334155; }
 .dark .footer { border-color: #334155; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
 
 @media (max-width: 960px) {
   .layout { grid-template-columns: minmax(0,1fr); }
