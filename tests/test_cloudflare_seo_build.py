@@ -22,6 +22,26 @@ SPEC.loader.exec_module(BUILD)
 
 
 class CloudflareSeoBuildTests(unittest.TestCase):
+    def test_cloudflare_branch_preview_uses_its_exact_deployment_origin(self) -> None:
+        environment = {
+            "FHL_ENVIRONMENT": "",
+            "FHL_PUBLIC_SITE_URL": "",
+            "CF_PAGES_URL": "https://agent-premium-learning-hub.example.pages.dev",
+        }
+        with tempfile.TemporaryDirectory() as temporary, patch.dict(os.environ, environment, clear=False):
+            output = Path(temporary) / "dist"
+            manifest = BUILD.build(ROOT, output)
+
+            config = (output / "assets/supabase-config.js").read_text(encoding="utf-8")
+            seo = json.loads((output / "data/site-seo.json").read_text(encoding="utf-8"))
+            self.assertEqual("preview", manifest["environment"])
+            self.assertEqual(
+                "https://agent-premium-learning-hub.example.pages.dev/",
+                manifest["siteUrl"],
+            )
+            self.assertEqual(manifest["siteUrl"], seo["site"]["url"])
+            self.assertIn("free-htl-auth-preview-v1", config)
+
     def test_generated_build_uses_deployment_origin_for_seo_and_manifest(self) -> None:
         environment = {
             "FHL_ENVIRONMENT": "staging",
@@ -50,6 +70,8 @@ class CloudflareSeoBuildTests(unittest.TestCase):
                 "assets/seo.js",
                 "data/site-seo.json",
                 "site.webmanifest",
+                "assets/cloud-sync-bootstrap.js",
+                "assets/cloud-sync.css",
             ):
                 self.assertTrue((output / relative).is_file(), relative)
 
