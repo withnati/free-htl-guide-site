@@ -48,6 +48,10 @@ class StripeAccountContractTests(unittest.TestCase):
         self.assertIn("'monthly'", STATUS)
         self.assertIn("'annual'", STATUS)
 
+    def test_status_preflight_returns_a_bodyless_204_response(self) -> None:
+        self.assertIn("new Response(null, { status: 204, headers: responseHeaders(origin) })", STATUS)
+        self.assertNotIn('response(origin, 204, {})', STATUS)
+
 
 if __name__ == '__main__':
     unittest.main()

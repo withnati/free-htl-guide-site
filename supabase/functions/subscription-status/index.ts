@@ -3,9 +3,8 @@ import { createClient } from 'npm:@supabase/supabase-js@2.110.8';
 function origins() {
   return new Set((Deno.env.get('FHL_ALLOWED_ORIGINS') || '').split(',').map((v) => v.trim()).filter((v) => v && v !== '*'));
 }
-function response(origin: string | undefined, status: number, body: Record<string, unknown>) {
+function responseHeaders(origin?: string) {
   const headers = new Headers({
-    'Content-Type': 'application/json; charset=utf-8',
     'Cache-Control': 'private, no-store',
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
     'Access-Control-Allow-Methods': 'GET, OPTIONS',
@@ -13,6 +12,11 @@ function response(origin: string | undefined, status: number, body: Record<strin
     'X-Content-Type-Options': 'nosniff',
   });
   if (origin) headers.set('Access-Control-Allow-Origin', origin);
+  return headers;
+}
+function response(origin: string | undefined, status: number, body: Record<string, unknown>) {
+  const headers = responseHeaders(origin);
+  headers.set('Content-Type', 'application/json; charset=utf-8');
   return new Response(JSON.stringify(body), { status, headers });
 }
 
@@ -20,7 +24,7 @@ Deno.serve(async (request) => {
   const requestId = crypto.randomUUID();
   const origin = request.headers.get('origin') || '';
   if (!origin || !origins().has(origin)) return response(undefined, 403, { error: 'This request origin is not allowed.', requestId });
-  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: response(origin, 204, {}).headers });
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: responseHeaders(origin) });
   if (request.method !== 'GET') return response(origin, 405, { error: 'Method not allowed.', requestId });
 
   const authorization = request.headers.get('authorization') || '';
