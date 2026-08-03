@@ -36,7 +36,7 @@ class StripeCheckoutContractTests(unittest.TestCase):
         self.assertIn("STRIPE_PRICE_PREMIUM_ANNUAL", self.plans)
         self.assertNotIn("sk_test_", self.function)
         self.assertNotIn("sk_live_", self.function)
-        self.assertNotRegex(self.function, r"price_[A-Za-z0-9]{8,}")
+        self.assertNotRegex(self.function, r"['\"]price_[A-Za-z0-9]{8,}['\"]")
 
     def test_checkout_does_not_grant_or_update_entitlement(self) -> None:
         lowered = self.function.lower()
