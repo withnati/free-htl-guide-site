@@ -33,7 +33,38 @@ async function mockSignedOutSupabase(page) {
   }));
 }
 
+async function mockPremiumSupabase(page, status = {
+  state: 'active', premiumAccess: true, billingCadence: 'annual',
+  currentPeriodEnd: '2027-08-03T00:00:00.000Z', graceUntil: null,
+  cancelAtPeriodEnd: false, canManageBilling: true
+}) {
+  await page.route(sdkUrl, (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/javascript',
+    body: `
+      window.supabase = {
+        createClient() {
+          const session = { access_token: 'test', user: { id: 'premium-user' } };
+          return {
+            auth: {
+              getSession: async () => ({ data: { session }, error: null }),
+              getUser: async () => ({ data: { user: session.user }, error: null }),
+              onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } })
+            },
+            functions: {
+              invoke: async (name) => name === 'subscription-status'
+                ? ({ data: ${JSON.stringify(status)}, error: null })
+                : ({ data: {}, error: null })
+            }
+          };
+        }
+      };
+    `
+  }));
+}
+
 test('public homepage leads with HT and HTL exam preparation', async ({ page }) => {
+  await mockSignedOutSupabase(page);
   await page.goto('/');
 
   await expect(page).toHaveTitle(/HT and HTL Exam Preparation/);
@@ -45,7 +76,7 @@ test('public homepage leads with HT and HTL exam preparation', async ({ page }) 
   await expect(page.getByText('Free', { exact: true })).toBeVisible();
   await expect(page.getByText('Premium', { exact: true }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: /Create free account/i }).first()).toBeVisible();
-  await expect(page.getByText('Premium enrollment is not open yet.')).toBeVisible();
+  await expect(page.getByText(/Premium enrollment is open/)).toBeVisible();
   await expect(page.locator('.resource-card')).toHaveCount(6);
 
   const publicDownloads = await page.locator('.resource-card').evaluateAll((links) =>
@@ -105,12 +136,15 @@ test('custom 404 recovery page ships in the generated deployment', async ({ page
 });
 
 test('premium lesson route contains a learner-facing preview without lesson or quiz payload', async ({ page }) => {
+  await mockSignedOutSupabase(page);
   await page.goto('/modules/processing-guide-v3.html');
 
   await expect(page.locator('body')).toHaveAttribute('data-page', 'premium-preview');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Processing and Decalcification');
-  await expect(page.getByText('Included with Premium', { exact: true })).toBeVisible();
-  await expect(page.getByText('Premium enrollment is not open yet.')).toBeVisible();
+  await expect(page.getByText('Premium preview', { exact: true })).toBeVisible();
+  await expect(page.getByText('Processing and Decalcification is included with Premium.')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Review my Premium access' })).toBeHidden();
+  await expect(page.getByRole('link', { name: 'Open secure lesson preview' })).toBeHidden();
   await expect(page.locator('fieldset[data-correct]')).toHaveCount(0);
   await expect(page.locator('[data-expl]')).toHaveCount(0);
   await expect(page.locator('script[src*="mock-exam"]')).toHaveCount(0);
@@ -121,12 +155,42 @@ test('premium lesson route contains a learner-facing preview without lesson or q
   await expectNoHorizontalOverflow(page);
 });
 
+test('Premium account receives an entitlement-aware homepage shell', async ({ page }) => {
+  await mockPremiumSupabase(page);
+  await page.goto('/');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'premium');
+  await expect(page.getByText(/Your Premium access is active/)).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Premium active' }).first()).toHaveAttribute(
+    'href', /account\/subscription\.html$/
+  );
+  await expect(page.getByRole('link', { name: 'Open lesson' }).first()).toBeVisible();
+  await expect(page.getByText('Premium enrollment is not open yet.')).toHaveCount(0);
+  await expectNoHorizontalOverflow(page);
+});
+
+test('Premium processing route confirms access without exposing protected payloads', async ({ page }) => {
+  await mockPremiumSupabase(page);
+  await page.goto('/modules/processing-guide-v3.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'premium');
+  await expect(page.getByText('Premium access confirmed')).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Your account includes Processing and Decalcification.' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open secure lesson preview' })).toHaveAttribute(
+    'href', /premium\/processing-proof\.html$/
+  );
+  await expect(page.getByRole('link', { name: 'Compare Premium plans' })).toBeHidden();
+  await expect(page.locator('fieldset[data-correct]')).toHaveCount(0);
+  await expect(page.locator('[data-expl]')).toHaveCount(0);
+  await expectNoHorizontalOverflow(page);
+});
+
 test('public mock-exam route previews exam value without shipping the runtime or question bank', async ({ page }) => {
   await page.goto('/mock-exam.html');
 
   await expect(page.locator('body')).toHaveAttribute('data-page', 'premium-preview');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('50-question HT/HTL mock exam');
-  await expect(page.getByText('Included with Premium', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('Premium preview', { exact: true }).first()).toBeVisible();
   await expect(page.locator('[data-start-exam]')).toHaveCount(0);
   await expect(page.locator('script[src*="mock-exam"]')).toHaveCount(0);
   const body = await page.locator('body').innerText();

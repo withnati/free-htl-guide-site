@@ -77,8 +77,9 @@ class PublicBuildTests(unittest.TestCase):
             for route in VALIDATE.PREVIEW_ROUTES:
                 content = (output / route).read_text(encoding="utf-8")
                 self.assertIn('data-page="premium-preview"', content)
-                self.assertIn("Included with Premium", content)
+                self.assertIn("Premium learning preview", content)
                 self.assertIn("Start the free Fixation lesson", content)
+                self.assertIn("premium-ui.js", content)
                 self.assertNotIn("protected-delivery proof", content.casefold())
                 self.assertNotIn("server-controlled entitlement", content.casefold())
                 self.assertNotIn("data-correct=", content)

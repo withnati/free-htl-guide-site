@@ -337,8 +337,9 @@ def preview_page(root: Path, route: str, config: dict[str, object], site_url: st
     proof_link = ""
     if config.get("proof"):
         proof_link = (
-            f'<a class="btn" href="{prefix}premium/processing-proof.html">'
-            "Open the protected-delivery proof</a>"
+            f'<a class="btn btn-primary" href="{prefix}premium/processing-proof.html" '
+            'data-protected-preview-link hidden>'
+            "Open secure lesson preview</a>"
         )
     replacements = {
         "{{TITLE}}": html.escape(str(config["title"])),
