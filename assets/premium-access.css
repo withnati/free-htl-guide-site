@@ -103,6 +103,41 @@
   padding-inline-start: 1.3rem;
 }
 
+.premium-task-list {
+  display: grid;
+  gap: 0.7rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.premium-task-list label {
+  display: grid;
+  grid-template-columns: 1.2rem 1fr;
+  align-items: start;
+  gap: 0.7rem;
+  cursor: pointer;
+}
+
+.premium-task-list input {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-top: 0.2rem;
+  accent-color: #207a4b;
+}
+
+.premium-task-list input:disabled + * {
+  opacity: 0.72;
+}
+
+[data-premium-task-status][data-tone="warn"] {
+  color: var(--warning-text, #8a4b08);
+}
+
+.premium-plan-actions h3 {
+  margin-top: 0;
+}
+
 @keyframes premium-spin {
   to { transform: rotate(360deg); }
 }

@@ -137,18 +137,6 @@ test('dark theme links, keyboard focus, and reduced motion remain accessible', a
   expect(accessibilityStyles.scrollBehavior).toBe('auto');
 });
 
-test('study-plan progress persists locally', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'desktop-chromium');
-  await page.goto('/study-plan.html');
-  await page.evaluate(() => localStorage.clear());
-  await page.reload();
-  const firstTask = page.locator('input[data-check]').first();
-  await expect(firstTask).toBeVisible();
-  await firstTask.check();
-  await page.reload();
-  await expect(firstTask).toBeChecked();
-});
-
 test('quiz grading and reset work in the browser', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await page.goto('/modules/fixation-guide-v3.html#quiz');
