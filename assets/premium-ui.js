@@ -33,6 +33,10 @@
       link.href = siteUrl('account/settings.html');
       link.textContent = 'Account';
     });
+    if (state === 'offline') {
+      signUpLinks.forEach((link) => { link.hidden = true; });
+      return;
+    }
     signUpLinks.forEach((link) => {
       const premium = state === 'premium' || state === 'attention';
       link.href = siteUrl(premium ? 'premium/index.html' : 'pricing.html');
@@ -67,6 +71,8 @@
     }
     if (state === 'error') {
       setText('[data-premium-availability]', 'We could not confirm your account access. Free study remains available; refresh to check Premium again.');
+    } else if (state === 'offline') {
+      setText('[data-premium-availability]', 'You are offline. Free study remains available; reconnect to confirm your Premium access.');
     }
     setVisible('[data-premium-library-action]', false);
   }
@@ -112,6 +118,15 @@
       setVisible('[data-premium-upgrade-action]', false);
       setVisible('[data-premium-account-action]', true);
       setVisible('[data-protected-preview-link]', false);
+      return;
+    }
+    if (state === 'offline') {
+      setText('[data-premium-preview-label]', 'Offline');
+      setText('[data-premium-preview-message]', `Reconnect to confirm access to ${title}.`);
+      setText('[data-premium-preview-detail]', 'This feature stays securely locked until the server can check your account again. Your account has not been changed.');
+      setVisible('[data-premium-upgrade-action]', false);
+      setVisible('[data-premium-account-action]', true);
+      setVisible('[data-protected-preview-link]', false);
     }
   }
 
@@ -127,7 +142,8 @@
     setVisible('[data-premium-hub-library]', premium);
     setVisible('[data-premium-hub-sign-in]', state === 'signed-out');
     setVisible('[data-premium-hub-upgrade]', state === 'free' || state === 'ended');
-    setVisible('[data-premium-hub-error]', state === 'error');
+    setVisible('[data-premium-hub-error]', state === 'error' || state === 'offline');
+    setVisible('[data-premium-hub-error-plan]', state === 'error');
     if (premium) {
       setText('[data-premium-hub-label]', state === 'attention' ? 'Premium access · Billing attention' : 'Premium access confirmed');
       setText('[data-premium-hub-message]', state === 'attention'
@@ -148,6 +164,15 @@
     } else if (state === 'error') {
       setText('[data-premium-hub-label]', 'Access check unavailable');
       setText('[data-premium-hub-message]', 'We could not confirm your Premium access. Refresh the page or review your account status.');
+      setText('[data-premium-hub-gate-label]', 'Access check unavailable');
+      setText('[data-premium-hub-gate-heading]', 'Your account has not been changed');
+      setText('[data-premium-hub-gate-message]', 'Try the access check again, or review your plan from account settings. Free study remains available.');
+    } else if (state === 'offline') {
+      setText('[data-premium-hub-label]', 'Offline');
+      setText('[data-premium-hub-message]', 'Reconnect to securely confirm your Premium library access.');
+      setText('[data-premium-hub-gate-label]', 'Offline');
+      setText('[data-premium-hub-gate-heading]', 'Reconnect to confirm your library');
+      setText('[data-premium-hub-gate-message]', 'Premium lessons stay securely locked while offline. Your account and access have not been changed.');
     }
     setVisible('[data-premium-hub-loading]', false);
   }
@@ -191,7 +216,7 @@
       if (result.error || !result.data) throw result.error || new Error('Premium status unavailable.');
       applyState(projectState(result.data), result.data);
     } catch {
-      applyState('error');
+      applyState(navigator.onLine === false ? 'offline' : 'error');
     }
   }
 
