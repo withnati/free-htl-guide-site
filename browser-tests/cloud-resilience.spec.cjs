@@ -9,6 +9,8 @@ async function installCloudMock(page) {
         profiles: [{ user_id: 'user-a', display_name: 'Learner A', created_at: '2026-08-01T00:00:00.000Z', updated_at: '2026-08-01T00:00:00.000Z' }]
       };
       window.__cloudWriteFailure = false;
+      window.__cloudTokenSkewLoads ??= 0;
+      window.__cloudLoadErrorMessage ??= 'JWT issued at future';
       const clone = (value) => JSON.parse(JSON.stringify(value));
       const matches = (row, filters) => filters.every(([key, value]) => row[key] === value);
       function builder(table) {
@@ -31,7 +33,13 @@ async function installCloudMock(page) {
           if (operation !== 'select' && window.__cloudWriteFailure) {
             return { data: null, error: { message: 'Failed to fetch cloud progress' } };
           }
-          if (operation === 'select') return { data: clone(tables[table].filter((row) => matches(row, filters))), error: null };
+          if (operation === 'select') {
+            if (table === 'profiles' && window.__cloudTokenSkewLoads > 0) {
+              window.__cloudTokenSkewLoads -= 1;
+              return { data: null, error: { message: window.__cloudLoadErrorMessage } };
+            }
+            return { data: clone(tables[table].filter((row) => matches(row, filters))), error: null };
+          }
           if (operation === 'delete') {
             tables[table] = tables[table].filter((row) => !matches(row, filters));
             return { data: [], error: null };
@@ -108,4 +116,73 @@ test('failed cloud write is retained and clears after retry', async ({ page }, t
   await expect(page.locator('body')).toHaveAttribute('data-cloud-progress', 'saved');
   await expect(page.locator('[data-cloud-sync-indicator]')).toContainText('Saved to your account');
   expect(await page.evaluate(() => localStorage.getItem('free-htl-cloud-pending-v1:user-a'))).toBeNull();
+});
+
+test('fresh sign-in quietly retries bounded token clock skew before connecting progress', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium');
+  const browserErrors = [];
+  page.on('pageerror', (error) => browserErrors.push(error.message));
+  page.on('console', (message) => {
+    if (message.type() === 'error') browserErrors.push(message.text());
+  });
+  await installCloudMock(page);
+  await page.addInitScript(() => {
+    localStorage.removeItem('free-htl-cloud-sync-v1');
+    window.__cloudTokenSkewLoads = 2;
+  });
+
+  await page.goto('/my-progress.html');
+
+  await expect(page.locator('[data-progress-status]')).toContainText('Finishing the secure account connection');
+  await expect(page.locator('body')).toHaveAttribute('data-cloud-progress', 'connected', { timeout: 10_000 });
+  await expect(page.locator('[data-progress-status]')).toContainText('Your account progress is ready');
+  const result = await page.evaluate(() => ({
+    remainingSkewFailures: window.__cloudTokenSkewLoads,
+    decision: JSON.parse(localStorage.getItem('free-htl-cloud-sync-v1') || 'null')
+  }));
+  expect(result.remainingSkewFailures).toBe(0);
+  expect(result.decision).toMatchObject({ userId: 'user-a', mode: 'account-only' });
+  expect(browserErrors).toEqual([]);
+});
+
+test('persistent token clock skew stops after the bounded retry window', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium');
+  await installCloudMock(page);
+  await page.addInitScript(() => {
+    localStorage.removeItem('free-htl-cloud-sync-v1');
+    window.__cloudTokenSkewLoads = 3;
+  });
+
+  await page.goto('/my-progress.html');
+
+  await expect(page.locator('[data-progress-status]')).toContainText('Finishing the secure account connection');
+  await expect(page.locator('body')).toHaveAttribute('data-cloud-progress', 'error', { timeout: 10_000 });
+  await expect(page.locator('[data-progress-status]')).toContainText('We could not start account progress');
+  const result = await page.evaluate(() => ({
+    remainingSkewFailures: window.__cloudTokenSkewLoads,
+    decision: localStorage.getItem('free-htl-cloud-sync-v1')
+  }));
+  expect(result.remainingSkewFailures).toBe(0);
+  expect(result.decision).toBeNull();
+});
+
+test('non-clock account errors surface immediately without retrying', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium');
+  await installCloudMock(page);
+  await page.addInitScript(() => {
+    localStorage.removeItem('free-htl-cloud-sync-v1');
+    window.__cloudTokenSkewLoads = 3;
+    window.__cloudLoadErrorMessage = 'permission denied';
+  });
+
+  await page.goto('/my-progress.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-cloud-progress', 'error');
+  await expect(page.locator('[data-progress-status]')).toContainText('We could not start account progress');
+  const result = await page.evaluate(() => ({
+    remainingFailures: window.__cloudTokenSkewLoads,
+    decision: localStorage.getItem('free-htl-cloud-sync-v1')
+  }));
+  expect(result.remainingFailures).toBe(2);
+  expect(result.decision).toBeNull();
 });

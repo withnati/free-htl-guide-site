@@ -22,6 +22,7 @@ def validate(root: Path) -> list[str]:
         'shared_loader': root / 'assets/authority.js',
         'dashboard': root / 'assets/dashboard.js',
         'page': root / 'my-progress.html',
+        'browser_test': root / 'browser-tests/cloud-resilience.spec.cjs',
         'privacy': root / 'privacy.html',
     }
     for label, path in paths.items():
@@ -38,6 +39,7 @@ def validate(root: Path) -> list[str]:
     shared_loader = paths['shared_loader'].read_text(encoding='utf-8')
     dashboard = paths['dashboard'].read_text(encoding='utf-8')
     page = paths['page'].read_text(encoding='utf-8')
+    browser_test = paths['browser_test'].read_text(encoding='utf-8')
     privacy = paths['privacy'].read_text(encoding='utf-8')
 
     for table in REQUIRED_TABLES:
@@ -88,6 +90,32 @@ def validate(root: Path) -> list[str]:
     for token in required_flow_tokens:
         if token not in combined:
             errors.append(f'Cloud import or conflict flow is missing contract token: {token}')
+
+    required_clock_retry_tokens = (
+        'TOKEN_CLOCK_RETRY_DELAYS = [1000, 2000]',
+        '/jwt issued at future/i',
+        'loadInitialAccountState()',
+        'const delay = TOKEN_CLOCK_RETRY_DELAYS[attempt]',
+        'delay === undefined',
+        'Finishing the secure account connection',
+    )
+    for token in required_clock_retry_tokens:
+        if token not in controller:
+            errors.append(f'Cloud token-clock recovery is missing contract token: {token}')
+
+    required_clock_retry_tests = (
+        'fresh sign-in quietly retries bounded token clock skew before connecting progress',
+        'persistent token clock skew stops after the bounded retry window',
+        'non-clock account errors surface immediately without retrying',
+        "page.goto('/my-progress.html')",
+        'window.__cloudTokenSkewLoads = 2',
+        'window.__cloudTokenSkewLoads = 3',
+        "window.__cloudLoadErrorMessage = 'permission denied'",
+        "data-cloud-progress', 'error'",
+    )
+    for token in required_clock_retry_tests:
+        if token not in browser_test:
+            errors.append(f'Cloud token-clock browser coverage is missing contract token: {token}')
 
     required_bootstrap_tokens = (
         DECISION_KEY,

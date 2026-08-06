@@ -24,6 +24,7 @@ class CloudAdapterValidationTests(unittest.TestCase):
             'assets/cloud-sync.css',
             'assets/authority.js',
             'assets/dashboard.js',
+            'browser-tests/cloud-resilience.spec.cjs',
             'my-progress.html',
             'privacy.html',
         ):
@@ -75,6 +76,36 @@ class CloudAdapterValidationTests(unittest.TestCase):
             )
             errors = MODULE.validate(root)
             self.assertTrue(any('free-htl-cloud-pending-v1:' in error for error in errors))
+
+    def test_rejects_unbounded_token_clock_retry(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.copy_contract_files(root)
+            controller = root / 'assets/cloud-progress-controller.js'
+            controller.write_text(
+                controller.read_text(encoding='utf-8').replace(
+                    'const TOKEN_CLOCK_RETRY_DELAYS = [1000, 2000];',
+                    'const TOKEN_CLOCK_RETRY_DELAYS = [1000, 2000, 4000];',
+                ),
+                encoding='utf-8'
+            )
+            errors = MODULE.validate(root)
+            self.assertTrue(any('TOKEN_CLOCK_RETRY_DELAYS = [1000, 2000]' in error for error in errors))
+
+    def test_rejects_clock_retry_test_on_non_dashboard_route(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.copy_contract_files(root)
+            browser_test = root / 'browser-tests/cloud-resilience.spec.cjs'
+            browser_test.write_text(
+                browser_test.read_text(encoding='utf-8').replace(
+                    "page.goto('/my-progress.html')",
+                    "page.goto('/modules/fixation-guide-v3.html')",
+                ),
+                encoding='utf-8'
+            )
+            errors = MODULE.validate(root)
+            self.assertTrue(any("page.goto('/my-progress.html')" in error for error in errors))
 
 
 if __name__ == '__main__':
