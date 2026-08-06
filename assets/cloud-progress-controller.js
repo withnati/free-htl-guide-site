@@ -19,6 +19,7 @@
   const authenticatedActions = $('[data-authenticated-account-actions]');
   const accountEmail = $('[data-cloud-account-email]');
   const DECISION_KEY = 'free-htl-cloud-sync-v1';
+  const TOKEN_CLOCK_RETRY_DELAYS = [1000, 2000];
   let adapter = null;
   let browserRecord = null;
   let userId = null;
@@ -80,6 +81,30 @@
       conflict: ['A newer unfinished session is saved to your account. Choose which session to continue. Completed work will remain available.', 'warn']
     };
     return values[syncStatus] || null;
+  }
+
+  function isTokenClockSkew(error) {
+    return /jwt issued at future/i.test(String(error?.message || ''));
+  }
+
+  function wait(milliseconds) {
+    return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+  }
+
+  async function loadInitialAccountState() {
+    for (let attempt = 0; ; attempt += 1) {
+      try {
+        return await Promise.all([
+          adapter.load(),
+          adapter.hasCompletedMigration(browserRecord.recordId)
+        ]);
+      } catch (error) {
+        const delay = TOKEN_CLOCK_RETRY_DELAYS[attempt];
+        if (!isTokenClockSkew(error) || delay === undefined) throw error;
+        setStatus('Finishing the secure account connection…');
+        await wait(delay);
+      }
+    }
   }
 
   function showConflict(conflict = null) {
@@ -213,10 +238,7 @@
       return;
     }
 
-    const [remoteRecord, alreadyImported] = await Promise.all([
-      adapter.load(),
-      adapter.hasCompletedMigration(browserRecord.recordId)
-    ]);
+    const [remoteRecord, alreadyImported] = await loadInitialAccountState();
     const browserHasProgress = browserRecord.owner?.kind === 'anonymous' && cloud.hasMeaningfulProgress(browserRecord);
     const remoteHasProgress = cloud.hasMeaningfulProgress(remoteRecord);
 
