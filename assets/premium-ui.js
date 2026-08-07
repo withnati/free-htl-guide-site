@@ -45,20 +45,32 @@
     });
   }
 
+  function applyHomeReleaseLabels(state) {
+    const premium = state === 'premium' || state === 'attention';
+    document.querySelectorAll('[data-premium-route-link]').forEach((link) => {
+      const path = new URL(link.href, window.location.href).pathname;
+      const released = /\/modules\/(processing-guide-v3|embedding-guide-v3)\.html$/.test(path);
+      link.textContent = released
+        ? (premium ? (link.dataset.premiumLabel || 'Open lesson') : 'View lesson')
+        : 'View release status';
+      link.dataset.premiumRelease = released ? 'available' : 'upcoming';
+
+      const statusChip = link.closest('.module-card')?.querySelector('.tag-row .chip');
+      if (statusChip) {
+        statusChip.textContent = released ? 'Secure lesson available' : 'Secure release in progress';
+      }
+    });
+  }
+
   function applyHomeState(state) {
     const premium = state === 'premium' || state === 'attention';
+    applyHomeReleaseLabels(state);
     if (premium) {
       setText('[data-premium-availability]', state === 'attention'
         ? 'Your Premium access is active. Review your billing status to avoid an interruption.'
         : 'Your Premium access is active. Continue with the course and study tools included in your account.');
       setText('[data-premium-path-copy]', 'Use your Premium access for the securely delivered Processing and Embedding lessons, account-linked six-week study plan, and progress guidance available now. New protected releases will appear in your library after verification.');
       setText('[data-premium-course-intro]', 'Your Premium library shows which lessons are available now and the verified release status of each experience being prepared next.');
-      document.querySelectorAll('[data-premium-route-link]').forEach((link) => {
-        const path = new URL(link.href, window.location.href).pathname;
-        const released = /\/modules\/(processing-guide-v3|embedding-guide-v3)\.html$/.test(path);
-        link.textContent = released ? (link.dataset.premiumLabel || 'Open lesson') : 'View release status';
-        link.dataset.premiumRelease = released ? 'available' : 'upcoming';
-      });
       setVisible('[data-premium-library-action]', true);
       return;
     }
@@ -210,6 +222,7 @@
 
   async function initialize() {
     document.body.dataset.premiumUiState = 'loading';
+    if (document.querySelector('[data-premium-availability]')) applyHomeReleaseLabels('loading');
     if (!auth || !billing) return applyState('error');
     try {
       const session = await auth.ready;
