@@ -51,8 +51,8 @@
       setText('[data-premium-availability]', state === 'attention'
         ? 'Your Premium access is active. Review your billing status to avoid an interruption.'
         : 'Your Premium access is active. Continue with the course and study tools included in your account.');
-      setText('[data-premium-path-copy]', 'Use your Premium access for the complete course, practice, mock exams, Targeted Practice, attempt history, and focused review.');
-      setText('[data-premium-course-intro]', 'Your Premium account includes the remaining lessons and preparation tools. Open a lesson or tool to continue.');
+      setText('[data-premium-path-copy]', 'Use your Premium access for the securely delivered Processing lesson, account-linked six-week study plan, and progress guidance available now. New protected releases will appear in your library after verification.');
+      setText('[data-premium-course-intro]', 'Your Premium library shows which lessons are available now and the verified release status of each experience being prepared next.');
       document.querySelectorAll('[data-premium-route-link]').forEach((link) => {
         link.textContent = link.dataset.premiumLabel || 'Open Premium';
       });
@@ -60,9 +60,9 @@
       return;
     }
     if (state === 'free') {
-      setText('[data-premium-availability]', 'You are signed in with a free account. Premium enrollment is open when you are ready for the complete course and practice system.');
-      setText('[data-premium-path-copy]', 'Premium adds the full course, expanded practice, mock exams, Targeted Practice, attempt history, and weak-domain recommendations.');
-      setText('[data-premium-course-intro]', 'Begin with the complete free Fixation lesson, then compare Premium for the remaining lessons and preparation tools.');
+      setText('[data-premium-availability]', 'You are signed in with a free account. Premium enrollment is open for the secure learning experiences currently available and verified releases added next.');
+      setText('[data-premium-path-copy]', 'Premium currently adds a secure Processing lesson, an account-linked six-week study plan, and progress guidance. Remaining lessons and practice tools are clearly labeled until released.');
+      setText('[data-premium-course-intro]', 'Begin with the complete free Fixation lesson, then compare the Premium lessons available now with those still being prepared.');
       return;
     }
     if (state === 'ended') {
@@ -105,7 +105,7 @@
       setText('[data-premium-preview-message]', `${title} is included with Premium.`);
       setText('[data-premium-preview-detail]', state === 'ended'
         ? 'Your previous Premium access has ended. Compare plans to restore access while keeping your account and eligible learning history.'
-        : 'Compare Premium plans for the complete course, practice system, and account-linked progress tools.');
+        : 'Compare Premium plans for the secure learning available now and the verified releases being prepared next.');
       setVisible('[data-premium-upgrade-action]', true);
       setVisible('[data-premium-account-action]', false);
       setVisible('[data-protected-preview-link]', false);

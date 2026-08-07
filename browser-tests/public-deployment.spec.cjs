@@ -86,6 +86,8 @@ test('public homepage leads with HT and HTL exam preparation', async ({ page }) 
   await expect(page.getByText('Premium', { exact: true }).first()).toBeVisible();
   await expect(page.getByRole('link', { name: /Create free account/i }).first()).toBeVisible();
   await expect(page.getByText(/Premium enrollment is open/)).toBeVisible();
+  await expect(page.getByText(/secure Premium experiences available now/)).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Build with secure Premium releases' })).toBeVisible();
   await expect(page.locator('.resource-card')).toHaveCount(6);
 
   const publicDownloads = await page.locator('.resource-card').evaluateAll((links) =>
@@ -213,6 +215,9 @@ test('Premium account receives an entitlement-aware homepage shell', async ({ pa
   );
   await expect(page.getByRole('link', { name: 'Open Premium library' }).last()).toBeVisible();
   await expect(page.getByRole('link', { name: 'Open lesson' }).first()).toBeVisible();
+  await expect(page.getByText(/securely delivered Processing lesson/)).toBeVisible();
+  await expect(page.getByText(/New protected releases will appear in your library after verification/)).toBeVisible();
+  await expect(page.getByText(/complete course, practice, mock exams/)).toHaveCount(0);
   await expect(page.getByText('Premium enrollment is not open yet.')).toHaveCount(0);
   await expectNoHorizontalOverflow(page);
 });

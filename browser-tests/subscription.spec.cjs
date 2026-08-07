@@ -90,9 +90,26 @@ test('subscription account renders trusted status and opens billing portal', asy
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Subscription');
   await expect(page.getByText('Premium active', { exact: true })).toBeVisible();
+  await expect(page.getByText(/learning available now and the verified release status/)).toBeVisible();
   await expect(page.locator('[data-billing-cadence]')).toHaveText('Annual');
   await page.getByRole('button', { name: 'Manage billing' }).click();
   await expect.poll(() => calls.length).toBe(2);
   expect(calls.map((call) => call[0])).toEqual(['subscription-status', 'create-billing-portal-session']);
   await expectNoHorizontalOverflow(page);
+});
+
+test('ended Premium account retains history without promising unreleased tools', async ({ page }) => {
+  await mockBillingSupabase(page, {
+    session: { access_token: 'test', user: { id: 'user-a' } },
+    status: {
+      state: 'expired', premiumAccess: false, billingCadence: null,
+      currentPeriodEnd: '2026-08-01T00:00:00.000Z', graceUntil: null,
+      cancelAtPeriodEnd: false, canManageBilling: false
+    }
+  });
+  await page.goto('/account/subscription.html');
+
+  await expect(page.getByText('Premium ended', { exact: true })).toBeVisible();
+  await expect(page.getByText(/currently released learning experiences/)).toBeVisible();
+  await expect(page.getByText(/full course and practice tools/)).toHaveCount(0);
 });
