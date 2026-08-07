@@ -274,3 +274,57 @@ test('entitled learner receives and renders a learner-facing lesson on mobile', 
   await expect(page.locator('[data-premium-sections]')).toBeEmpty();
   await expect(page.getByText('Dehydration removes water.')).toHaveCount(0);
 });
+
+test('entitled learner opens the protected study plan and retains task progress', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium');
+  await mockSupabase(page, {
+    access_token: 'premium-session-token',
+    user: { id: 'user-a' }
+  });
+  const calls = await mockPremiumEndpoint(page, {
+    status: 200,
+    body: {
+      schemaVersion: 1,
+      contentId: 'study-plan-v1',
+      title: 'Six-week HT/HTL study plan',
+      summary: 'Build a consistent preparation routine one task at a time.',
+      sections: [
+        {
+          heading: 'Week 1 — Fixation and preanalytics',
+          paragraphs: ['Begin with the public Fixation lesson and active recall.'],
+          tasks: [
+            { id: 'w1d1', text: 'Complete the Fixation guide through preanalytics.' },
+            { id: 'w1d2', text: 'Build a comparison table for major fixatives.' }
+          ]
+        }
+      ]
+    }
+  });
+
+  await page.goto('/premium/study-plan.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-content-state', 'authorized');
+  await expect(page.locator('[data-premium-status-label]')).toHaveText('Study plan ready');
+  await expect(page.locator('[data-premium-message]')).toHaveText('Your study plan is ready.');
+  await expect(page.getByRole('heading', { name: 'Week 1 — Fixation and preanalytics' })).toBeVisible();
+  await expect(page.locator('[data-premium-task-status]')).toContainText('connected to your learning record');
+  const firstTask = page.locator('[data-premium-task-id="w1d1"]');
+  await expect(firstTask).not.toBeChecked();
+  await firstTask.check();
+  await expect(page.locator('[data-premium-task-status]')).toContainText('saved to your learning record');
+  expect(await page.evaluate(async () => {
+    const snapshot = await window.FreeHTLProgress.getSnapshot();
+    return snapshot.studyTasks['study-plan-v1:w1d1'];
+  })).toMatchObject({ page: 'study-plan-v1', taskId: 'w1d1', checked: true });
+
+  await page.reload();
+  await expect(page.locator('body')).toHaveAttribute('data-premium-content-state', 'authorized');
+  await expect(page.locator('[data-premium-task-id="w1d1"]')).toBeChecked();
+  expect(calls).toHaveLength(2);
+  expect(calls[0].body).toEqual({ contentId: 'study-plan-v1' });
+  expect(calls[0].body.userId).toBeUndefined();
+  expect(calls[0].body.objectPath).toBeUndefined();
+
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+  expect(overflow).toBeLessThanOrEqual(1);
+});

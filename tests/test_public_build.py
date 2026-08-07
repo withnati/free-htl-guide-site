@@ -71,6 +71,17 @@ class PublicBuildTests(unittest.TestCase):
             self.assertNotIn("data-correct=", content)
             self.assertNotIn("data-expl=", content)
 
+    def test_premium_study_plan_shell_is_deployed_without_private_tasks(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = self.build_preview(directory)
+            page = output / "premium/study-plan.html"
+            self.assertTrue(page.is_file())
+            content = page.read_text(encoding="utf-8")
+            self.assertIn('data-protected-content-id="study-plan-v1"', content)
+            self.assertIn('content="noindex,nofollow"', content)
+            self.assertNotIn("plans/study-plan-v1.json", content)
+            self.assertNotIn("w1d1", content)
+
     def test_extensionless_preview_routes_receive_private_headers(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = self.build_preview(directory)

@@ -199,7 +199,8 @@ test('Premium library shows only available and truthfully staged learning', asyn
   await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'premium');
   await expect(page.getByText('Premium access confirmed')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Open lesson' })).toHaveAttribute('href', 'processing-proof.html');
-  await expect(page.getByText('Secure release in progress')).toHaveCount(4);
+  await expect(page.getByRole('link', { name: 'Open study plan' })).toHaveAttribute('href', 'study-plan.html');
+  await expect(page.getByText('Secure release in progress')).toHaveCount(3);
   await expect(page.locator('[data-premium-hub-upgrade]')).toBeHidden();
   await expect(page.locator('fieldset[data-correct]')).toHaveCount(0);
   await expect(page.locator('[data-expl]')).toHaveCount(0);
@@ -286,6 +287,28 @@ test('public mock-exam route previews exam value without shipping the runtime or
   expect(body).not.toContain('Loading question bank');
   expect(body).toContain('domain results');
   await expectNoHorizontalOverflow(page);
+});
+
+test('public study-plan route remains a preview without protected task content', async ({ page }) => {
+  await page.goto('/study-plan.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-page', 'premium-preview');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Six-week HT/HTL study plan');
+  await expect(page.getByText('Premium preview', { exact: true }).first()).toBeVisible();
+  await expect(page.locator('[data-protected-content-id]')).toHaveCount(0);
+  await expect(page.locator('[data-premium-task-id]')).toHaveCount(0);
+  await expect(page.locator('script[src*="premium-content-client"]')).toHaveCount(0);
+  await expectNoHorizontalOverflow(page);
+});
+
+test('protected Premium study-plan shell ships without its private task payload', async ({ page }) => {
+  await page.goto('/premium/study-plan.html');
+  await expect(page.locator('body')).toHaveAttribute('data-protected-content-id', 'study-plan-v1');
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow');
+  await expect(page.locator('[data-premium-status-label]')).toHaveText('Sign in required');
+  await expect(page.locator('[data-premium-content]')).toBeHidden();
+  await expect(page.locator('[data-premium-task-id]')).toHaveCount(0);
+  expect(await page.content()).not.toContain('plans/study-plan-v1.json');
 });
 
 test('generated account route remains noindex and explains the study benefit', async ({ page }) => {

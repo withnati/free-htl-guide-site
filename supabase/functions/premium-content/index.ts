@@ -14,6 +14,14 @@ const CONTENT_ALLOWLIST = new Map<string, ProtectedContent>([
       productCode: 'fhl-premium',
       contentType: 'application/json; charset=utf-8'
     }
+  ],
+  [
+    'study-plan-v1',
+    {
+      objectPath: 'plans/study-plan-v1.json',
+      productCode: 'fhl-premium',
+      contentType: 'application/json; charset=utf-8'
+    }
   ]
 ]);
 

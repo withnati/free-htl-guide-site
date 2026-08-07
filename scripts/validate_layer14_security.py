@@ -14,6 +14,7 @@ ROADMAP_DOC = "docs/ROADMAP.md"
 ENTITLEMENT_MIGRATION = "supabase/migrations/20260801060000_layer_14_entitlements.sql"
 PREMIUM_FUNCTION = "supabase/functions/premium-content/index.ts"
 PREMIUM_PAGE = "premium/processing-proof.html"
+STUDY_PLAN_PAGE = "premium/study-plan.html"
 PREMIUM_CLIENT = "assets/premium-content-client.js"
 PREMIUM_STYLE = "assets/premium-access.css"
 PREMIUM_BROWSER_TEST = "browser-tests/premium-content.spec.cjs"
@@ -156,6 +157,8 @@ def validate_protected_function(root: Path) -> list[str]:
         return issues
     required = (
         "CONTENT_ALLOWLIST",
+        "'study-plan-v1'",
+        "objectPath: 'plans/study-plan-v1.json'",
         "FHL_ALLOWED_ORIGINS",
         "configured.split(',')",
         "value !== '*'",
@@ -203,6 +206,7 @@ def validate_protected_function(root: Path) -> list[str]:
 def validate_protected_entry(root: Path) -> list[str]:
     issues: list[str] = []
     page = read(root / PREMIUM_PAGE, issues)
+    study_plan_page = read(root / STUDY_PLAN_PAGE, issues)
     client = read(root / PREMIUM_CLIENT, issues)
     style = read(root / PREMIUM_STYLE, issues)
     browser_test = read(root / PREMIUM_BROWSER_TEST, issues)
@@ -227,6 +231,26 @@ def validate_protected_entry(root: Path) -> list[str]:
         if re.search(r"data-(?:premium|entitlement)-(?:granted|active)\s*=", page, re.IGNORECASE):
             issues.append("Protected proof page must not contain client-controlled entitlement flags")
 
+    if study_plan_page:
+        required_study_plan_page = (
+            'content="noindex,nofollow"',
+            'rel="canonical"',
+            'data-protected-content-id="study-plan-v1"',
+            'data-protected-content-label="study plan"',
+            'data-premium-state="loading"',
+            'data-premium-task-status',
+            'assets/progress-service.js',
+            'assets/cloud-sync-bootstrap.js',
+            'assets/premium-content-client.js',
+        )
+        for token in required_study_plan_page:
+            if token not in study_plan_page:
+                issues.append(f"Protected study-plan page is missing required token: {token}")
+        if "plans/study-plan-v1.json" in study_plan_page:
+            issues.append("Protected study-plan page must not expose the private storage object path")
+        if re.search(r"data-(?:premium|entitlement)-(?:granted|active)\s*=", study_plan_page, re.IGNORECASE):
+            issues.append("Protected study-plan page must not contain client-controlled entitlement flags")
+
     if client:
         required_client = (
             "auth.ready",
@@ -239,6 +263,9 @@ def validate_protected_entry(root: Path) -> list[str]:
             "payload.code === 'upgrade_required'",
             "validatePayload(payload)",
             "payload.contentId !== contentId",
+            "section.tasks",
+            "progress.recordStudyTask",
+            "window.FreeHTLCloudSync?.ready",
             "textContent",
         )
         for token in required_client:
@@ -249,6 +276,7 @@ def validate_protected_entry(root: Path) -> list[str]:
             "sessionStorage",
             ".innerHTML",
             "proof/processing-proof-v1.json",
+            "plans/study-plan-v1.json",
             "SUPABASE_SERVICE_ROLE_KEY",
             "payload.userId",
             "payload.entitlement",
@@ -272,6 +300,9 @@ def validate_protected_entry(root: Path) -> list[str]:
             "expect(calls[0].body).toEqual({ contentId: 'processing-proof-v1' })",
             "expect(calls[0].body.userId).toBeUndefined()",
             "expect(calls[0].body.objectPath).toBeUndefined()",
+            "entitled learner opens the protected study plan and retains task progress",
+            "expect(calls[0].body).toEqual({ contentId: 'study-plan-v1' })",
+            "snapshot.studyTasks['study-plan-v1:w1d1']",
         )
         for token in required_test:
             if token not in browser_test:
@@ -336,12 +367,17 @@ def validate_public_proof_absence(root: Path) -> list[str]:
         "assets/processing-proof-v1.json",
         "public/proof/processing-proof-v1.json",
         "premium-content/processing-proof-v1.json",
+        "plans/study-plan-v1.json",
+        "data/study-plan-v1.json",
+        "assets/study-plan-v1.json",
+        "public/plans/study-plan-v1.json",
+        "premium-content/study-plan-v1.json",
     )
     for relative in prohibited_paths:
         if (root / relative).exists():
             issues.append(f"Protected proof payload must not be committed to public build paths: {relative}")
 
-    object_path = "proof/processing-proof-v1.json"
+    object_paths = ("proof/processing-proof-v1.json", "plans/study-plan-v1.json")
     allowed_references = {
         Path(PREMIUM_FUNCTION),
         Path("scripts/validate_layer14_security.py"),
@@ -358,7 +394,7 @@ def validate_public_proof_absence(root: Path) -> list[str]:
                 content = path.read_text(encoding="utf-8")
             except (OSError, UnicodeDecodeError):
                 continue
-            if object_path in content and path.relative_to(root) not in allowed_references:
+            if any(object_path in content for object_path in object_paths) and path.relative_to(root) not in allowed_references:
                 issues.append(f"Private proof object path leaked into public source: {path.relative_to(root)}")
     return issues
 

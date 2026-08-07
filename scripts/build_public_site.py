@@ -36,6 +36,7 @@ PUBLIC_SOURCE_HTML = (
     "account/verify-email.html",
     "modules/fixation-guide-v3.html",
     "premium/processing-proof.html",
+    "premium/study-plan.html",
 )
 
 PUBLIC_INDEXABLE_HTML = (
