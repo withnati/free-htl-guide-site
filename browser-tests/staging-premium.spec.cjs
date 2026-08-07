@@ -35,12 +35,30 @@ async function openSyncedPlan(browser) {
   return { context, page };
 }
 
+async function verifyPremiumDashboard(page) {
+  await page.goto('/my-progress.html');
+  await expect(page.locator('body')).toHaveAttribute('data-progress-dashboard-loaded', 'true');
+  await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', /^(premium|attention)$/);
+  await expect(page.locator('[data-account-status]')).toHaveText('Premium learner account');
+  await expect(page.locator('[data-next-step] a')).toHaveAttribute(
+    'href', /premium\/(?:study-plan|processing-proof)\.html$/
+  );
+  await expect(page.locator('[data-module-id="processing-v3"] [data-module-link]')).toHaveAttribute(
+    'href', /premium\/processing-proof\.html$/
+  );
+  await expect(page.getByText('Premium coming soon', { exact: true })).toHaveCount(0);
+  await page.goto('/premium/study-plan.html');
+  await expect(page.locator('body')).toHaveAttribute('data-cloud-progress', 'connected');
+  await expect(page.locator('[data-premium-status-label]')).toHaveText('Study plan ready');
+}
+
 test('designated Premium account receives all study tasks and persists one across clean sessions', async ({ browser }) => {
   let originalChecked;
   let changed = false;
 
   const first = await openSyncedPlan(browser);
   try {
+    await verifyPremiumDashboard(first.page);
     const tasks = first.page.locator('[data-premium-task-id]');
     await expect(tasks).toHaveCount(35);
     const firstTask = tasks.first();
