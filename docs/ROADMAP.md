@@ -88,20 +88,19 @@ Merged through PR #18 as commit `405686a2193282d246d2c2878b9bafb015617aea`.
 
 ## Implemented milestones after Layer 13
 
-### Layers 14–16.9 — protected delivery, subscriptions, question runtime, and sandbox billing
+### Layer 14 — protected delivery and production-capable hosting architecture
 
-The V5.0 checkpoint implemented and validated the following in staging/development and provider sandbox environments:
+Established generated allowlisted Cloudflare deployment, server-controlled entitlement checks, private Supabase Storage, and authenticated Edge Function delivery so protected Premium content is authorized before it reaches the browser.
 
-- Cloudflare Pages generated allowlisted public deployment;
-- Supabase Auth for verified identity;
-- Supabase PostgreSQL for learner progress and server-controlled entitlements;
-- Supabase Edge Functions for session and entitlement checks;
-- private Supabase Storage for protected content;
-- server-created subscription checkout and billing-portal flows in sandbox;
-- idempotent lifecycle webhook processing and reconciliation;
-- subscription UX and duplicate-subscription prevention;
-- canonical question records, review workflow, and protected runtime delivery;
-- approved Fixation runtime pilot and public fallback safety.
+### Layer 15 — subscription architecture and Premium access lifecycle
+
+Established provider-neutral subscription records, billing-to-entitlement projection, learner subscription UX, audit/recovery boundaries, and server-derived Premium state without allowing checkout redirects or browser metadata to grant access.
+
+### Layer 16 — canonical question runtime and sandbox billing integration
+
+Established canonical question records, review/publication gates, the approved Fixation runtime pilot, Stripe sandbox checkout and portal flows, signed webhook lifecycle handling, reconciliation, and duplicate-subscription prevention.
+
+The V5.0 checkpoint validated these Layer 14, Layer 15, and Layer 16 capabilities in staging/development and provider sandbox environments.
 
 ### Post-V5 product-improvement and protected-release work
 
