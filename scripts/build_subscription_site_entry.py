@@ -26,6 +26,7 @@ _RUNTIME_FILES = {
     Path("assets/question-runtime.js"),
     Path("assets/fixation-canonical-adapter.js"),
     Path("assets/fixation-runtime-activation.js"),
+    Path("assets/fixation-next-step.js"),
     Path("data/fixation-runtime-bank.json"),
 }
 
@@ -61,16 +62,21 @@ def dependency_closure(root: Path) -> set[Path]:
 
 
 def rewrite_html(content: str, route: str, site_url: str) -> str:
-    """Activate the canonical runtime only in the generated public Fixation page."""
+    """Activate the canonical Fixation runtime and post-quiz learner handoff."""
     content = _original_rewrite_html(content, route, site_url)
     if route != "modules/fixation-guide-v3.html":
         return content
-    marker = '<script src="../assets/fixation-runtime-activation.js" defer></script>'
-    if marker in content:
+
+    markers = (
+        '<script src="../assets/fixation-runtime-activation.js" defer></script>',
+        '<script src="../assets/fixation-next-step.js" defer></script>',
+    )
+    missing = [marker for marker in markers if marker not in content]
+    if not missing:
         return content
     if "</body>" not in content:
         raise ValueError("Cannot activate Fixation runtime without a closing body tag")
-    return content.replace("</body>", f"{marker}\n</body>", 1)
+    return content.replace("</body>", f"{' '.join(missing)}\n</body>", 1)
 
 
 def build(root: Path, output: Path) -> dict[str, object]:
