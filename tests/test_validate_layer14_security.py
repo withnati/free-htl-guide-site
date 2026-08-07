@@ -77,6 +77,14 @@ class Layer14SecurityValidatorTests(unittest.TestCase):
             issues = VALIDATOR.validate(copy)
             self.assertTrue(any("Protected proof payload" in issue for issue in issues))
 
+    def test_public_embedding_payload_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            copy = self.copy_repository(directory)
+            payload = copy / "data/embedding-microtomy-v1.json"
+            payload.write_text('{"contentId":"embedding-microtomy-v1"}', encoding="utf-8")
+            issues = VALIDATOR.validate(copy)
+            self.assertTrue(any("Protected proof payload" in issue for issue in issues))
+
     def test_browser_workflow_cannot_fall_back_to_npm_install(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             copy = self.copy_repository(directory)

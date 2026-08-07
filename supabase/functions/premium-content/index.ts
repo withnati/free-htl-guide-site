@@ -22,6 +22,14 @@ const CONTENT_ALLOWLIST = new Map<string, ProtectedContent>([
       productCode: 'fhl-premium',
       contentType: 'application/json; charset=utf-8'
     }
+  ],
+  [
+    'embedding-microtomy-v1',
+    {
+      objectPath: 'lessons/embedding-microtomy-v1.json',
+      productCode: 'fhl-premium',
+      contentType: 'application/json; charset=utf-8'
+    }
   ]
 ]);
 

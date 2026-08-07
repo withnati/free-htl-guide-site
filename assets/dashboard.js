@@ -3,7 +3,7 @@
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const service = window.FreeHTLProgress;
-  const releasedPremiumModules = new Set(['processing-v3']);
+  const releasedPremiumModules = new Set(['processing-v3', 'embedding-v3']);
   let latestModel = null;
 
   const escapeHtml = (value) => String(value ?? '')
@@ -85,6 +85,8 @@
     });
     const processingLink = $('[data-module-id="processing-v3"] [data-module-link]');
     if (processingLink) processingLink.href = 'premium/processing-proof.html';
+    const embeddingLink = $('[data-module-id="embedding-v3"] [data-module-link]');
+    if (embeddingLink) embeddingLink.href = 'premium/embedding-microtomy.html';
     renderRecommendation(latestModel, state);
   }
 

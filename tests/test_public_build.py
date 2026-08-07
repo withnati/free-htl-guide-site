@@ -82,6 +82,18 @@ class PublicBuildTests(unittest.TestCase):
             self.assertNotIn("plans/study-plan-v1.json", content)
             self.assertNotIn("w1d1", content)
 
+    def test_premium_embedding_shell_is_deployed_without_assessment_content(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = self.build_preview(directory)
+            page = output / "premium/embedding-microtomy.html"
+            self.assertTrue(page.is_file())
+            content = page.read_text(encoding="utf-8")
+            self.assertIn('data-protected-content-id="embedding-microtomy-v1"', content)
+            self.assertIn('content="noindex,nofollow"', content)
+            self.assertNotIn("lessons/embedding-microtomy-v1.json", content)
+            self.assertNotIn("Practice quiz", content)
+            self.assertNotIn("data-correct", content)
+
     def test_extensionless_preview_routes_receive_private_headers(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = self.build_preview(directory)
@@ -130,6 +142,17 @@ class PublicBuildTests(unittest.TestCase):
             )
             issues = VALIDATE.validate(output)
             self.assertTrue(any("private proof object path" in issue for issue in issues))
+
+    def test_private_embedding_object_path_added_to_dist_is_rejected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            output = self.build_preview(directory)
+            leaked = output / "assets/leaked-embedding.js"
+            leaked.write_text(
+                "const path = 'lessons/" + "embedding-microtomy-v1.json';",
+                encoding="utf-8",
+            )
+            issues = VALIDATE.validate(output)
+            self.assertTrue(any("private Embedding object path" in issue for issue in issues))
 
     def test_unapproved_download_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

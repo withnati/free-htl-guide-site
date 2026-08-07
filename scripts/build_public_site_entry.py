@@ -58,7 +58,8 @@ LEARNER_PREVIEW_COPY: dict[str, dict[str, object]] = {
         "title": "Embedding and Microtomy",
         "eyebrow": "Premium core lesson",
         "summary": "Build exam readiness in orientation, sectioning, cryostat work, artifact recognition, quality control, and safety.",
-        "features": ["Orientation and section-quality guidance", "Troubleshooting practice and quiz explanations", "Reference tools and study downloads"],
+        "features": ["Orientation and section-quality guidance", "Artifact troubleshooting and cryostat safety", "Secure account-verified lesson delivery"],
+        "protected_route": "premium/embedding-microtomy.html",
     },
     "modules/staining-he-guide.html": {
         "title": "Routine H&E Staining",

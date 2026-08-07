@@ -19,8 +19,8 @@ test('dashboard is private, learner-centered, and labels the access model', asyn
   await expect(page.locator('[data-module-progress] .module-row')).toHaveCount(7);
   await expect(page.locator('[data-module-progress] .access-public')).toHaveCount(1);
   await expect(page.locator('[data-module-progress] .access-premium')).toHaveCount(6);
-  await expect(page.locator('[data-module-progress] .module-release-ready')).toHaveCount(1);
-  await expect(page.locator('[data-module-progress] .module-release-upcoming')).toHaveCount(5);
+  await expect(page.locator('[data-module-progress] .module-release-ready')).toHaveCount(2);
+  await expect(page.locator('[data-module-progress] .module-release-upcoming')).toHaveCount(4);
   await expect(page.getByText('Across the course roadmap')).toBeVisible();
   await expect(page.locator('[data-summary-modules]')).toHaveText('0/7');
 });
