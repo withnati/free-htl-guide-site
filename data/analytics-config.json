@@ -70,6 +70,24 @@
       "share_method",
       "share_page",
       "share_url"
+    ],
+    "premium_plan_select": [
+      "plan_code",
+      "billing_cadence"
+    ],
+    "premium_checkout_start": [
+      "plan_code",
+      "billing_cadence"
+    ],
+    "premium_checkout_redirect": [
+      "plan_code",
+      "billing_cadence",
+      "destination_type"
+    ],
+    "premium_checkout_error": [
+      "plan_code",
+      "billing_cadence",
+      "error_type"
     ]
   },
   "prohibitedFields": [

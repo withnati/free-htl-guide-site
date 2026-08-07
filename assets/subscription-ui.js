@@ -23,44 +23,69 @@
     return `${target}?next=${encodeURIComponent(window.location.href)}`;
   }
 
-  function selectCadence(value) {
+  function planCadence(planCode) {
+    return planCode === 'premium_annual' ? 'annual' : 'monthly';
+  }
+
+  function trackPremiumFunnel(eventName, planCode, extra = {}) {
+    const analytics = window.FreeHTLAnalytics;
+    if (!analytics?.track) return false;
+    return analytics.track(eventName, {
+      plan_code: planCode,
+      billing_cadence: planCadence(planCode),
+      ...extra
+    });
+  }
+
+  function selectCadence(value, reportSelection = false) {
     if (!monthly || !annual) return;
     const isAnnual = value === 'annual';
+    const planCode = isAnnual ? 'premium_annual' : 'premium_monthly';
     monthly.setAttribute('aria-pressed', String(!isAnnual));
     annual.setAttribute('aria-pressed', String(isAnnual));
     if (amount) amount.textContent = isAnnual ? '$99.99' : '$9.99';
     if (cadence) cadence.textContent = isAnnual ? 'per year' : 'per month';
     if (savings) savings.hidden = !isAnnual;
     upgradeButtons.forEach((button) => {
-      button.dataset.upgradePlan = isAnnual ? 'premium_annual' : 'premium_monthly';
+      button.dataset.upgradePlan = planCode;
       button.textContent = isAnnual ? 'Choose annual Premium' : 'Choose monthly Premium';
     });
+    if (reportSelection) trackPremiumFunnel('premium_plan_select', planCode);
   }
 
-  monthly?.addEventListener('click', () => selectCadence('monthly'));
-  annual?.addEventListener('click', () => selectCadence('annual'));
+  monthly?.addEventListener('click', () => selectCadence('monthly', true));
+  annual?.addEventListener('click', () => selectCadence('annual', true));
 
   upgradeButtons.forEach((button) => {
     button.addEventListener('click', async () => {
-      if (!billing) return showNotice('Checkout is temporarily unavailable. Please try again later.', 'error');
+      const planCode = button.dataset.upgradePlan || 'premium_monthly';
+      trackPremiumFunnel('premium_checkout_start', planCode);
+      if (!billing) {
+        trackPremiumFunnel('premium_checkout_error', planCode, { error_type: 'billing_unavailable' });
+        return showNotice('Checkout is temporarily unavailable. Please try again later.', 'error');
+      }
       button.disabled = true;
       button.setAttribute('aria-busy', 'true');
       showNotice('Opening secure Stripe checkout…');
       try {
-        const result = await billing.createCheckout(button.dataset.upgradePlan);
+        const result = await billing.createCheckout(planCode);
         if (result.requiresSignIn) {
+          trackPremiumFunnel('premium_checkout_redirect', planCode, { destination_type: 'sign_in' });
           window.location.assign(signInUrl());
           return;
         }
         if (result.data?.manageSubscription === true) {
+          trackPremiumFunnel('premium_checkout_redirect', planCode, { destination_type: 'billing_settings' });
           showNotice('You already have a subscription. Opening your billing settings…');
           window.location.assign(window.FreeHTLAuth.siteUrl('account/subscription.html'));
           return;
         }
         const checkoutUrl = billing.approvedCheckoutUrl(result.data?.checkoutUrl);
         if (result.error || !checkoutUrl) throw result.error || new Error('Checkout URL unavailable.');
+        trackPremiumFunnel('premium_checkout_redirect', planCode, { destination_type: 'stripe_checkout' });
         window.location.assign(checkoutUrl);
       } catch {
+        trackPremiumFunnel('premium_checkout_error', planCode, { error_type: 'checkout_unavailable' });
         showNotice('We could not open checkout. Please try again in a moment.', 'error');
         button.disabled = false;
         button.removeAttribute('aria-busy');
