@@ -46,6 +46,26 @@
     return fallback;
   }
 
+  function preserveAccountSwitchReturn() {
+    const requestedNext = params.get('next');
+    if (!requestedNext || (page !== 'sign-in' && page !== 'sign-up')) return;
+
+    const targetPage = page === 'sign-in' ? 'sign-up.html' : 'sign-in.html';
+    const expectedTarget = new URL(targetPage, window.location.href);
+    const safeNext = auth.safeNext(requestedNext);
+
+    document.querySelectorAll('a').forEach((link) => {
+      try {
+        const candidate = new URL(link.href, window.location.href);
+        if (candidate.origin !== expectedTarget.origin || candidate.pathname !== expectedTarget.pathname) return;
+        candidate.searchParams.set('next', safeNext);
+        link.href = candidate.href;
+      } catch {
+        // Ignore malformed/non-navigation links; auth.safeNext remains the redirect authority.
+      }
+    });
+  }
+
   async function initialize() {
     if (!auth) {
       setStatus('Sign-in is temporarily unavailable. Please try again later.', 'error');
@@ -58,6 +78,7 @@
       return;
     }
 
+    preserveAccountSwitchReturn();
     if (page === 'sign-up') setupSignUp();
     if (page === 'sign-in') setupSignIn();
     if (page === 'verify-email') setupVerification();
