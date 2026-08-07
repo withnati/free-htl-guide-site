@@ -101,6 +101,27 @@ test('public homepage leads with HT and HTL exam preparation', async ({ page }) 
   await expectNoHorizontalOverflow(page);
 });
 
+test('FAQ states current Premium availability without stale enrollment claims', async ({ page }) => {
+  await page.goto('/faq.html');
+
+  await expect(page.getByText('Secure learning library available')).toBeVisible();
+  const premiumFaq = page.locator('details').filter({ hasText: 'What is included with Premium now?' });
+  await expect(premiumFaq).toContainText('Processing and Decalcification lesson');
+  await expect(premiumFaq).toContainText('six-week study plan');
+  await expect(page.getByText('Premium enrollment is not open yet.', { exact: true })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'Open Premium library' })).toHaveAttribute(
+    'href', /premium\/index\.html$/
+  );
+
+  const faqData = await page.locator('script[type="application/ld+json"]').evaluateAll((nodes) =>
+    nodes.map((node) => JSON.parse(node.textContent)).find((item) => item['@type'] === 'FAQPage')
+  );
+  const premiumAnswer = faqData.mainEntity.find((item) => item.name === 'What is included with Premium now?');
+  expect(premiumAnswer.acceptedAnswer.text).toContain('securely delivered Processing and Decalcification lesson');
+  expect(JSON.stringify(faqData)).not.toContain('planned to include');
+  await expectNoHorizontalOverflow(page);
+});
+
 test('complete public Fixation lesson uses the canonical runtime in the generated deployment', async ({ page }) => {
   await page.goto('/modules/fixation-guide-v3.html');
 
