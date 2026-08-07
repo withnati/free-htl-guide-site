@@ -1,20 +1,23 @@
 # FHL Website Product Roadmap
 
 **Project:** Free HTL Guide / FHL educational platform  
-**Current completed checkpoint:** V5.0 — staging deployment, protected delivery, subscription lifecycle, Fixation runtime pilot, and sandbox billing validation
-**Current active milestone:** launch-readiness closure without production cutover
+**Historical checkpoint:** V5.0 — staging deployment, protected delivery, subscription lifecycle, Fixation runtime pilot, and sandbox billing validation  
+**Current reconciled baseline:** post-V5 `main` at `e9a101bedb07aa65c6ff428a1f92dcf4f1fe1755` before the reconciliation documentation branch  
+**Current active milestone:** progressive protected Premium release plus launch-readiness closure without production cutover
+
+See `docs/POST_V5_RECONCILIATION_2026-08-06.md` for the complete post-V5 repository reconciliation.
 
 ## Product goal
 
-Build a world-class histotechnology learning and certification-preparation platform that combines excellent educational quality, a strong free acquisition experience, trusted learner accounts, protected premium content, measurable learning progress, and a sustainable subscription business.
+Build a world-class histotechnology learning and certification-preparation platform that combines excellent educational quality, a strong free acquisition experience, trusted learner accounts, protected Premium content, measurable learning progress, and a sustainable subscription business.
 
 Website structure, educational content, learner experience, security, monetization, and maintainability are treated as one product system.
 
 ## Stable product principles
 
 1. Keep useful, search-visible public learning content.
-2. Make the free-to-premium journey clear without making the free experience empty.
-3. Authentication proves identity only; server-controlled entitlement grants premium access.
+2. Make the free-to-Premium journey clear without making the free experience empty.
+3. Authentication proves identity only; server-controlled entitlement grants Premium access.
 4. Premium content must be protected before delivery.
 5. Learner progress remains behind the central progress-service contract.
 6. Anonymous learners may continue using local browser progress for the free experience.
@@ -23,7 +26,8 @@ Website structure, educational content, learner experience, security, monetizati
 9. Secret and service credentials remain server-only.
 10. Completed attempts remain stable and idempotent; mutable sessions use revisions and explicit conflict handling.
 11. Cloud progress contains stable identifiers and results, not full question text, explanations, answer keys, or personal notes.
-12. Major work is developed in protected draft pull requests and is not merged without explicit approval.
+12. Major work is developed in focused pull requests and merged only after applicable exact-head checks are green.
+13. A development capability is not learner-available Premium value until its secure delivery, review, staging evidence, and learner-facing release status are complete.
 
 ## Completed milestones
 
@@ -86,13 +90,9 @@ Merged through PR #18 as commit `405686a2193282d246d2c2878b9bafb015617aea`.
 
 ### Layers 14–16.9 — protected delivery, subscriptions, question runtime, and sandbox billing
 
-The V5.0 checkpoint implements and validates the following in staging/development and provider sandbox environments:
+The V5.0 checkpoint implemented and validated the following in staging/development and provider sandbox environments:
 
-This checkpoint preserves the milestone sequence: Layer 14 established protected delivery, Layer 15 established subscription architecture and learner UX, and Layer 16 established the question runtime and sandbox-billing integration.
-
-Approved architecture:
-
-- Cloudflare Pages for public frontend hosting, previews, production deployments, TLS, custom domains, headers, and rollback;
+- Cloudflare Pages generated allowlisted public deployment;
 - Supabase Auth for verified identity;
 - Supabase PostgreSQL for learner progress and server-controlled entitlements;
 - Supabase Edge Functions for session and entitlement checks;
@@ -101,18 +101,81 @@ Approved architecture:
 - idempotent lifecycle webhook processing and reconciliation;
 - subscription UX and duplicate-subscription prevention;
 - canonical question records, review workflow, and protected runtime delivery;
-- an approved Fixation runtime pilot with shadow verification and public fallback safety.
+- approved Fixation runtime pilot and public fallback safety.
 
-The following production gates remain deliberately incomplete:
+### Post-V5 product-improvement and protected-release work
 
-- canonical production domain and controlled Cloudflare production cutover;
-- separate approved production Supabase configuration and secrets;
-- live payment products, prices, tax posture, refund policy, legal wording, and owner authorization;
-- final scientific/editorial review of the 80 alternate question scenarios;
-- production smoke, rollback, monitoring, and incident evidence;
-- explicit owner approval before any live billing or production deployment.
+PRs #46–#64 moved the project from a V5 architecture checkpoint toward a coherent Premium learner experience.
+
+Completed work includes:
+
+- deterministic Targeted Practice resume persistence;
+- global accessibility foundations and reduced-motion support;
+- whole-product prioritization and repository-state reconciliation;
+- entitlement-aware Premium learner UI;
+- Premium learning library;
+- mobile privacy-consent refinement;
+- hardened protected lesson error/offline/retry states;
+- trusted Premium offline states;
+- bounded transient clock-skew recovery for account startup;
+- protected six-week study plan with 35 account-linked tasks;
+- staging-only authenticated Premium smoke automation;
+- Premium dashboard next-step and release-status logic;
+- truthful FAQ, pricing, homepage, and account availability copy;
+- protected Embedding and Microtomy lesson release.
+
+## Current release map
+
+### Public/free acquisition experience
+
+Available now:
+
+- homepage and course outline;
+- editorial/trust, privacy, terms, FAQ, pricing, and signup pages;
+- complete Fixation lesson;
+- approved public Fixation sample-question runtime;
+- public previews of unreleased Premium experiences;
+- anonymous local progress and free-account continuity where implemented.
+
+### Premium available now
+
+- Processing and Decalcification protected lesson;
+- Embedding and Microtomy protected lesson;
+- six-week HT/HTL study plan;
+- Premium learning library;
+- entitlement-aware dashboard guidance and release-status presentation;
+- server-controlled subscription status and billing-management UX in the validated staging/sandbox architecture.
+
+### Premium release in progress
+
+- Routine H&E Staining;
+- Special Stains;
+- Laboratory Operations;
+- IHC/ISH Fundamentals;
+- full Premium quizzes;
+- cumulative mixed-domain practice;
+- full mock exams;
+- Targeted Practice;
+- protected downloads and future learning tools.
+
+The learner interface must not describe these release-in-progress capabilities as currently available simply because development implementations exist.
 
 ## Launch-readiness workstreams
+
+### Progressive protected curriculum release
+
+Primary objective: release scientifically ready lesson content through the existing entitlement-verified private delivery path without exposing assessment material prematurely.
+
+Release sequence for each learning experience:
+
+1. confirm content scope and scientific/editorial readiness;
+2. keep launch-Premium payloads out of public Git history;
+3. add only the non-sensitive content identifier and protected shell to the public build;
+4. extend the server content allowlist;
+5. upload the private payload to staging storage;
+6. verify signed-out/free denial, entitled delivery, revocation, wrong-origin denial, and public-storage denial;
+7. update library, dashboard, pricing/FAQ/homepage truth only after the experience is actually available;
+8. require exact-head automated checks before merge.
 
 ### Subscription production readiness
 
@@ -141,7 +204,7 @@ Primary objective: turn the secure educational platform into a trusted, measurab
 Planned scope:
 
 - final homepage and course positioning;
-- public course outline and premium comparison;
+- public course outline and Premium comparison;
 - pricing presentation;
 - instructor authority and trust signals;
 - onboarding journey;
@@ -194,7 +257,7 @@ These are not committed milestones and require separate prioritization:
 - Deterministic dependency installation with a committed lockfile and `npm ci`.
 - Site, Browser, Database, and Layer-specific Security workflows.
 - Preview deployments and rollback evidence.
-- Incremental commits and updated draft PR descriptions.
+- Incremental commits and updated PR descriptions.
 - Exact-head verification before merge.
 
 ### Governance
@@ -207,10 +270,12 @@ These are not committed milestones and require separate prioritization:
 ## Current open items
 
 - Final scientific and editorial review of 80 alternate scenarios.
-- Select production domain and staging hostname.
+- Continue protected release of scientifically ready course lessons.
+- Release assessment/practice systems only after content-review and protected-delivery gates are complete.
+- Select production domain and staging hostname strategy.
 - Establish and approve the production Supabase project and secrets.
 - Authorize the controlled Cloudflare production cutover.
-- Decide repository privacy timing before new launch-premium content is added.
+- Decide repository privacy timing before new launch-Premium content is added.
 - Configure enforceable GitHub branch protection and required checks for `main`.
 - Confirm public post-merge account routes before directing real learners to signup.
 - Consider CODEOWNERS before adding external collaborators.
