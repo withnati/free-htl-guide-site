@@ -36,8 +36,8 @@
   function renderModules(model) {
     const root = $('[data-module-progress]');
     root.innerHTML = model.modules.map((item) => `
-      <article class="module-row">
-        <div><h3><a href="${escapeHtml(item.path)}">${escapeHtml(item.title)}</a></h3><div class="module-meta">${escapeHtml(item.domain)}${item.lastSection ? ` · Continue at ${escapeHtml(item.lastSection)}` : ''}</div></div>
+      <article class="module-row" data-module-id="${escapeHtml(item.id)}">
+        <div><h3><a data-module-link href="${escapeHtml(item.path)}">${escapeHtml(item.title)}</a></h3><div class="module-meta">${escapeHtml(item.domain)}${item.lastSection ? ` · Continue at ${escapeHtml(item.lastSection)}` : ''}</div></div>
         <div class="module-status"><span class="module-meta">Progress</span><div class="status-value">${escapeHtml(item.status)}</div></div>
         <div class="module-score"><span class="module-meta">Best quiz</span><div class="status-value">${item.bestQuiz ? `${item.bestQuiz}%` : '—'}</div></div>
         <div>${accessBadge(item.accessTier)}</div>
@@ -76,6 +76,40 @@
       link.textContent = 'Open Premium library';
       link.hidden = false;
     });
+    const processingLink = $('[data-module-id="processing-v3"] [data-module-link]');
+    if (processingLink) processingLink.href = 'premium/processing-proof.html';
+    renderRecommendation(latestModel, state);
+  }
+
+  function renderRecommendation(model, premiumState = '') {
+    if (!model) return;
+    let recommendation = model.recommendation;
+    let action = 'Continue studying';
+    if (premiumState === 'premium' || premiumState === 'attention') {
+      const completed = Number(model.summary.studyPlanTasksCompleted || 0);
+      if (completed < 35) {
+        recommendation = {
+          title: completed ? 'Continue your six-week study plan' : 'Start your six-week study plan',
+          message: completed
+            ? `${completed} of 35 plan tasks are complete. Continue with the next task in your account-linked plan.`
+            : 'Use the account-linked plan to pace lessons, review, and practice across six focused weeks.',
+          path: 'premium/study-plan.html',
+          accessTier: 'premium'
+        };
+        action = completed ? 'Resume study plan' : 'Open study plan';
+      } else {
+        recommendation = {
+          title: 'Continue with Processing and Decalcification',
+          message: 'Your study-plan tasks are complete. Continue in the securely delivered Processing lesson.',
+          path: 'premium/processing-proof.html',
+          accessTier: 'premium'
+        };
+        action = 'Open lesson';
+      }
+    }
+    $('[data-next-step]').innerHTML = `
+      <div><p class="eyebrow">Recommended next step</p><h2>${escapeHtml(recommendation.title)}</h2><p>${escapeHtml(recommendation.message)}</p>${accessBadge(recommendation.accessTier)}</div>
+      <a class="btn btn-primary" href="${escapeHtml(recommendation.path)}">${escapeHtml(action)}</a>`;
   }
 
   function render(model) {
@@ -87,10 +121,7 @@
     $('[data-study-coverage]').textContent = model.summary.coverage;
     $('[data-progress-updated]').textContent = formatDate(model.updatedAt);
 
-    const recommendation = model.recommendation;
-    $('[data-next-step]').innerHTML = `
-      <div><p class="eyebrow">Recommended next step</p><h2>${escapeHtml(recommendation.title)}</h2><p>${escapeHtml(recommendation.message)}</p>${accessBadge(recommendation.accessTier)}</div>
-      <a class="btn btn-primary" href="${escapeHtml(recommendation.path)}">Continue studying</a>`;
+    renderRecommendation(model, document.body.dataset.premiumUiState);
 
     $('[data-account-status]').textContent = model.account.localOnly ? 'Using this device' : 'Free learner account';
     $('[data-storage-status]').textContent = model.account.localOnly ? 'On this device' : 'In your account';

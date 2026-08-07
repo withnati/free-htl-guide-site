@@ -472,6 +472,8 @@
     const latestTargeted = record.targetedPracticeAttempts[0] || null;
     const bestMock = record.mockExamAttempts.reduce((best, attempt) => Math.max(best, Number(attempt.percent || 0)), 0);
     const completedTasks = Object.values(record.studyTasks).filter((task) => task.checked).length;
+    const studyPlanTasksCompleted = Object.values(record.studyTasks)
+      .filter((task) => task.page === 'study-plan-v1' && task.checked).length;
     const quizPercents = record.quizAttempts.map((attempt) => Number(attempt.percent || 0));
     const averageQuiz = quizPercents.length ? Math.round(quizPercents.reduce((sum, value) => sum + value, 0) / quizPercents.length) : null;
     const modulesStarted = moduleRows.filter((item) => item.status !== 'Not started').length;
@@ -540,6 +542,7 @@
         modulesTargetMet,
         totalModules: moduleRows.length,
         completedTasks,
+        studyPlanTasksCompleted,
         quizAttempts: record.quizAttempts.length,
         averageQuiz,
         mockAttempts: record.mockExamAttempts.length,
