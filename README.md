@@ -1,8 +1,10 @@
 # Free HTL Guide
 
-Free HTL Guide is an HT/HTL learning and certification-preparation platform in active development. It combines structured histotechnology lessons, quizzes, mock exams, targeted practice, verified learner accounts, and cloud-backed progress.
+Free HTL Guide is an HT/HTL learning and certification-preparation platform in active development. It combines structured histotechnology lessons, quizzes, mock exams, targeted practice, verified learner accounts, cloud-backed progress, protected Premium delivery, and subscription access.
 
-The repository is at the V5.0 staging and sandbox checkpoint. Cloudflare preview deployment, protected-delivery containment, verified accounts, cloud progress, subscription lifecycle handling, and the Fixation runtime-question pilot are implemented and validated. This is not approval for a production cutover or live billing.
+The repository has advanced beyond the V5.0 staging/sandbox checkpoint. The current post-V5 baseline includes an entitlement-aware Premium learner shell, a secure Premium learning library, protected Processing and Embedding lessons, an account-linked six-week study plan, stronger Premium recovery/offline states, improved accessibility and mobile consent behavior, and repeatable authenticated staging smoke coverage. This is still not approval for a production cutover or live billing.
+
+See `docs/POST_V5_RECONCILIATION_2026-08-06.md` for the reconciled current-state record.
 
 ## Product direction
 
@@ -10,46 +12,88 @@ The project is transitioning from a static study guide into a subscription learn
 
 - **Public launch content:** homepage, instructor and editorial information, course outline, the complete Fixation lesson, selected sample questions, limited study resources, feature previews, pricing, and signup.
 - **Free account experience:** verified identity, basic cloud progress, cross-device continuity for free learning, account settings, progress export/reset, and account deletion.
-- **Premium experience:** lessons 2–7, full quizzes, the complete question bank, mock exams, Targeted Practice, detailed explanations, advanced history, weak-domain recommendations, and future premium learning tools.
+- **Premium experience:** progressively released protected lessons and study tools, with the future scope including lessons 2–7, full quizzes, the complete reviewed question bank, mock exams, Targeted Practice, detailed explanations, advanced history, weak-domain recommendations, and future Premium learning tools.
 
-Authentication proves identity only. Browser metadata, profile fields, URL parameters, or local storage may not grant premium access. Protected content must be authorized by a server before delivery.
+Authentication proves identity only. Browser metadata, profile fields, URL parameters, or local storage may not grant Premium access. Protected content must be authorized by a server before delivery.
+
+## Current learner experience
+
+### Available publicly
+
+- Complete Fixation lesson.
+- Approved public Fixation sample-question runtime.
+- Course outline and Premium previews.
+- Pricing, signup, editorial/trust information, privacy, terms, and FAQ.
+- Anonymous local progress for the free experience.
+
+### Available now with confirmed Premium access
+
+- Processing and Decalcification protected lesson.
+- Embedding and Microtomy protected lesson.
+- Six-week HT/HTL study plan with 35 account-linked tasks.
+- Premium learning library.
+- Entitlement-aware dashboard guidance and release-status presentation.
+
+### Included in the Premium roadmap but not yet released for secure study
+
+- Routine H&E Staining.
+- Special Stains.
+- Laboratory Operations.
+- IHC/ISH Fundamentals.
+- Full Premium quizzes.
+- Mixed-domain cumulative practice.
+- Full mock-exam release.
+- Targeted Practice release.
+- Protected downloads and additional Premium tools.
+
+Learner-facing pages must distinguish these future releases from experiences that are actually available now.
 
 ## Current architecture
 
-### Completed account, progress, and protected-delivery foundation
+### Account, progress, and protected-delivery foundation
 
-- Static frontend currently deployed through GitHub Pages during development
-- Supabase Auth with signup, email verification, sign-in, sign-out, recovery, and password reset
-- Controlled authentication callbacks using PKCE
-- Versioned learner-progress record and central progress-service contract
-- Anonymous local-browser progress
-- Explicit anonymous-to-account progress import or account-only mode
-- Normalized PostgreSQL cloud progress across ten relational tables
-- Row Level Security and two-user ownership tests
-- Cross-device synchronization
-- Offline pending-write recovery
-- Revision-based conflict protection for mutable sessions
-- Stable and idempotent completed attempts
-- Secure account deletion through a Supabase Edge Function
-- Privacy-first, consent-gated analytics
-- Automated Site, Browser, and Database Quality workflows
+- Supabase Auth with signup, email verification, sign-in, sign-out, recovery, and password reset.
+- Controlled authentication callbacks using PKCE.
+- Versioned learner-progress record and central progress-service contract.
+- Anonymous local-browser progress.
+- Explicit anonymous-to-account progress import or account-only mode.
+- Normalized PostgreSQL cloud progress across ten relational tables.
+- Row Level Security and two-user ownership tests.
+- Cross-device synchronization.
+- Offline pending-write recovery.
+- Revision-based conflict protection for mutable sessions.
+- Stable and idempotent completed attempts.
+- Secure account deletion through a Supabase Edge Function.
+- Privacy-first, consent-gated analytics.
+- Automated Site, Browser, Database, and protected-delivery workflows.
 
 ### Implemented staging architecture
 
-- Cloudflare Pages for previews, production hosting, custom domains, TLS, security headers, and rollback
-- Supabase Auth for learner identity
-- Supabase PostgreSQL for learner progress and server-controlled entitlement records
-- Supabase Edge Functions for authenticated entitlement checks
-- Private Supabase Storage for protected lessons, question payloads, explanations, answer keys, and downloads
-- Stripe sandbox billing with server-controlled entitlement updates and lifecycle reconciliation
+- Cloudflare Pages for generated allowlisted deployment, previews, production hosting, custom domains, TLS, security headers, and rollback.
+- Supabase Auth for learner identity.
+- Supabase PostgreSQL for learner progress and server-controlled entitlement records.
+- Supabase Edge Functions for authenticated entitlement checks.
+- Private Supabase Storage for protected lessons and future protected question/explanation/download payloads.
+- Stripe sandbox billing with server-controlled entitlement updates and lifecycle reconciliation.
+- Authenticated staging Premium smoke coverage using encrypted test-account secrets and credential-safe artifact settings.
+
+### Current protected-content allowlist
+
+The Premium delivery function currently recognizes:
+
+- `processing-proof-v1`
+- `study-plan-v1`
+- `embedding-microtomy-v1`
+
+For every protected request, the server validates the origin and session, derives the learner from the verified token, maps the content ID through a server allowlist, checks effective `fhl-premium` entitlement, and only then reads the private object.
 
 ## Current development status
 
-- Layers 1–16.9 represented by the V5.0 checkpoint are merged into `main`.
-- Layer 12 Targeted Practice merged through PR #17 as `a130066847650988181e1d0c452f920bb7cf252b`.
-- Layer 13 authentication and cloud progress merged through PR #18 as `405686a2193282d246d2c2878b9bafb015617aea`.
-- Layer 14 hosting and protected delivery, Layer 15 subscription architecture/UX, and the Layer 16 question-runtime and sandbox-billing work are implemented on `main`.
-- Staging uses Cloudflare previews, Supabase staging services, and payment-provider sandbox/test mode only.
+- V5.0 remains the historical staging deployment and sandbox billing checkpoint.
+- The reconciled post-V5 main baseline is recorded in `docs/POST_V5_RECONCILIATION_2026-08-06.md`.
+- Current reconciled `main` before that documentation branch: `e9a101bedb07aa65c6ff428a1f92dcf4f1fe1755`.
+- PRs #46–#64 added reliability, accessibility, Premium learner UX, protected study-plan delivery, staging Premium smoke coverage, truthful availability copy, and the protected Embedding and Microtomy lesson.
+- The exact PR #64 head passed Site quality, Browser quality, Database quality, and Layer 14 security before merge.
 - Live billing, production data/services, the canonical production domain, final legal/tax/refund wording, and production deployment remain owner-controlled launch gates.
 
 The 150-record development bank contains 70 authority-reviewed base questions and 80 alternate scenarios that still require final manual scientific and editorial review.
@@ -58,7 +102,7 @@ The 150-record development bank contains 70 authority-reviewed base questions an
 
 The public browser may receive public pages, free learning content, account interfaces, upgrade states, and non-sensitive content identifiers.
 
-The browser must not receive premium lesson payloads, full question banks, explanations, answer keys, or protected downloads unless a server or Edge Function has:
+The browser must not receive protected Premium lesson payloads, full question banks, explanations, answer keys, or protected downloads unless a server or Edge Function has:
 
 1. validated the Supabase session;
 2. derived the user from the verified token;
@@ -66,7 +110,7 @@ The browser must not receive premium lesson payloads, full question banks, expla
 4. validated the requested content identifier; and
 5. authorized delivery from private storage.
 
-Existing public premium-designated material is treated as development-preview content. Revised or newly created launch-premium content must remain private from creation onward.
+Existing public Premium-designated material is treated as development-preview content. Revised or newly created launch-Premium content must remain private from creation onward.
 
 ## Allowlisted public deployment
 
@@ -76,11 +120,12 @@ The public build:
 
 - copies only approved public and account-shell files;
 - keeps the complete Fixation lesson as the public acquisition hook;
-- replaces premium lesson, practice, mock-exam, and Targeted Practice routes with noindex preview shells;
-- excludes premium question-bank JSON, explanations, answer-key material, server code, migrations, tests, documentation, and unapproved downloads;
+- replaces unreleased Premium lesson, practice, mock-exam, and Targeted Practice routes with noindex preview shells;
+- includes only the protected-shell code needed to request authorized content and never embeds the private lesson payload itself;
+- excludes Premium question-bank JSON, explanations, answer-key material, server code, migrations, tests, documentation, and unapproved downloads;
 - generates environment-specific browser-safe Supabase configuration;
 - generates the approved sitemap, robots file, and Cloudflare `_headers` rules;
-- scans the output for protected paths, question-bank identifiers, credentials, and premium leakage.
+- scans the output for protected paths, question-bank identifiers, credentials, and Premium leakage.
 
 Build and validate a local preview:
 
@@ -149,6 +194,7 @@ The committed `package-lock.json` and Browser Quality workflow use deterministic
 
 ## Key project documents
 
+- `docs/POST_V5_RECONCILIATION_2026-08-06.md`
 - `docs/ROADMAP.md`
 - `docs/LAYER_11_ACCOUNT_READY_PROGRESS.md`
 - `docs/LAYER_12_TARGETED_PRACTICE.md`
@@ -171,6 +217,6 @@ The committed `package-lock.json` and Browser Quality workflow use deterministic
 
 ## Repository workflow
 
-Major product layers are developed on dedicated branches and opened as draft pull requests. A layer must not be merged until its automated workflows pass, its security boundaries are reviewed, desktop and mobile behavior is verified, staging evidence is complete, and explicit merge approval is given.
+Major product work is developed on focused branches and reviewed through pull requests. A change must not be merged until its applicable automated workflows pass, its security boundaries are reviewed, desktop/mobile behavior is verified when relevant, staging evidence is complete when relevant, and the exact head SHA is confirmed.
 
 Every focused PR must remain unmerged until its applicable Site, Browser, Database, protected-delivery, public-build, and preview checks pass on the exact head SHA. Production deployment and live billing additionally require the owner-controlled gates in `docs/LIVE_BILLING_LAUNCH_READINESS.md`.
