@@ -76,7 +76,7 @@ async function expectReleaseCards(page, availableLabel) {
   const upcoming = page.locator('[data-premium-route-link][data-premium-release="upcoming"]');
 
   await expect(available).toHaveCount(2);
-  await expect(upcoming).toHaveCount(4);
+  await expect(upcoming).toHaveCount(6);
 
   for (const link of await available.all()) {
     await expect(link).toHaveText(availableLabel);
