@@ -27,6 +27,12 @@ REQUIRED_EVENTS = {
     "study_task_toggle",
     "share",
 }
+REVIEWED_OPTIONAL_EVENTS = {
+    "premium_plan_select",
+    "premium_checkout_start",
+    "premium_checkout_redirect",
+    "premium_checkout_error",
+}
 REQUIRED_PROHIBITED_FIELDS = {
     "email",
     "email_address",
@@ -126,7 +132,8 @@ def validate_config(root: Path, data: dict, issues: list[Issue]) -> None:
     missing_events = sorted(REQUIRED_EVENTS - set(events))
     if missing_events:
         issues.append(Issue(path, 1, f"Missing required analytics events: {', '.join(missing_events)}"))
-    unknown_events = sorted(set(events) - REQUIRED_EVENTS)
+    reviewed_events = REQUIRED_EVENTS | REVIEWED_OPTIONAL_EVENTS
+    unknown_events = sorted(set(events) - reviewed_events)
     if unknown_events:
         issues.append(Issue(path, 1, f"Unknown analytics events require review: {', '.join(unknown_events)}"))
     for event_name, parameters in events.items():
