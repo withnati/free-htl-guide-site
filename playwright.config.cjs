@@ -5,6 +5,7 @@ module.exports = defineConfig({
   testIgnore: [
     'public-deployment.spec.cjs',
     'public-premium-preview-release.spec.cjs',
+    'public-fixation-next-step.spec.cjs',
     'staging.spec.cjs',
     'staging-premium.spec.cjs'
   ],
