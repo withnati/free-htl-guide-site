@@ -79,8 +79,8 @@ def validate(root: Path) -> list[str]:
             errors.append(f'Resilient cloud adapter is missing contract token: {token}')
 
     required_flow_tokens = (
-        'data-cloud-import', 'Adding this device’s study progress', 'hasCompletedMigration',
-        'Use progress already in my account', 'reconnectAfterReset', 'localStorage.removeItem',
+        'data-cloud-import', 'data-account-progress-only', 'Adding this device’s study progress', 'hasCompletedMigration',
+        'Continue with account progress only', 'Keep device progress separate', 'reconnectAfterReset', 'localStorage.removeItem',
         DECISION_KEY, "mode === 'imported'", "'account-only'",
         'ResilientCloudAdapter', 'adapter.hasPending()',
         'data-cloud-conflict', 'Continue newer account session', "Continue this device’s session",
