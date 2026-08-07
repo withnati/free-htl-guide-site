@@ -47,12 +47,31 @@ async function mockPremiumSupabase(page) {
   }));
 }
 
-test('Premium homepage distinguishes released lessons from upcoming releases', async ({ page }) => {
-  await mockPremiumSupabase(page);
-  await page.goto('/');
+async function mockSignedOutSupabase(page) {
+  await page.route(sdkUrl, (route) => route.fulfill({
+    status: 200,
+    contentType: 'application/javascript',
+    body: `
+      window.supabase = {
+        createClient() {
+          const ok = (data = {}) => Promise.resolve({ data, error: null });
+          return {
+            auth: {
+              getSession: () => ok({ session: null }),
+              getUser: () => ok({ user: null }),
+              onAuthStateChange: () => ({ data: { subscription: { unsubscribe() {} } } }),
+              signOut: () => ok({})
+            },
+            from: () => ({ update: () => ({ eq: () => ok({}) }) }),
+            functions: { invoke: () => ok({}) }
+          };
+        }
+      };
+    `
+  }));
+}
 
-  await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'premium');
-
+async function expectReleaseCards(page, availableLabel) {
   const available = page.locator('[data-premium-route-link][data-premium-release="available"]');
   const upcoming = page.locator('[data-premium-route-link][data-premium-release="upcoming"]');
 
@@ -60,12 +79,29 @@ test('Premium homepage distinguishes released lessons from upcoming releases', a
   await expect(upcoming).toHaveCount(4);
 
   for (const link of await available.all()) {
-    await expect(link).toHaveText('Open lesson');
+    await expect(link).toHaveText(availableLabel);
+    await expect(link.locator('xpath=ancestor::article[1]').locator('.tag-row .chip').first()).toHaveText('Secure lesson available');
   }
   for (const link of await upcoming.all()) {
     await expect(link).toHaveText('View release status');
+    await expect(link.locator('xpath=ancestor::article[1]').locator('.tag-row .chip').first()).toHaveText('Secure release in progress');
   }
+}
 
+test('Premium homepage distinguishes released lessons from upcoming releases', async ({ page }) => {
+  await mockPremiumSupabase(page);
+  await page.goto('/');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'premium');
+  await expectReleaseCards(page, 'Open lesson');
   await expect(page.getByText(/securely delivered Processing and Embedding lessons/)).toBeVisible();
   await expect(page.getByText(/New protected releases will appear in your library after verification/)).toBeVisible();
+});
+
+test('signed-out homepage does not present unreleased Premium lessons as open', async ({ page }) => {
+  await mockSignedOutSupabase(page);
+  await page.goto('/');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'signed-out');
+  await expectReleaseCards(page, 'View lesson');
 });
