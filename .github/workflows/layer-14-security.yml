@@ -32,6 +32,9 @@ jobs:
       - name: Validate Layer 14 repository security contract
         run: python scripts/validate_layer14_security.py --root "$GITHUB_WORKSPACE"
 
+      - name: Freeze public Premium source exposure
+        run: python scripts/validate_public_source_exposure.py --root "$GITHUB_WORKSPACE"
+
       - name: Report stale premium download references
         shell: bash
         run: |
