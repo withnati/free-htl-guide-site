@@ -95,21 +95,27 @@
   function applyPreviewState(state) {
     const premium = state === 'premium' || state === 'attention';
     const title = document.querySelector('h1')?.textContent?.trim() || 'this Premium feature';
+    const released = Boolean(document.querySelector('[data-protected-preview-link]'));
+
     if (premium) {
       setText('[data-premium-preview-label]', state === 'attention' ? 'Premium access · Billing attention' : 'Premium access confirmed');
       setText('[data-premium-preview-message]', `Your account includes ${title}.`);
-      setText('[data-premium-preview-detail]', document.querySelector('[data-protected-preview-link]')
-        ? 'Open the securely delivered lesson preview below. The complete lesson will be added here as its protected release is completed.'
+      setText('[data-premium-preview-detail]', released
+        ? 'Open the complete securely delivered lesson below. Your Premium access is checked again when the lesson opens.'
         : 'This feature is included with your account and is being prepared for secure release. Your access will appear here automatically when it is available.');
+      setText('[data-premium-preview-context]', released
+        ? 'Premium access is confirmed. The secure lesson checks access again when you open it.'
+        : 'Premium access is confirmed. This experience will appear in your library when its secure release is completed.');
       setVisible('[data-premium-upgrade-action]', false);
       setVisible('[data-premium-account-action]', true);
-      setVisible('[data-protected-preview-link]', true);
+      setVisible('[data-protected-preview-link]', released);
       return;
     }
     if (state === 'signed-out') {
       setText('[data-premium-preview-label]', 'Premium preview');
       setText('[data-premium-preview-message]', `${title} is included with Premium.`);
       setText('[data-premium-preview-detail]', 'Sign in to confirm your account access, or compare Premium plans before enrolling.');
+      setText('[data-premium-preview-context]', 'Sign in to let this page confirm the access attached to your account.');
       setVisible('[data-premium-upgrade-action]', true);
       setVisible('[data-premium-account-action]', false);
       setVisible('[data-protected-preview-link]', false);
@@ -120,7 +126,12 @@
       setText('[data-premium-preview-message]', `${title} is included with Premium.`);
       setText('[data-premium-preview-detail]', state === 'ended'
         ? 'Your previous Premium access has ended. Compare plans to restore access while keeping your account and eligible learning history.'
-        : 'Compare Premium plans for the secure learning available now and the verified releases being prepared next.');
+        : released
+          ? 'Compare Premium plans to open this secure lesson and the other learning experiences available now.'
+          : 'Compare Premium plans for the secure learning available now and the verified releases being prepared next.');
+      setText('[data-premium-preview-context]', state === 'ended'
+        ? 'Your account and eligible learning history remain available.'
+        : 'Your free account and eligible learning history remain available whether or not you add Premium.');
       setVisible('[data-premium-upgrade-action]', true);
       setVisible('[data-premium-account-action]', false);
       setVisible('[data-protected-preview-link]', false);
@@ -130,6 +141,7 @@
       setText('[data-premium-preview-label]', 'Access check unavailable');
       setText('[data-premium-preview-message]', 'We could not confirm your Premium access.');
       setText('[data-premium-preview-detail]', 'Refresh the page to try again. You can also review your plan from the account page.');
+      setText('[data-premium-preview-context]', 'Your account has not been changed. Free study remains available while the access check is unavailable.');
       setVisible('[data-premium-upgrade-action]', false);
       setVisible('[data-premium-account-action]', true);
       setVisible('[data-protected-preview-link]', false);
@@ -139,6 +151,7 @@
       setText('[data-premium-preview-label]', 'Offline');
       setText('[data-premium-preview-message]', `Reconnect to confirm access to ${title}.`);
       setText('[data-premium-preview-detail]', 'This feature stays securely locked until the server can check your account again. Your account has not been changed.');
+      setText('[data-premium-preview-context]', 'Reconnect to confirm Premium access. Your account and eligible learning history remain unchanged.');
       setVisible('[data-premium-upgrade-action]', false);
       setVisible('[data-premium-account-action]', true);
       setVisible('[data-protected-preview-link]', false);

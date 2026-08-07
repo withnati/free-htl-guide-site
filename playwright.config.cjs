@@ -2,7 +2,12 @@ const { defineConfig, devices } = require('@playwright/test');
 
 module.exports = defineConfig({
   testDir: './browser-tests',
-  testIgnore: ['public-deployment.spec.cjs', 'staging.spec.cjs', 'staging-premium.spec.cjs'],
+  testIgnore: [
+    'public-deployment.spec.cjs',
+    'public-premium-preview-release.spec.cjs',
+    'staging.spec.cjs',
+    'staging-premium.spec.cjs'
+  ],
   timeout: 30_000,
   expect: { timeout: 5_000 },
   fullyParallel: false,
