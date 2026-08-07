@@ -5,7 +5,8 @@ module.exports = defineConfig({
   testMatch: [
     'public-deployment.spec.cjs',
     'public-premium-preview-release.spec.cjs',
-    'public-fixation-next-step.spec.cjs'
+    'public-fixation-next-step.spec.cjs',
+    'auth-return-continuity.spec.cjs'
   ],
   timeout: 30_000,
   expect: { timeout: 5_000 },
