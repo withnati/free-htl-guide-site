@@ -256,7 +256,42 @@ test('Premium dashboard projects trusted access and links to the library', async
   await expect(page.getByRole('link', { name: 'Open Premium library' }).first()).toHaveAttribute(
     'href', /premium\/index\.html$/
   );
+  await expect(page.getByRole('heading', { name: 'Start your six-week study plan' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open study plan' })).toHaveAttribute(
+    'href', /premium\/study-plan\.html$/
+  );
+  await expect(page.locator('[data-module-id="processing-v3"] [data-module-link]')).toHaveAttribute(
+    'href', /premium\/processing-proof\.html$/
+  );
   await expectNoHorizontalOverflow(page);
+});
+
+test('Premium dashboard moves from a completed study plan to the secure Processing lesson', async ({ page }) => {
+  await mockPremiumSupabase(page);
+  await page.addInitScript(() => {
+    const studyTasks = {};
+    for (let index = 1; index <= 35; index += 1) {
+      studyTasks[`study-plan-v1:task-${index}`] = {
+        page: 'study-plan-v1', taskId: `task-${index}`, checked: true,
+        updatedAt: '2026-08-06T00:00:00.000Z'
+      };
+    }
+    localStorage.setItem('free-htl-progress-v1', JSON.stringify({
+      schemaVersion: 1,
+      owner: { kind: 'anonymous', accountId: null },
+      entitlement: { tier: 'public', source: 'local-default', updatedAt: null },
+      modules: {}, studyTasks, quizAttempts: [], mockExamAttempts: [], targetedPracticeAttempts: [],
+      activeSessions: {}, activity: [], migration: { legacyVersion: 1, migratedAt: null },
+      createdAt: '2026-08-06T00:00:00.000Z', updatedAt: '2026-08-06T00:00:00.000Z'
+    }));
+  });
+  await page.goto('/my-progress.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'premium');
+  await expect(page.getByRole('heading', { name: 'Continue with Processing and Decalcification' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open lesson' })).toHaveAttribute(
+    'href', /premium\/processing-proof\.html$/
+  );
 });
 
 test('Premium processing route confirms access without exposing protected payloads', async ({ page }) => {
