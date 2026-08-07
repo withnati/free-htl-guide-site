@@ -45,13 +45,27 @@ class CloudAdapterValidationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             self.copy_contract_files(root)
-            page = root / 'my-progress.html'
-            page.write_text(
-                page.read_text(encoding='utf-8').replace('Use progress already in my account', 'Continue'),
-                encoding='utf-8'
-            )
+            for relative in ('assets/cloud-progress-controller.js', 'my-progress.html'):
+                path = root / relative
+                path.write_text(
+                    path.read_text(encoding='utf-8').replace('Continue with account progress only', 'Continue'),
+                    encoding='utf-8'
+                )
             errors = MODULE.validate(root)
-            self.assertTrue(any('Use progress already in my account' in error for error in errors))
+            self.assertTrue(any('Continue with account progress only' in error for error in errors))
+
+    def test_rejects_missing_empty_account_separate_choice(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.copy_contract_files(root)
+            for relative in ('assets/cloud-progress-controller.js', 'my-progress.html'):
+                path = root / relative
+                path.write_text(
+                    path.read_text(encoding='utf-8').replace('Keep device progress separate', 'Continue'),
+                    encoding='utf-8'
+                )
+            errors = MODULE.validate(root)
+            self.assertTrue(any('Keep device progress separate' in error for error in errors))
 
     def test_rejects_missing_global_account_match(self):
         with tempfile.TemporaryDirectory() as directory:

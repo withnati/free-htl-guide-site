@@ -30,6 +30,24 @@ function browserRecord() {
   };
 }
 
+function accountProgressTables() {
+  const timestamp = '2026-08-01T00:30:00.000Z';
+  return {
+    profiles: [{ user_id: 'user-a', display_name: 'Learner A', created_at: timestamp, updated_at: timestamp }],
+    module_progress: [{
+      user_id: 'user-a',
+      module_id: 'embedding-v3',
+      started_at: timestamp,
+      last_activity_at: timestamp,
+      last_section_id: 'embedding-basics',
+      sections_viewed: ['embedding-basics'],
+      completed_at: null,
+      revision: 1,
+      updated_at: timestamp
+    }]
+  };
+}
+
 async function mockSupabase(page, options = {}) {
   const calls = [];
   await page.exposeFunction('__recordCloudCall', (call) => calls.push(call));
@@ -115,8 +133,16 @@ async function mockSupabase(page, options = {}) {
   return calls;
 }
 
+function isDesktop(testInfo) {
+  return testInfo.project.name.includes('desktop-chromium');
+}
+
+function isMobile(testInfo) {
+  return testInfo.project.name.includes('mobile-chromium');
+}
+
 test('signed-out dashboard keeps progress on the device', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'desktop-chromium');
+  test.skip(!isDesktop(testInfo));
   await mockSupabase(page, { session: null });
   await page.goto('/my-progress.html');
   await expect(page.locator('body')).toHaveAttribute('data-cloud-progress', 'anonymous');
@@ -124,8 +150,8 @@ test('signed-out dashboard keeps progress on the device', async ({ page }, testI
   await expect(page.locator('[data-progress-status]')).toContainText('Progress on this device is available here');
 });
 
-test('verified learner explicitly adds device progress to account tables', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'desktop-chromium');
+test('verified learner explicitly adds device progress to an empty account', async ({ page }, testInfo) => {
+  test.skip(!isDesktop(testInfo));
   const calls = await mockSupabase(page);
   const record = browserRecord();
   await page.addInitScript((value) => localStorage.setItem('free-htl-progress-v1', JSON.stringify(value)), record);
@@ -133,8 +159,12 @@ test('verified learner explicitly adds device progress to account tables', async
   await expect(page.locator('body')).toHaveAttribute('data-cloud-progress', 'awaiting-import');
   await expect(page.locator('[data-cloud-import]')).toBeVisible();
   await expect(page.locator('[data-cloud-import-summary]')).toContainText('1 lesson record');
-  await page.getByRole('button', { name: 'Add this progress to my account' }).click();
+  await expect(page.locator('[data-cloud-import-summary]')).toContainText('No earlier study progress was found in your account');
+  await expect(page.locator('[data-cloud-account-only-heading]')).toHaveText('Keep this device’s progress separate');
+  await expect(page.getByRole('button', { name: 'Keep device progress separate' })).toBeVisible();
+  await page.getByRole('button', { name: 'Add this device’s progress to my account' }).click();
   await expect(page.locator('body')).toHaveAttribute('data-cloud-progress', 'connected');
+  await expect(page.locator('[data-progress-status]')).toContainText('recommended next step is ready below');
   await expect(page.locator('[data-storage-status]')).toHaveText('In your account');
   await expect(page.locator('[data-summary-modules]')).toHaveText('1/7');
   expect(calls.some((call) => call[0] === 'upsert' && call[1] === 'progress_migrations')).toBeTruthy();
@@ -142,21 +172,39 @@ test('verified learner explicitly adds device progress to account tables', async
   expect(calls.some((call) => call[0] === 'upsert' && call[1] === 'learning_attempts')).toBeTruthy();
 });
 
-test('account-only choice leaves device backup unchanged', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'mobile-chromium');
+test('account-only choice leaves device backup unchanged when the account is empty', async ({ page }, testInfo) => {
+  test.skip(!isMobile(testInfo));
   await mockSupabase(page);
   const record = browserRecord();
   await page.addInitScript((value) => localStorage.setItem('free-htl-progress-v1', JSON.stringify(value)), record);
   await page.goto('/my-progress.html');
-  await page.getByRole('button', { name: 'Use progress already in my account' }).click();
+  await expect(page.locator('[data-cloud-account-only-copy]')).toContainText('saved copy on this device stays unchanged and separate');
+  await page.getByRole('button', { name: 'Keep device progress separate' }).click();
   await expect(page.locator('body')).toHaveAttribute('data-cloud-progress', 'connected');
+  await expect(page.locator('[data-progress-status]')).toContainText('without adding this device’s earlier study activity');
+  await expect(page.locator('[data-progress-status]')).toContainText('recommended next step is ready below');
   const backup = await page.evaluate(() => JSON.parse(localStorage.getItem('free-htl-progress-v1')));
   expect(backup.recordId).toBe('progress-browser-a');
   expect(backup.quizAttempts).toHaveLength(1);
 });
 
+test('learner sees a truthful combine-versus-account-only choice when both places have progress', async ({ page }, testInfo) => {
+  test.skip(!isDesktop(testInfo));
+  await mockSupabase(page, { tables: accountProgressTables() });
+  const record = browserRecord();
+  await page.addInitScript((value) => localStorage.setItem('free-htl-progress-v1', JSON.stringify(value)), record);
+  await page.goto('/my-progress.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-cloud-progress', 'awaiting-import');
+  await expect(page.locator('[data-cloud-import-summary]')).toContainText('Your account also has saved study progress');
+  await expect(page.locator('[data-cloud-import-primary-copy]')).toContainText('progress already in your account');
+  await expect(page.locator('[data-cloud-account-only-heading]')).toHaveText('Continue with account progress only');
+  await expect(page.locator('[data-cloud-account-only-copy]')).toContainText('Do not add this device’s earlier work to the account');
+  await expect(page.getByRole('button', { name: 'Continue with account progress only' })).toBeVisible();
+});
+
 test('stable attempt IDs and module sections merge without duplication', async ({ page }, testInfo) => {
-  test.skip(testInfo.project.name !== 'desktop-chromium');
+  test.skip(!isDesktop(testInfo));
   await mockSupabase(page, { session: null });
   await page.goto('/my-progress.html');
   const result = await page.evaluate(() => {

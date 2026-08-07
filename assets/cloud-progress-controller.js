@@ -9,6 +9,9 @@
   const status = $('[data-progress-status]');
   const importPanel = $('[data-cloud-import]');
   const importSummary = $('[data-cloud-import-summary]');
+  const importPrimaryCopy = $('[data-cloud-import-primary-copy]');
+  const accountOnlyHeading = $('[data-cloud-account-only-heading]');
+  const accountOnlyCopy = $('[data-cloud-account-only-copy]');
   const importButton = $('[data-import-progress]');
   const accountOnlyButton = $('[data-account-progress-only]');
   const conflictPanel = $('[data-cloud-conflict]');
@@ -24,6 +27,7 @@
   let browserRecord = null;
   let userId = null;
   let lastSyncStatus = 'local';
+  let accountHadProgress = false;
 
   function setStatus(message, tone = 'info', focus = false) {
     if (!status) return;
@@ -70,6 +74,41 @@
       [counts.activeSessions, 'unfinished session']
     ].filter(([count]) => count > 0).map(([count, label]) => `${count} ${label}${count === 1 ? '' : 's'}`);
     return parts.length ? parts.join(', ') : 'study progress';
+  }
+
+  function configureImportChoices(remoteHasProgress) {
+    accountHadProgress = remoteHasProgress;
+    const deviceSummary = countSummary(cloud.progressCounts(browserRecord));
+
+    if (importSummary) {
+      importSummary.textContent = remoteHasProgress
+        ? `This device has ${deviceSummary}. Your account also has saved study progress.`
+        : `This device has ${deviceSummary}. No earlier study progress was found in your account.`;
+    }
+
+    if (importPrimaryCopy) {
+      importPrimaryCopy.textContent = remoteHasProgress
+        ? 'Add this device’s work to the progress already in your account. Completed work from both places is kept; if the same unfinished session differs, you will choose which one to continue.'
+        : 'Use this device’s study activity as the starting point for your account so eligible progress can continue across devices.';
+    }
+
+    if (accountOnlyHeading) {
+      accountOnlyHeading.textContent = remoteHasProgress
+        ? 'Continue with account progress only'
+        : 'Keep this device’s progress separate';
+    }
+
+    if (accountOnlyCopy) {
+      accountOnlyCopy.textContent = remoteHasProgress
+        ? 'Do not add this device’s earlier work to the account. The saved copy on this device stays unchanged and separate.'
+        : 'Continue with your account without adding this device’s earlier work. The saved copy on this device stays unchanged and separate.';
+    }
+
+    if (accountOnlyButton) {
+      accountOnlyButton.textContent = remoteHasProgress
+        ? 'Continue with account progress only'
+        : 'Keep device progress separate';
+    }
   }
 
   function syncMessage(syncStatus) {
@@ -123,7 +162,7 @@
     if (conflictPanel) conflictPanel.hidden = true;
   }
 
-  async function connectAccountProgress(message = 'Your study progress is connected to this account. A copy remains on this device to help recover from connection problems.') {
+  async function connectAccountProgress(message = 'Your study progress is connected to this account. A recovery copy remains on this device. Your recommended next step is ready below.') {
     await service.useAdapter(adapter);
     importPanel.hidden = true;
     const conflict = adapter.conflictInfo?.();
@@ -160,7 +199,10 @@
     setStatus('Loading the progress already saved to your account…');
     try {
       saveDecision('account-only');
-      await connectAccountProgress('Your account progress is ready. Earlier study activity on this device remains separate and unchanged.');
+      const message = accountHadProgress
+        ? 'Your account progress is ready. Earlier study activity on this device remains separate and unchanged. Your recommended next step is ready below.'
+        : 'Your account is ready without adding this device’s earlier study activity. The saved copy on this device remains separate and unchanged. Your recommended next step is ready below.';
+      await connectAccountProgress(message);
     } catch (error) {
       console.error(error);
       localStorage.removeItem(DECISION_KEY);
@@ -232,8 +274,8 @@
     const decision = readDecision(userId);
     if (decision) {
       const message = decision.mode === 'imported'
-        ? 'Your study progress is connected to this account. A recovery copy remains on this device.'
-        : 'Your account progress is connected. Earlier study activity on this device remains separate.';
+        ? 'Your study progress is connected to this account. A recovery copy remains on this device. Your recommended next step is ready below.'
+        : 'Your account progress is connected. Earlier study activity on this device remains separate. Your recommended next step is ready below.';
       await connectAccountProgress(message);
       return;
     }
@@ -249,7 +291,7 @@
     }
 
     if (browserHasProgress) {
-      importSummary.textContent = `${countSummary(cloud.progressCounts(browserRecord))} ${remoteHasProgress ? 'can be added to the progress already saved to your account.' : 'can be added to your account.'}`;
+      configureImportChoices(remoteHasProgress);
       importPanel.hidden = false;
       setStatus('We found study activity saved on this device. Choose how you would like to continue.', 'warn');
       document.body.dataset.cloudProgress = 'awaiting-import';
@@ -257,7 +299,7 @@
     }
 
     saveDecision('account-only');
-    await connectAccountProgress('Your account progress is ready. No earlier study activity was found on this device.');
+    await connectAccountProgress('Your account progress is ready. No earlier study activity was found on this device. Your recommended next step is ready below.');
   }
 
   function isConnected() {
