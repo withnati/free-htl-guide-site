@@ -94,7 +94,23 @@
     if (!model) return;
     let recommendation = model.recommendation;
     let action = 'Continue studying';
-    if (premiumState === 'premium' || premiumState === 'attention') {
+    const premiumAccount = premiumState === 'premium' || premiumState === 'attention';
+
+    if (!premiumAccount && recommendation.accessTier === 'premium') {
+      const module = model.modules.find((item) => item.path === recommendation.path);
+      if (module) {
+        const released = releasedPremiumModules.has(module.id);
+        recommendation = {
+          ...recommendation,
+          message: released
+            ? `${module.title} is the next lesson in your roadmap and is available now with Premium. Open the lesson preview to review access and continue.`
+            : `${module.title} is the next lesson in your roadmap. Its secure Premium release is still in progress; open the preview to see current availability.`
+        };
+        action = released ? 'View Premium lesson' : 'View release status';
+      }
+    }
+
+    if (premiumAccount) {
       const completed = Number(model.summary.studyPlanTasksCompleted || 0);
       if (completed < 35) {
         recommendation = {
