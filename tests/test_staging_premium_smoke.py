@@ -9,6 +9,7 @@ class StagingPremiumSmokeTests(unittest.TestCase):
     def setUp(self) -> None:
         self.workflow = (ROOT / ".github/workflows/staging-premium-smoke.yml").read_text(encoding="utf-8")
         self.config = (ROOT / "playwright.staging-premium.config.cjs").read_text(encoding="utf-8")
+        self.default_config = (ROOT / "playwright.config.cjs").read_text(encoding="utf-8")
         self.spec = (ROOT / "browser-tests/staging-premium.spec.cjs").read_text(encoding="utf-8")
 
     def test_workflow_is_manual_staging_only_and_uses_encrypted_secrets(self) -> None:
@@ -23,6 +24,9 @@ class StagingPremiumSmokeTests(unittest.TestCase):
         self.assertIn("trace: 'off'", self.config)
         self.assertIn("video: 'off'", self.config)
         self.assertNotIn("upload-artifact", self.workflow)
+
+    def test_authenticated_smoke_is_excluded_from_ordinary_browser_runs(self) -> None:
+        self.assertIn("staging-premium.spec.cjs", self.default_config)
 
     def test_smoke_check_uses_clean_sessions_and_restores_task_state(self) -> None:
         self.assertIn("await browser.newContext()", self.spec)
