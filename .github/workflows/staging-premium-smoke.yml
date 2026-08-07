@@ -1,0 +1,41 @@
+name: Staging Premium smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging-premium-smoke
+  cancel-in-progress: false
+
+jobs:
+  premium-account:
+    name: Verify designated Premium account
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: staging
+    env:
+      FHL_STAGING_BASE_URL: ${{ vars.FHL_STAGING_BASE_URL }}
+      FHL_STAGING_PREMIUM_EMAIL: ${{ secrets.FHL_STAGING_PREMIUM_EMAIL }}
+      FHL_STAGING_PREMIUM_PASSWORD: ${{ secrets.FHL_STAGING_PREMIUM_PASSWORD }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          package-manager-cache: npm
+
+      - name: Install locked test dependencies
+        run: npm ci --ignore-scripts --no-audit --no-fund
+
+      - name: Install Chromium and operating-system dependencies
+        run: npx playwright install chromium --with-deps
+
+      - name: Verify the staging Premium study plan
+        run: npx playwright test --config=playwright.staging-premium.config.cjs
