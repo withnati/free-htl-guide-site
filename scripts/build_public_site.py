@@ -36,6 +36,7 @@ PUBLIC_SOURCE_HTML = (
     "account/verify-email.html",
     "modules/fixation-guide-v3.html",
     "premium/processing-proof.html",
+    "premium/embedding-microtomy.html",
     "premium/study-plan.html",
 )
 
@@ -108,9 +109,10 @@ PREVIEW_ROUTES: dict[str, dict[str, object]] = {
         "summary": "Develop reliable orientation, sectioning, cryostat, artifact-recognition, quality-control, and safety skills.",
         "features": [
             "Orientation and section-quality guidance",
-            "Troubleshooting and premium quiz explanations",
-            "Protected reference tools and downloads",
+            "Artifact troubleshooting and cryostat safety",
+            "Secure account-verified lesson delivery",
         ],
+        "protected_route": "premium/embedding-microtomy.html",
     },
     "modules/staining-he-guide.html": {
         "title": "Routine H&E Staining",
@@ -155,6 +157,7 @@ PREVIEW_ROUTES: dict[str, dict[str, object]] = {
 }
 
 BLOCKED_DATA_PATTERNS = (
+    re.compile(r"(?:processing-proof|study-plan|embedding-microtomy)-v1\.json$"),
     re.compile(r"question-variants-.*\.json$"),
     re.compile(r"question-bank-extension\.json$"),
     re.compile(r"question-bank-manifest\.json$"),
@@ -343,11 +346,13 @@ def preview_page(root: Path, route: str, config: dict[str, object], site_url: st
         f"<li>{html.escape(str(item))}</li>" for item in config.get("features", [])
     )
     proof_link = ""
-    if config.get("proof"):
+    protected_route = config.get("protected_route")
+    if config.get("proof") or protected_route:
+        destination = protected_route or "premium/processing-proof.html"
         proof_link = (
-            f'<a class="btn btn-primary" href="{prefix}premium/processing-proof.html" '
+            f'<a class="btn btn-primary" href="{prefix}{destination}" '
             'data-protected-preview-link hidden>'
-            "Open secure lesson preview</a>"
+            "Open secure lesson</a>"
         )
     replacements = {
         "{{TITLE}}": html.escape(str(config["title"])),

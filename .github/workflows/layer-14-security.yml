@@ -39,6 +39,7 @@ jobs:
           matches=$(grep -R -n --fixed-strings "HTL_Curriculum_StudyPlan_6Week.pdf" \
             index.html about.html contact.html editorial.html faq.html privacy.html terms.html \
             my-progress.html account modules/fixation-guide-v3.html premium/processing-proof.html \
+            premium/embedding-microtomy.html \
             assets 2>/dev/null || true)
           if [[ -n "$matches" ]]; then
             echo "$matches"

@@ -51,7 +51,7 @@
       setText('[data-premium-availability]', state === 'attention'
         ? 'Your Premium access is active. Review your billing status to avoid an interruption.'
         : 'Your Premium access is active. Continue with the course and study tools included in your account.');
-      setText('[data-premium-path-copy]', 'Use your Premium access for the securely delivered Processing lesson, account-linked six-week study plan, and progress guidance available now. New protected releases will appear in your library after verification.');
+      setText('[data-premium-path-copy]', 'Use your Premium access for the securely delivered Processing and Embedding lessons, account-linked six-week study plan, and progress guidance available now. New protected releases will appear in your library after verification.');
       setText('[data-premium-course-intro]', 'Your Premium library shows which lessons are available now and the verified release status of each experience being prepared next.');
       document.querySelectorAll('[data-premium-route-link]').forEach((link) => {
         link.textContent = link.dataset.premiumLabel || 'Open Premium';
@@ -61,7 +61,7 @@
     }
     if (state === 'free') {
       setText('[data-premium-availability]', 'You are signed in with a free account. Premium enrollment is open for the secure learning experiences currently available and verified releases added next.');
-      setText('[data-premium-path-copy]', 'Premium currently adds a secure Processing lesson, an account-linked six-week study plan, and progress guidance. Remaining lessons and practice tools are clearly labeled until released.');
+      setText('[data-premium-path-copy]', 'Premium currently adds secure Processing and Embedding lessons, an account-linked six-week study plan, and progress guidance. Remaining lessons and practice tools are clearly labeled until released.');
       setText('[data-premium-course-intro]', 'Begin with the complete free Fixation lesson, then compare the Premium lessons available now with those still being prepared.');
       return;
     }

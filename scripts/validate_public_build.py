@@ -30,6 +30,7 @@ PROHIBITED_TOP_LEVEL = {
     "supabase", "node_modules", "test-results", "playwright-report",
 }
 PROHIBITED_FILE_PATTERNS = (
+    re.compile(r"(?:processing-proof|study-plan|embedding-microtomy)-v1\.json$"),
     re.compile(r"question-variants-.*\.json$"), re.compile(r"question-bank-extension\.json$"),
     re.compile(r"question-bank-manifest\.json$"), re.compile(r"mock-exam-blueprint\.json$"),
     re.compile(r"targeted-practice-config\.json$"),
@@ -40,6 +41,8 @@ PROHIBITED_TEXT_PATTERNS = (
     (re.compile(r"question-bank-extension\.json"), "question extension manifest"),
     (re.compile(r"mock-exam-blueprint\.json"), "mock-exam blueprint path"),
     (re.compile(r"proof/processing-proof-v1\.json"), "private proof object path"),
+    (re.compile(r"plans/study-plan-v1\.json"), "private study-plan object path"),
+    (re.compile(r"lessons/embedding-microtomy-v1\.json"), "private Embedding object path"),
     (re.compile(r"SUPABASE_SERVICE_ROLE_KEY"), "service-role variable"),
     (re.compile(r"sb_secret_[A-Za-z0-9_-]+"), "Supabase secret key"),
     (re.compile(r"github_pat_[A-Za-z0-9_]+"), "GitHub token"),

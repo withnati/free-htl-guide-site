@@ -46,7 +46,18 @@ async function verifyPremiumDashboard(page) {
   await expect(page.locator('[data-module-id="processing-v3"] [data-module-link]')).toHaveAttribute(
     'href', /premium\/processing-proof\.html$/
   );
+  await expect(page.locator('[data-module-id="embedding-v3"] [data-module-link]')).toHaveAttribute(
+    'href', /premium\/embedding-microtomy\.html$/
+  );
   await expect(page.getByText('Premium coming soon', { exact: true })).toHaveCount(0);
+  await page.goto('/premium/embedding-microtomy.html');
+  await expect(page.locator('[data-premium-status-label]')).toHaveText('Lesson ready');
+  await expect(page.locator('[data-premium-title]')).toHaveText('Embedding and Microtomy');
+  await expect(page.getByRole('heading', { name: '1. Orientation principles' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '6. Quality control and safety' })).toBeVisible();
+  await expect(page.locator('fieldset')).toHaveCount(0);
+  await expect(page.locator('[data-correct]')).toHaveCount(0);
+  await expect(page.locator('[data-expl]')).toHaveCount(0);
   await page.goto('/premium/study-plan.html');
   await expect(page.locator('body')).toHaveAttribute('data-cloud-progress', 'connected');
   await expect(page.locator('[data-premium-status-label]')).toHaveText('Study plan ready');

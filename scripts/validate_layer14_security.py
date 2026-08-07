@@ -15,6 +15,7 @@ ENTITLEMENT_MIGRATION = "supabase/migrations/20260801060000_layer_14_entitlement
 PREMIUM_FUNCTION = "supabase/functions/premium-content/index.ts"
 PREMIUM_PAGE = "premium/processing-proof.html"
 STUDY_PLAN_PAGE = "premium/study-plan.html"
+EMBEDDING_PAGE = "premium/embedding-microtomy.html"
 PREMIUM_CLIENT = "assets/premium-content-client.js"
 PREMIUM_STYLE = "assets/premium-access.css"
 PREMIUM_BROWSER_TEST = "browser-tests/premium-content.spec.cjs"
@@ -159,6 +160,8 @@ def validate_protected_function(root: Path) -> list[str]:
         "CONTENT_ALLOWLIST",
         "'study-plan-v1'",
         "objectPath: 'plans/study-plan-v1.json'",
+        "'embedding-microtomy-v1'",
+        "objectPath: 'lessons/embedding-microtomy-v1.json'",
         "FHL_ALLOWED_ORIGINS",
         "configured.split(',')",
         "value !== '*'",
@@ -207,6 +210,7 @@ def validate_protected_entry(root: Path) -> list[str]:
     issues: list[str] = []
     page = read(root / PREMIUM_PAGE, issues)
     study_plan_page = read(root / STUDY_PLAN_PAGE, issues)
+    embedding_page = read(root / EMBEDDING_PAGE, issues)
     client = read(root / PREMIUM_CLIENT, issues)
     style = read(root / PREMIUM_STYLE, issues)
     browser_test = read(root / PREMIUM_BROWSER_TEST, issues)
@@ -250,6 +254,29 @@ def validate_protected_entry(root: Path) -> list[str]:
             issues.append("Protected study-plan page must not expose the private storage object path")
         if re.search(r"data-(?:premium|entitlement)-(?:granted|active)\s*=", study_plan_page, re.IGNORECASE):
             issues.append("Protected study-plan page must not contain client-controlled entitlement flags")
+
+    if embedding_page:
+        required_embedding_page = (
+            'content="noindex,nofollow"',
+            'rel="canonical"',
+            'data-protected-content-id="embedding-microtomy-v1"',
+            'data-premium-state="loading"',
+            'data-premium-sign-in',
+            'data-premium-upgrade',
+            'data-premium-retry',
+            'data-premium-content',
+            '../assets/premium-content-client.js',
+        )
+        for token in required_embedding_page:
+            if token not in embedding_page:
+                issues.append(f"Protected Embedding lesson page is missing required token: {token}")
+        if "lessons/embedding-microtomy-v1.json" in embedding_page:
+            issues.append("Protected Embedding lesson page must not expose the private storage object path")
+        if re.search(r"data-(?:premium|entitlement)-(?:granted|active)\s*=", embedding_page, re.IGNORECASE):
+            issues.append("Protected Embedding lesson page must not contain client-controlled entitlement flags")
+        for prohibited in ("fieldset", "data-correct", "data-expl", "Practice quiz"):
+            if prohibited in embedding_page:
+                issues.append(f"Protected Embedding shell must not contain unreleased assessment content: {prohibited}")
 
     if client:
         required_client = (
@@ -303,6 +330,8 @@ def validate_protected_entry(root: Path) -> list[str]:
             "entitled learner opens the protected study plan and retains task progress",
             "expect(calls[0].body).toEqual({ contentId: 'study-plan-v1' })",
             "snapshot.studyTasks['study-plan-v1:w1d1']",
+            "entitled learner opens the protected Embedding lesson without assessment content",
+            "expect(calls[0].body).toEqual({ contentId: 'embedding-microtomy-v1' })",
         )
         for token in required_test:
             if token not in browser_test:
@@ -372,12 +401,21 @@ def validate_public_proof_absence(root: Path) -> list[str]:
         "assets/study-plan-v1.json",
         "public/plans/study-plan-v1.json",
         "premium-content/study-plan-v1.json",
+        "lessons/embedding-microtomy-v1.json",
+        "data/embedding-microtomy-v1.json",
+        "assets/embedding-microtomy-v1.json",
+        "public/lessons/embedding-microtomy-v1.json",
+        "premium-content/embedding-microtomy-v1.json",
     )
     for relative in prohibited_paths:
         if (root / relative).exists():
             issues.append(f"Protected proof payload must not be committed to public build paths: {relative}")
 
-    object_paths = ("proof/processing-proof-v1.json", "plans/study-plan-v1.json")
+    object_paths = (
+        "proof/processing-proof-v1.json",
+        "plans/study-plan-v1.json",
+        "lessons/embedding-microtomy-v1.json",
+    )
     allowed_references = {
         Path(PREMIUM_FUNCTION),
         Path("scripts/validate_layer14_security.py"),

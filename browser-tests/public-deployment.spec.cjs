@@ -109,6 +109,7 @@ test('FAQ states current Premium availability without stale enrollment claims', 
   await expect(page.getByText('Secure learning library available')).toBeVisible();
   const premiumFaq = page.locator('details').filter({ hasText: 'What is included with Premium now?' });
   await expect(premiumFaq).toContainText('Processing and Decalcification lesson');
+  await expect(premiumFaq).toContainText('Embedding and Microtomy lesson');
   await expect(premiumFaq).toContainText('six-week study plan');
   await expect(page.getByText('Premium enrollment is not open yet.', { exact: true })).toHaveCount(0);
   await expect(page.getByRole('link', { name: 'Open Premium library' })).toHaveAttribute(
@@ -120,6 +121,7 @@ test('FAQ states current Premium availability without stale enrollment claims', 
   );
   const premiumAnswer = faqData.mainEntity.find((item) => item.name === 'What is included with Premium now?');
   expect(premiumAnswer.acceptedAnswer.text).toContain('securely delivered Processing and Decalcification lesson');
+  expect(premiumAnswer.acceptedAnswer.text).toContain('Embedding and Microtomy lesson');
   expect(JSON.stringify(faqData)).not.toContain('planned to include');
   await expectNoHorizontalOverflow(page);
 });
@@ -128,9 +130,10 @@ test('pricing separates current Premium access from unreleased tools', async ({ 
   await page.goto('/pricing.html');
 
   await expect(page.getByRole('heading', { level: 1 })).toContainText('current tools fit your study plan');
-  await expect(page.getByText('Available now:', { exact: true })).toHaveCount(3);
+  await expect(page.getByText('Available now:', { exact: true })).toHaveCount(4);
   await expect(page.getByText('Secure release in progress:', { exact: true })).toHaveCount(3);
   await expect(page.getByRole('row', { name: /Processing and Decalcification/ })).toContainText('Available now');
+  await expect(page.getByRole('row', { name: /Embedding and Microtomy/ })).toContainText('Available now');
   await expect(page.getByRole('row', { name: /Remaining lessons and complete quizzes/ })).toContainText(
     'Release in progress'
   );
@@ -193,7 +196,7 @@ test('premium lesson route contains a learner-facing preview without lesson or q
   await expect(page.getByText('Premium preview', { exact: true })).toBeVisible();
   await expect(page.getByText('Processing and Decalcification is included with Premium.')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Review my Premium access' })).toBeHidden();
-  await expect(page.getByRole('link', { name: 'Open secure lesson preview' })).toBeHidden();
+  await expect(page.getByRole('link', { name: 'Open secure lesson' })).toBeHidden();
   await expect(page.locator('fieldset[data-correct]')).toHaveCount(0);
   await expect(page.locator('[data-expl]')).toHaveCount(0);
   await expect(page.locator('script[src*="mock-exam"]')).toHaveCount(0);
@@ -201,6 +204,22 @@ test('premium lesson route contains a learner-facing preview without lesson or q
   const body = await page.locator('body').innerText();
   expect(body).not.toContain('protected-delivery proof');
   expect(body).not.toContain('authorized delivery');
+  await expectNoHorizontalOverflow(page);
+});
+
+test('Embedding preview links entitled learners to the protected shell without assessment content', async ({ page }) => {
+  await mockPremiumSupabase(page);
+  await page.goto('/modules/embedding-guide-v3.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-page', 'premium-preview');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Embedding and Microtomy');
+  await expect(page.getByText('Premium access confirmed')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open secure lesson' })).toHaveAttribute(
+    'href', /premium\/embedding-microtomy\.html$/
+  );
+  await expect(page.locator('fieldset')).toHaveCount(0);
+  await expect(page.locator('[data-correct]')).toHaveCount(0);
+  await expect(page.locator('[data-expl]')).toHaveCount(0);
   await expectNoHorizontalOverflow(page);
 });
 
@@ -215,7 +234,7 @@ test('Premium account receives an entitlement-aware homepage shell', async ({ pa
   );
   await expect(page.getByRole('link', { name: 'Open Premium library' }).last()).toBeVisible();
   await expect(page.getByRole('link', { name: 'Open lesson' }).first()).toBeVisible();
-  await expect(page.getByText(/securely delivered Processing lesson/)).toBeVisible();
+  await expect(page.getByText(/securely delivered Processing and Embedding lessons/)).toBeVisible();
   await expect(page.getByText(/New protected releases will appear in your library after verification/)).toBeVisible();
   await expect(page.getByText(/complete course, practice, mock exams/)).toHaveCount(0);
   await expect(page.getByText('Premium enrollment is not open yet.')).toHaveCount(0);
@@ -240,6 +259,7 @@ test('Premium library shows only available and truthfully staged learning', asyn
   await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'premium');
   await expect(page.getByText('Premium access confirmed')).toBeVisible();
   await expect(page.getByRole('link', { name: 'Open lesson' })).toHaveAttribute('href', 'processing-proof.html');
+  await expect(page.getByRole('link', { name: 'Open Embedding lesson' })).toHaveAttribute('href', 'embedding-microtomy.html');
   await expect(page.getByRole('link', { name: 'Open study plan' })).toHaveAttribute('href', 'study-plan.html');
   await expect(page.getByText('Secure release in progress')).toHaveCount(3);
   await expect(page.locator('[data-premium-hub-upgrade]')).toBeHidden();
@@ -304,9 +324,12 @@ test('Premium dashboard projects trusted access and links to the library', async
   await expect(page.locator('[data-module-id="processing-v3"] [data-module-link]')).toHaveAttribute(
     'href', /premium\/processing-proof\.html$/
   );
-  await expect(page.locator('[data-module-progress] .module-release-ready')).toHaveCount(1);
-  await expect(page.locator('[data-module-progress] .module-release-upcoming')).toHaveCount(5);
-  await expect(page.locator('.module-status .status-value').filter({ hasText: 'Release in progress' })).toHaveCount(5);
+  await expect(page.locator('[data-module-id="embedding-v3"] [data-module-link]')).toHaveAttribute(
+    'href', /premium\/embedding-microtomy\.html$/
+  );
+  await expect(page.locator('[data-module-progress] .module-release-ready')).toHaveCount(2);
+  await expect(page.locator('[data-module-progress] .module-release-upcoming')).toHaveCount(4);
+  await expect(page.locator('.module-status .status-value').filter({ hasText: 'Release in progress' })).toHaveCount(4);
   await expectNoHorizontalOverflow(page);
 });
 
@@ -345,7 +368,7 @@ test('Premium processing route confirms access without exposing protected payloa
   await expect(page.locator('body')).toHaveAttribute('data-premium-ui-state', 'premium');
   await expect(page.getByText('Premium access confirmed')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Your account includes Processing and Decalcification.' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Open secure lesson preview' })).toHaveAttribute(
+  await expect(page.getByRole('link', { name: 'Open secure lesson' })).toHaveAttribute(
     'href', /premium\/processing-proof\.html$/
   );
   await expect(page.getByRole('link', { name: 'Compare Premium plans' })).toBeHidden();

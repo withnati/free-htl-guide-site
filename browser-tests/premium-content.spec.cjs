@@ -275,6 +275,39 @@ test('entitled learner receives and renders a learner-facing lesson on mobile', 
   await expect(page.getByText('Dehydration removes water.')).toHaveCount(0);
 });
 
+test('entitled learner opens the protected Embedding lesson without assessment content', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop-chromium');
+  await mockSupabase(page, { access_token: 'premium-session-token', user: { id: 'user-a' } });
+  const calls = await mockPremiumEndpoint(page, {
+    status: 200,
+    body: {
+      schemaVersion: 1,
+      contentId: 'embedding-microtomy-v1',
+      title: 'Embedding and Microtomy',
+      summary: 'Review orientation, sectioning controls, artifacts, cryostat work, quality control, and safety.',
+      sections: [{
+        heading: '1. Orientation principles',
+        paragraphs: ['Think about the plane of section before the tissue touches molten paraffin.'],
+        bullets: ['GI biopsy — Place on edge with mucosa facing the same direction.']
+      }]
+    }
+  });
+
+  await page.goto('/premium/embedding-microtomy.html');
+
+  await expect(page.locator('body')).toHaveAttribute('data-premium-content-state', 'authorized');
+  await expect(page.locator('[data-premium-status-label]')).toHaveText('Lesson ready');
+  await expect(page.locator('[data-premium-title]')).toHaveText('Embedding and Microtomy');
+  await expect(page.getByRole('heading', { name: '1. Orientation principles' })).toBeVisible();
+  await expect(page.locator('fieldset')).toHaveCount(0);
+  await expect(page.locator('[data-correct]')).toHaveCount(0);
+  await expect(page.locator('[data-expl]')).toHaveCount(0);
+  expect(calls).toHaveLength(1);
+  expect(calls[0].body).toEqual({ contentId: 'embedding-microtomy-v1' });
+  expect(calls[0].body.userId).toBeUndefined();
+  expect(calls[0].body.objectPath).toBeUndefined();
+});
+
 test('entitled learner opens the protected study plan and retains task progress', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop-chromium');
   await mockSupabase(page, {
