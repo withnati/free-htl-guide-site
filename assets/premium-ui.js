@@ -98,14 +98,8 @@
     const released = Boolean(document.querySelector('[data-protected-preview-link]'));
 
     if (premium) {
-      setText('[data-premium-preview-label]', state === 'attention'
-        ? 'Premium access · Billing attention'
-        : released
-          ? 'Premium lesson available now'
-          : 'Premium access confirmed');
-      setText('[data-premium-preview-message]', released
-        ? `${title} is available now in your Premium account.`
-        : `Your account includes ${title}.`);
+      setText('[data-premium-preview-label]', state === 'attention' ? 'Premium access · Billing attention' : 'Premium access confirmed');
+      setText('[data-premium-preview-message]', `Your account includes ${title}.`);
       setText('[data-premium-preview-detail]', released
         ? 'Open the complete securely delivered lesson below. Your Premium access is checked again when the lesson opens.'
         : 'This feature is included with your account and is being prepared for secure release. Your access will appear here automatically when it is available.');
@@ -118,13 +112,9 @@
       return;
     }
     if (state === 'signed-out') {
-      setText('[data-premium-preview-label]', released ? 'Premium lesson available now' : 'Premium release in progress');
-      setText('[data-premium-preview-message]', released
-        ? `${title} is available now with Premium.`
-        : `${title} is included with Premium and is being prepared for secure release.`);
-      setText('[data-premium-preview-detail]', released
-        ? 'Sign in to confirm Premium access, or compare plans before enrolling.'
-        : 'Sign in to confirm your account, or compare Premium plans for the learning available now and verified releases added next.');
+      setText('[data-premium-preview-label]', 'Premium preview');
+      setText('[data-premium-preview-message]', `${title} is included with Premium.`);
+      setText('[data-premium-preview-detail]', 'Sign in to confirm your account access, or compare Premium plans before enrolling.');
       setText('[data-premium-preview-context]', 'Sign in to let this page confirm the access attached to your account.');
       setVisible('[data-premium-upgrade-action]', true);
       setVisible('[data-premium-account-action]', false);
@@ -132,15 +122,13 @@
       return;
     }
     if (state === 'free' || state === 'ended') {
-      setText('[data-premium-preview-label]', released ? 'Available now with Premium' : 'Included with Premium · Release in progress');
-      setText('[data-premium-preview-message]', released
-        ? `${title} is available now with Premium.`
-        : `${title} is included with Premium and is being prepared for secure release.`);
+      setText('[data-premium-preview-label]', 'Included with Premium');
+      setText('[data-premium-preview-message]', `${title} is included with Premium.`);
       setText('[data-premium-preview-detail]', state === 'ended'
-        ? 'Your previous Premium access has ended. Compare plans to restore eligible access while keeping your account and learning history.'
+        ? 'Your previous Premium access has ended. Compare plans to restore access while keeping your account and eligible learning history.'
         : released
           ? 'Compare Premium plans to open this secure lesson and the other learning experiences available now.'
-          : 'Compare Premium plans for the secure learning available now and verified releases being prepared next.');
+          : 'Compare Premium plans for the secure learning available now and the verified releases being prepared next.');
       setText('[data-premium-preview-context]', state === 'ended'
         ? 'Your account and eligible learning history remain available.'
         : 'Your free account and eligible learning history remain available whether or not you add Premium.');
