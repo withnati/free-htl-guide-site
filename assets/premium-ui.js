@@ -54,7 +54,10 @@
       setText('[data-premium-path-copy]', 'Use your Premium access for the securely delivered Processing and Embedding lessons, account-linked six-week study plan, and progress guidance available now. New protected releases will appear in your library after verification.');
       setText('[data-premium-course-intro]', 'Your Premium library shows which lessons are available now and the verified release status of each experience being prepared next.');
       document.querySelectorAll('[data-premium-route-link]').forEach((link) => {
-        link.textContent = link.dataset.premiumLabel || 'Open Premium';
+        const path = new URL(link.href, window.location.href).pathname;
+        const released = /\/modules\/(processing-guide-v3|embedding-guide-v3)\.html$/.test(path);
+        link.textContent = released ? (link.dataset.premiumLabel || 'Open lesson') : 'View release status';
+        link.dataset.premiumRelease = released ? 'available' : 'upcoming';
       });
       setVisible('[data-premium-library-action]', true);
       return;
