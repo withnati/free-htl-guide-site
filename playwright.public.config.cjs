@@ -6,7 +6,8 @@ module.exports = defineConfig({
     'public-deployment.spec.cjs',
     'public-premium-preview-release.spec.cjs',
     'public-fixation-next-step.spec.cjs',
-    'auth-return-continuity.spec.cjs'
+    'auth-return-continuity.spec.cjs',
+    'cloud-progress.spec.cjs'
   ],
   timeout: 30_000,
   expect: { timeout: 5_000 },
