@@ -122,6 +122,21 @@ test('FAQ states current Premium availability without stale enrollment claims', 
   await expectNoHorizontalOverflow(page);
 });
 
+test('pricing separates current Premium access from unreleased tools', async ({ page }) => {
+  await page.goto('/pricing.html');
+
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('current tools fit your study plan');
+  await expect(page.getByText('Available now:', { exact: true })).toHaveCount(3);
+  await expect(page.getByText('Secure release in progress:', { exact: true })).toHaveCount(3);
+  await expect(page.getByRole('row', { name: /Processing and Decalcification/ })).toContainText('Available now');
+  await expect(page.getByRole('row', { name: /Remaining lessons and complete quizzes/ })).toContainText(
+    'Release in progress'
+  );
+  await expect(page.getByText('“Release in progress” means the feature is not available for study yet.')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Choose monthly Premium' })).toBeVisible();
+  await expectNoHorizontalOverflow(page);
+});
+
 test('complete public Fixation lesson uses the canonical runtime in the generated deployment', async ({ page }) => {
   await page.goto('/modules/fixation-guide-v3.html');
 
