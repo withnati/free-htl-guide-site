@@ -9,15 +9,23 @@ test('Fixation completion reveals a clear next study step without interrupting t
   const answers = await page.evaluate(async () => {
     const response = await fetch('/data/fixation-runtime-bank.json', { cache: 'no-store' });
     const bank = await response.json();
-    return bank.map((question) => question.correct_option_id);
+    return Object.fromEntries(
+      bank.map((question) => [
+        `${question.id}:${question.version}`,
+        question.correct_option_id
+      ])
+    );
   });
 
-  for (let index = 0; index < answers.length; index += 1) {
-    await page
-      .locator('#fixQuiz fieldset[data-question-id]')
-      .nth(index)
-      .locator(`input[value="${answers[index]}"]`)
-      .check();
+  const fields = page.locator('#fixQuiz fieldset[data-question-id]');
+  await expect(fields).toHaveCount(10);
+  for (let index = 0; index < 10; index += 1) {
+    const field = fields.nth(index);
+    const questionId = await field.getAttribute('data-question-id');
+    const questionVersion = await field.getAttribute('data-question-version');
+    const correctOptionId = answers[`${questionId}:${questionVersion}`];
+    expect(correctOptionId).toBeTruthy();
+    await field.locator(`input[value="${correctOptionId}"]`).check();
   }
 
   await page.locator('[data-grade="fixQuiz"]').click();
