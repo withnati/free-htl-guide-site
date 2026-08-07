@@ -304,6 +304,9 @@ test('Premium dashboard projects trusted access and links to the library', async
   await expect(page.locator('[data-module-id="processing-v3"] [data-module-link]')).toHaveAttribute(
     'href', /premium\/processing-proof\.html$/
   );
+  await expect(page.locator('[data-module-progress] .module-release-ready')).toHaveCount(1);
+  await expect(page.locator('[data-module-progress] .module-release-upcoming')).toHaveCount(5);
+  await expect(page.locator('.module-status .status-value').filter({ hasText: 'Release in progress' })).toHaveCount(5);
   await expectNoHorizontalOverflow(page);
 });
 

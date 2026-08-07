@@ -3,6 +3,7 @@
 
   const $ = (selector, root = document) => root.querySelector(selector);
   const service = window.FreeHTLProgress;
+  const releasedPremiumModules = new Set(['processing-v3']);
   let latestModel = null;
 
   const escapeHtml = (value) => String(value ?? '')
@@ -35,13 +36,19 @@
 
   function renderModules(model) {
     const root = $('[data-module-progress]');
-    root.innerHTML = model.modules.map((item) => `
+    root.innerHTML = model.modules.map((item) => {
+      const upcoming = item.accessTier === 'premium' && !releasedPremiumModules.has(item.id);
+      const releaseNote = item.accessTier === 'premium'
+        ? `<div class="module-meta module-release-${upcoming ? 'upcoming' : 'ready'}">${upcoming ? 'Secure release in progress' : 'Available now with Premium'}</div>`
+        : '';
+      return `
       <article class="module-row" data-module-id="${escapeHtml(item.id)}">
-        <div><h3><a data-module-link href="${escapeHtml(item.path)}">${escapeHtml(item.title)}</a></h3><div class="module-meta">${escapeHtml(item.domain)}${item.lastSection ? ` · Continue at ${escapeHtml(item.lastSection)}` : ''}</div></div>
-        <div class="module-status"><span class="module-meta">Progress</span><div class="status-value">${escapeHtml(item.status)}</div></div>
-        <div class="module-score"><span class="module-meta">Best quiz</span><div class="status-value">${item.bestQuiz ? `${item.bestQuiz}%` : '—'}</div></div>
+        <div><h3><a data-module-link href="${escapeHtml(item.path)}">${escapeHtml(item.title)}</a></h3><div class="module-meta">${escapeHtml(item.domain)}${item.lastSection ? ` · Continue at ${escapeHtml(item.lastSection)}` : ''}</div>${releaseNote}</div>
+        <div class="module-status"><span class="module-meta">${upcoming ? 'Availability' : 'Progress'}</span><div class="status-value">${escapeHtml(upcoming ? 'Release in progress' : item.status)}</div></div>
+        <div class="module-score"><span class="module-meta">Best quiz</span><div class="status-value">${upcoming ? '—' : (item.bestQuiz ? `${item.bestQuiz}%` : '—')}</div></div>
         <div>${accessBadge(item.accessTier)}</div>
-      </article>`).join('');
+      </article>`;
+    }).join('');
   }
 
   function renderDomains(model) {
