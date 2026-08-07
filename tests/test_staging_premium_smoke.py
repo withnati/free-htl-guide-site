@@ -34,6 +34,12 @@ class StagingPremiumSmokeTests(unittest.TestCase):
         self.assertIn("setChecked(originalChecked)", self.spec)
         self.assertIn("data-cloud-progress", self.spec)
 
+    def test_smoke_check_rejects_stale_premium_dashboard_destinations(self) -> None:
+        self.assertIn("data-progress-dashboard-loaded", self.spec)
+        self.assertIn("(?:study-plan|processing-proof)", self.spec)
+        self.assertIn("data-module-id=\"processing-v3\"", self.spec)
+        self.assertIn("Premium coming soon", self.spec)
+
 
 if __name__ == "__main__":
     unittest.main()
